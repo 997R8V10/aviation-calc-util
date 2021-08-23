@@ -4,6 +4,8 @@
 
 #include "GeoUtil.h"
 
+using namespace AviationCalcUtil::GeoTools;
+
 const double GeoUtil::EARTH_RADIUS_M = 6371e3;
 const double GeoUtil::STD_PRES_HPA = 1013.25;
 const double GeoUtil::STD_TEMP_C = 15;

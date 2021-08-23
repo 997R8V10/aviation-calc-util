@@ -5,6 +5,7 @@
 #include "GeoPoint.h"
 
 using namespace AviationCalcUtil::MathTools;
+using namespace AviationCalcUtil::GeoTools;
 
 GeoPoint::GeoPoint(GeoPoint *point) : GeoPoint(point->getLat(), point->getLon(), point->getAlt()) {}
 
