@@ -1,2 +1,7 @@
 .idea/
+
+# CMake Build Outputs
 out/
+build/
+cmake-build-debug/
+cmake-builld-release/

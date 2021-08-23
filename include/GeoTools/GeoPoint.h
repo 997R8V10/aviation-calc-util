@@ -13,8 +13,8 @@
 
 class GeoPoint {
 private:
-    double lat{};
-    double lon{};
+    double lat;
+    double lon;
     double alt;
 
 public:

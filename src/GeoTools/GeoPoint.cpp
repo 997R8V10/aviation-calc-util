@@ -4,6 +4,8 @@
 
 #include "GeoPoint.h"
 
+using namespace AviationCalcUtil::MathTools;
+
 GeoPoint::GeoPoint(GeoPoint *point) : GeoPoint(point->getLat(), point->getLon(), point->getAlt()) {}
 
 GeoPoint::GeoPoint(double lat, double lon, double alt) {
