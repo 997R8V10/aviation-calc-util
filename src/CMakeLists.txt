@@ -32,23 +32,9 @@ if (NOT eccodes_POPULATED)
 
     add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})
 endif ()
-
-target_include_directories(AviationCalcUtil PRIVATE
-        ${eccodes_SOURCE_DIR}
-        ${eccodes_BINARY_DIR}
-        ${eccodes_SOURCE_DIR}/src
-        ${eccodes_BINARY_DIR}/src
-        )
 # End ecCodes
 
-target_include_directories(AviationCalcUtil PUBLIC
-        ${PROJECT_SOURCE_DIR}/include/GeoTools
-        ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools
-        ${PROJECT_SOURCE_DIR}/include/MathTools
-        ${PROJECT_SOURCE_DIR}/include/Timers
-)
-
-add_library(AviationCalcUtil SHARED
+add_library(aviationcalc SHARED
         GeoTools/GeoUtil.cpp
         GeoTools/GeoPoint.cpp
         GeoTools/GribTools/GribDataPoint.cpp
@@ -57,14 +43,28 @@ add_library(AviationCalcUtil SHARED
         MathTools/LegendreUtil.cpp
         MathTools/Polynomial.cpp)
 
-set_target_properties(AviationCalcUtil
+target_include_directories(aviationcalc PRIVATE
+        ${eccodes_SOURCE_DIR}
+        ${eccodes_BINARY_DIR}
+        ${eccodes_SOURCE_DIR}/src
+        ${eccodes_BINARY_DIR}/src
+        )
+
+target_include_directories(aviationcalc PUBLIC
+        ${PROJECT_SOURCE_DIR}/include/GeoTools
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools
+        ${PROJECT_SOURCE_DIR}/include/MathTools
+        ${PROJECT_SOURCE_DIR}/include/Timers
+        )
+
+set_target_properties(aviationcalc
         PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
         )
 
 if (WIN32)
-    target_link_libraries(AviationCalcUtil Urlmon.lib ${BOOST_LIBRARIES} eccodes)
+    target_link_libraries(aviationcalc Urlmon.lib ${BOOST_LIBRARIES} eccodes)
 else ()
-    target_link_libraries(AviationCalcUtil ${BOOST_LIBRARIES} eccodes)
+    target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes)
 endif ()

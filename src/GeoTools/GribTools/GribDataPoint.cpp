@@ -7,8 +7,12 @@
 #include <GeoUtil.h>
 #include <sstream>
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 using namespace AviationCalcUtil::MathTools;
 using namespace AviationCalcUtil::GeoTools;
+using namespace std;
 
 GribTools::GribDataPoint::GribDataPoint(double lat, double lon, int level_hPa) {
     this->latitude = lat;
@@ -20,7 +24,7 @@ double GribTools::GribDataPoint::getDistanceFrom(AviationCalcUtil::GeoTools::Geo
     double absHeightM = MathUtil::convertFeetToMeters(pos->getAlt());
     double acftGeoPotHeightM = GeoUtil::EARTH_RADIUS_M * absHeightM / (GeoUtil::EARTH_RADIUS_M + absHeightM);
     double flatDistNMi = GeoPoint::flatDistanceNMi(pos, new GeoPoint(latitude, getLongitudeNormalized()));
-    double altDistNMi = MathUtil::convertMetersToNauticalMiles(abs(acftGeoPotHeightM - geoPotHeight_M));
+    double altDistNMi = MathUtil::convertMetersToNauticalMiles(fabs(acftGeoPotHeightM - geoPotHeight_M));
     return sqrt(pow(flatDistNMi, 2) + pow(altDistNMi, 2));
 }
 

@@ -5,6 +5,9 @@
 #include "LegendreUtil.h"
 #include "MathUtil.h"
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 using namespace AviationCalcUtil::MathTools;
 
 map<tuple<int, int>, Polynomial *> *LegendreUtil::legendreCache = new map<tuple<int, int>, Polynomial *>();
@@ -15,7 +18,7 @@ Polynomial *LegendreUtil::legendrePolynomial(int n) {
 
     for (int  m = 0; m <= n / 2; m++){
         coeffs->at(n - 2 * m) = pow(-1, m) / pow(2, n);
-        coeffs->at(n - 2 * m) *= factorialRatio(2 * n - 2 * m, n - m) / (MathUtil::factorial(m) * MathUtil::factorial(n - 2 * m));
+        coeffs->at(n - 2 * m) *= factorialRatio(2 * n - 2 * m, n - m) / (double)(MathUtil::factorial(m) * MathUtil::factorial(n - 2 * m));
     }
 
     return new Polynomial(coeffs);
