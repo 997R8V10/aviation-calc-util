@@ -5,8 +5,10 @@
 #ifndef AVIATION_CALC_UTIL_GRIBTILE_H
 #define AVIATION_CALC_UTIL_GRIBTILE_H
 
+#ifdef _LIBRARY
 #include <vector>
 #include <mutex>
+#endif
 #include <GeoPoint.h>
 #include <string>
 #include <GribDataPoint.h>
@@ -20,6 +22,7 @@ using namespace boost::posix_time;
 
 namespace AviationCalcUtil::GeoTools::GribTools {
     class GribTile {
+#ifdef _LIBRARY
     private:
         static vector<GribTile *> *gribTileList;
         static mutex gribTileListLock;
@@ -41,7 +44,7 @@ namespace AviationCalcUtil::GeoTools::GribTools {
         void extractData();
         void downloadTile();
         string getDownloadUrl();
-
+#endif
     public:
         static GribTile *findOrCreateGribTile(GeoPoint *pos, ptime dateTime);
 

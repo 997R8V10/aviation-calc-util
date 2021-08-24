@@ -1,6 +1,7 @@
 //
 // Created by pshivaraman on 2021-08-23.
 //
+#define _LIBRARY
 
 #ifdef _WIN32
 #include <windows.h>

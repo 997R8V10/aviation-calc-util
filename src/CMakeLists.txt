@@ -23,6 +23,7 @@ if (NOT eccodes_POPULATED)
     set(ENABLE_FORTRAN OFF CACHE INTERNAL "")
     set(ENABLE_PRODUCT_BUFR OFF CACHE INTERNAL "")
     set(ENABLE_BUILD_TOOLS OFF CACHE INTERNAL "")
+    set(ENABLE_EXAMPLES OFF CACHE INTERNAL "")
 
     IF (WIN32)
         # Copy an additional/replacement file into the populated source
@@ -30,7 +31,7 @@ if (NOT eccodes_POPULATED)
     ENDIF ()
 
     add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})
-    
+
     include_directories(
             ${eccodes_SOURCE_DIR}
             ${eccodes_BINARY_DIR}
