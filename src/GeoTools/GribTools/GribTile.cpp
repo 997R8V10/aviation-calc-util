@@ -2,7 +2,22 @@
 // Created by pshivaraman on 2021-08-23.
 //
 
+#ifdef _WIN32
+#include <windows.h>
+#include <urlmon.h>
+#endif
+
+#ifdef __unix__
+#include <curl/curl.h>
+#endif
+
 #include "GribTile.h"
+#include <sstream>
+#include <iomanip>
+#include <fstream>
+#include <cstdio>
+#include <thread>
+#include "eccodes.h"
 
 #define MAX_VAL_LEN 1024
 

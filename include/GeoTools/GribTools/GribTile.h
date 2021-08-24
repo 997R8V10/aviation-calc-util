@@ -4,25 +4,11 @@
 
 #ifndef AVIATION_CALC_UTIL_GRIBTILE_H
 #define AVIATION_CALC_UTIL_GRIBTILE_H
-#ifdef _WIN32
-#include <windows.h>
-#include <urlmon.h>
-#endif
-
-#ifdef __unix__
-#include <curl/curl.h>
-#endif
 
 #include <vector>
 #include <mutex>
 #include <GeoPoint.h>
 #include <string>
-#include <sstream>
-#include <iomanip>
-#include <fstream>
-#include <cstdio>
-#include <thread>
-#include "eccodes.h"
 #include <GribDataPoint.h>
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include "boost/date_time/posix_time/posix_time.hpp"

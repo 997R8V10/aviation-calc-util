@@ -3,6 +3,12 @@
 //
 
 #include "GeoPoint.h"
+#define _USE_MATH_DEFINES
+#include <cmath>
+
+#include <limits>
+#include "MathUtil.h"
+#include "GeoUtil.h"
 
 using namespace AviationCalcUtil::MathTools;
 using namespace AviationCalcUtil::GeoTools;

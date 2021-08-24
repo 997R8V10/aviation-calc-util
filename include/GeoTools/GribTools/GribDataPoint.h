@@ -6,10 +6,7 @@
 #define AVIATION_CALC_UTIL_GRIBDATAPOINT_H
 
 #include <GeoPoint.h>
-#include <MathUtil.h>
-#include <GeoUtil.h>
 #include <string>
-#include <sstream>
 
 using namespace std;
 

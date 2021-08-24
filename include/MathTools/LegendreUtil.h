@@ -9,7 +9,6 @@
 #include <tuple>
 #include <mutex>
 #include "Polynomial.h"
-#include "MathUtil.h"
 
 using namespace std;
 

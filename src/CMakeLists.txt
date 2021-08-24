@@ -2,7 +2,7 @@
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.77.0 REQUIRED)
+find_package(Boost 1.76.0 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 # End Boost
 
@@ -33,15 +33,15 @@ if (NOT eccodes_POPULATED)
     add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})
 endif ()
 
-include_directories(
+target_include_directories(AviationCalcUtil PRIVATE
         ${eccodes_SOURCE_DIR}
         ${eccodes_BINARY_DIR}
         ${eccodes_SOURCE_DIR}/src
         ${eccodes_BINARY_DIR}/src
-)
+        )
 # End ecCodes
 
-include_directories(
+target_include_directories(AviationCalcUtil PUBLIC
         ${PROJECT_SOURCE_DIR}/include/GeoTools
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools
         ${PROJECT_SOURCE_DIR}/include/MathTools

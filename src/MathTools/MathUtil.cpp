@@ -4,6 +4,9 @@
 
 #include "MathUtil.h"
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 using namespace AviationCalcUtil::MathTools;
 
 double MathUtil::convertDegreesToRadians(double degrees) {

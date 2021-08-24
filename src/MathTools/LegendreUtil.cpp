@@ -3,6 +3,8 @@
 //
 
 #include "LegendreUtil.h"
+#include "MathUtil.h"
+
 using namespace AviationCalcUtil::MathTools;
 
 map<tuple<int, int>, Polynomial *> *LegendreUtil::legendreCache = new map<tuple<int, int>, Polynomial *>();

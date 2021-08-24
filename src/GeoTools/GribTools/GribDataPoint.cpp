@@ -3,6 +3,9 @@
 //
 
 #include "GribDataPoint.h"
+#include <MathUtil.h>
+#include <GeoUtil.h>
+#include <sstream>
 
 using namespace AviationCalcUtil::MathTools;
 using namespace AviationCalcUtil::GeoTools;

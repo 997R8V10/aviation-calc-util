@@ -5,9 +5,6 @@
 #ifndef AVIATION_SIM_UTIL_GEOUTIL_H
 #define AVIATION_SIM_UTIL_GEOUTIL_H
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 namespace AviationCalcUtil::GeoTools{
     class GeoUtil {
     public:

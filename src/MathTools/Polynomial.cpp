@@ -4,6 +4,9 @@
 
 #include "Polynomial.h"
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 AviationCalcUtil::MathTools::Polynomial::Polynomial(vector<double> *coefficients) {
     this->coefficients = coefficients;
 }

@@ -5,9 +5,6 @@
 #ifndef AVIATION_SIM_UTIL_MATHUTIL_H
 #define AVIATION_SIM_UTIL_MATHUTIL_H
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 namespace AviationCalcUtil::MathTools {
     class MathUtil {
     public:

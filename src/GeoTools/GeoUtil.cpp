@@ -4,6 +4,9 @@
 
 #include "GeoUtil.h"
 
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 using namespace AviationCalcUtil::GeoTools;
 
 const double GeoUtil::EARTH_RADIUS_M = 6371e3;

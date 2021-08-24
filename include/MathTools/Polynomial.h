@@ -4,9 +4,6 @@
 
 #ifndef AVIATION_CALC_UTIL_POLYNOMIAL_H
 #define AVIATION_CALC_UTIL_POLYNOMIAL_H
-#define _USE_MATH_DEFINES
-
-#include <cmath>
 #include <vector>
 
 using namespace std;
