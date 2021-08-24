@@ -24,6 +24,9 @@ if (NOT eccodes_POPULATED)
     set(ENABLE_PRODUCT_BUFR OFF CACHE INTERNAL "")
     set(ENABLE_BUILD_TOOLS OFF CACHE INTERNAL "")
     set(ENABLE_EXAMPLES OFF CACHE INTERNAL "")
+    set(ENABLE_TESTS OFF CACHE INTERNAL "")
+    set(ENABLE_INSTALL_ECCODES_DEFINITIONS OFF CACHE INTERNAL "")
+    set(ENABLE_INSTALL_ECCODES_SAMPLES OFF CACHE INTERNAL "")
 
     IF (WIN32)
         # Copy an additional/replacement file into the populated source
@@ -46,12 +49,19 @@ add_library(aviationcalc SHARED
         GeoTools/GeoPoint.cpp
         GeoTools/GribTools/GribDataPoint.cpp
         GeoTools/GribTools/GribTile.cpp
+        GeoTools/MagneticTools/MagneticUtil.cpp
+        GeoTools/MagneticTools/MagneticFieldElements.cpp
+        GeoTools/MagneticTools/MagneticResult.cpp
+        GeoTools/MagneticTools/MagneticModelCoefficients.cpp
+        GeoTools/MagneticTools/MagneticModel.cpp
         MathTools/MathUtil.cpp
         MathTools/LegendreUtil.cpp
-        MathTools/Polynomial.cpp)
+        MathTools/Polynomial.cpp
+        )
 
 target_include_directories(aviationcalc PUBLIC
         ${PROJECT_SOURCE_DIR}/include/GeoTools
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools
         ${PROJECT_SOURCE_DIR}/include/MathTools
         ${PROJECT_SOURCE_DIR}/include/Timers
