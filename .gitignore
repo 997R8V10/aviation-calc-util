@@ -1,4 +1,5 @@
 .idea/
+.vs/
 
 # CMake Build Outputs
 out/
