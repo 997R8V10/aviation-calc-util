@@ -18,7 +18,6 @@ FetchContent_GetProperties(ecCodes)
 if (NOT eccodes_POPULATED)
     FetchContent_Populate(ecCodes)
 
-    set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/eccodes/install CACHE INTERNAL "")
     set(ENABLE_NETCDF OFF CACHE INTERNAL "")
     set(ENABLE_JPG OFF CACHE INTERNAL "")
     set(ENABLE_FORTRAN OFF CACHE INTERNAL "")
@@ -31,6 +30,13 @@ if (NOT eccodes_POPULATED)
     ENDIF ()
 
     add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})
+    
+    include_directories(
+            ${eccodes_SOURCE_DIR}
+            ${eccodes_BINARY_DIR}
+            ${eccodes_SOURCE_DIR}/src
+            ${eccodes_BINARY_DIR}/src
+    )
 endif ()
 # End ecCodes
 
@@ -43,13 +49,6 @@ add_library(aviationcalc SHARED
         MathTools/LegendreUtil.cpp
         MathTools/Polynomial.cpp)
 
-target_include_directories(aviationcalc PRIVATE
-        ${eccodes_SOURCE_DIR}
-        ${eccodes_BINARY_DIR}
-        ${eccodes_SOURCE_DIR}/src
-        ${eccodes_BINARY_DIR}/src
-        )
-
 target_include_directories(aviationcalc PUBLIC
         ${PROJECT_SOURCE_DIR}/include/GeoTools
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools
@@ -59,12 +58,12 @@ target_include_directories(aviationcalc PUBLIC
 
 set_target_properties(aviationcalc
         PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
         )
 
 if (WIN32)
     target_link_libraries(aviationcalc Urlmon.lib ${BOOST_LIBRARIES} eccodes)
 else ()
-    target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes)
+    target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes curl)
 endif ()
