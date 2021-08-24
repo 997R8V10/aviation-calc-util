@@ -4,6 +4,8 @@
 
 #ifndef AVIATION_SIM_UTIL_GEOPOINT_H
 #define AVIATION_SIM_UTIL_GEOPOINT_H
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #include <limits>
 #include "MathUtil.h"

@@ -33,7 +33,12 @@ if (NOT eccodes_POPULATED)
     add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})
 endif ()
 
-include_directories(${eccodes_SOURCE_DIR}/src)
+include_directories(
+        ${eccodes_SOURCE_DIR}
+        ${eccodes_BINARY_DIR}
+        ${eccodes_SOURCE_DIR}/src
+        ${eccodes_BINARY_DIR}/src
+)
 # End ecCodes
 
 include_directories(
@@ -51,3 +56,15 @@ add_library(AviationCalcUtil SHARED
         MathTools/MathUtil.cpp
         MathTools/LegendreUtil.cpp
         MathTools/Polynomial.cpp)
+
+set_target_properties(AviationCalcUtil
+        PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+
+if (WIN32)
+    target_link_libraries(AviationCalcUtil Urlmon.lib ${BOOST_LIBRARIES} eccodes)
+else ()
+    target_link_libraries(AviationCalcUtil ${BOOST_LIBRARIES} eccodes)
+endif ()
