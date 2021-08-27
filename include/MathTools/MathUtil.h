@@ -5,8 +5,10 @@
 #ifndef AVIATION_SIM_UTIL_MATHUTIL_H
 #define AVIATION_SIM_UTIL_MATHUTIL_H
 
+#include "aviationcalc_exports.h"
+
 namespace AviationCalcUtil::MathTools {
-    class MathUtil {
+    class AVIATIONCALC_EXPORTS MathUtil {
     public:
         // Constants
         constexpr static double CONV_FACTOR_KELVIN_C = 273.15;

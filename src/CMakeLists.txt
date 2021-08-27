@@ -7,6 +7,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 # End Boost
 
 include(FetchContent)
+include(GenerateExportHeader)
 
 # ecCodes
 FetchContent_Declare(
@@ -60,6 +61,7 @@ add_library(aviationcalc SHARED
         )
 
 target_include_directories(aviationcalc PUBLIC
+        ${CMAKE_BINARY_DIR}/exports
         ${PROJECT_SOURCE_DIR}/include/GeoTools
         ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools
@@ -71,10 +73,18 @@ set_target_properties(aviationcalc
         PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
         )
 
 if (WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     target_link_libraries(aviationcalc Urlmon.lib ${BOOST_LIBRARIES} eccodes)
 else ()
     target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes curl)
 endif ()
+
+GENERATE_EXPORT_HEADER(aviationcalc
+        BASE_NAME aviationcalc
+        EXPORT_MACRO_NAME AVIATIONCALC_EXPORTS
+        EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/aviationcalc_exports.h
+        STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)

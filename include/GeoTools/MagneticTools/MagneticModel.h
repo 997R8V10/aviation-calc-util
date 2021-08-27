@@ -9,9 +9,10 @@
 #include <boost/date_time/gregorian/greg_date.hpp>
 #include <vector>
 #include "MagneticModelCoefficients.h"
+#include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class MagneticModel {
+    class AVIATIONCALC_EXPORTS MagneticModel {
     private:
         double modelEpoch;
         std::string modelName;

@@ -6,11 +6,12 @@
 #define AVIATION_CALC_UTIL_POLYNOMIAL_H
 #include <vector>
 #include <memory>
+#include "aviationcalc_exports.h"
 
 using namespace std;
 
 namespace AviationCalcUtil::MathTools {
-    class Polynomial {
+    class AVIATIONCALC_EXPORTS Polynomial {
     private:
         vector<double> coefficients;
 

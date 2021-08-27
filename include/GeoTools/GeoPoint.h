@@ -6,9 +6,10 @@
 #define AVIATION_SIM_UTIL_GEOPOINT_H
 
 #include <memory>
+#include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools {
-    class GeoPoint {
+    class AVIATIONCALC_EXPORTS GeoPoint {
     private:
         double lat;
         double lon;
@@ -34,6 +35,8 @@ namespace AviationCalcUtil::GeoTools {
         static double distanceNMi(const GeoPoint &point1, const GeoPoint &point2);
 
         static std::unique_ptr<GeoPoint> intersection(const GeoPoint &point1, double bearing1, const GeoPoint &point2, double bearing2);
+
+        double operator-(const GeoPoint &point) const;
 
         static double initialBearing(const GeoPoint &point1, const GeoPoint &point2);
 

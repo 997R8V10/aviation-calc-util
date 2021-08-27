@@ -7,9 +7,10 @@
 
 #include <GeoPoint.h>
 #include <string>
+#include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::GribTools {
-    class GribDataPoint {
+    class AVIATIONCALC_EXPORTS GribDataPoint {
     private:
         double latitude;
         double longitude;

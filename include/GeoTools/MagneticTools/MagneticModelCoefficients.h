@@ -7,9 +7,10 @@
 
 #include <boost/date_time/gregorian/greg_date.hpp>
 #include <memory>
+#include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class MagneticModelCoefficients {
+    class AVIATIONCALC_EXPORTS MagneticModelCoefficients {
     private:
         int n;
         int m;

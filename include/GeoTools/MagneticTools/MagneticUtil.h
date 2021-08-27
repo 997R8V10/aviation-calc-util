@@ -14,13 +14,14 @@
 #include "MagneticModel.h"
 #include <mutex>
 #include <memory>
+#include "aviationcalc_exports.h"
 
 #endif
 
 using namespace AviationCalcUtil::GeoTools;
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class MagneticUtil {
+    class AVIATIONCALC_EXPORTS MagneticUtil {
 #ifdef _LIBRARY
     private:
         inline static std::shared_ptr<MagneticModel> model;

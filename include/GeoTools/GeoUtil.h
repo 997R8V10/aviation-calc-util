@@ -8,11 +8,12 @@
 #include "GeoPoint.h"
 #include <tuple>
 #include <memory>
+#include "aviationcalc_exports.h"
 
 using namespace std;
 
 namespace AviationCalcUtil::GeoTools {
-    class GeoUtil {
+    class AVIATIONCALC_EXPORTS GeoUtil {
     public:
         static constexpr double EARTH_RADIUS_M = 6371e3;
         static constexpr double STD_PRES_HPA = 1013.25;

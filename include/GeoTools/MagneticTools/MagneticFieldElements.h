@@ -5,8 +5,10 @@
 #ifndef AVIATION_CALC_UTIL_MAGNETICFIELDELEMENTS_H
 #define AVIATION_CALC_UTIL_MAGNETICFIELDELEMENTS_H
 
+#include "aviationcalc_exports.h"
+
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class MagneticFieldElements {
+    class AVIATIONCALC_EXPORTS MagneticFieldElements {
     private:
         double x;
         double y;

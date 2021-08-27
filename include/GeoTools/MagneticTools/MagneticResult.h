@@ -10,10 +10,11 @@
 #include "GeoPoint.h"
 #include <memory>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include "aviationcalc_exports.h"
 
 using namespace AviationCalcUtil::GeoTools;
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class MagneticResult {
+    class AVIATIONCALC_EXPORTS MagneticResult {
     private:
         double lambda;
         double phi;

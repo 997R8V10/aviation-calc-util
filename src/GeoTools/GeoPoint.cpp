@@ -184,3 +184,7 @@ double GeoPoint::getAlt() const {
 void GeoPoint::setAlt(double newAlt) {
     alt = newAlt;
 }
+
+double GeoPoint::operator-(const GeoPoint &point) const {
+    return distanceM(*this, point);
+}

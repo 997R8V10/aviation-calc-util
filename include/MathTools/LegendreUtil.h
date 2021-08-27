@@ -13,11 +13,12 @@
 
 #include <memory>
 #include "Polynomial.h"
+#include "aviationcalc_exports.h"
 
 using namespace std;
 
 namespace AviationCalcUtil::MathTools {
-    class LegendreUtil {
+    class AVIATIONCALC_EXPORTS LegendreUtil {
 #ifdef _LIBRARY
     private:
         inline static map<tuple<int, int>, shared_ptr<Polynomial>> legendreCache;

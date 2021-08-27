@@ -15,6 +15,7 @@
 #include <GribDataPoint.h>
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include "boost/date_time/posix_time/posix_time.hpp"
+#include "aviationcalc_exports.h"
 
 using namespace std;
 using namespace AviationCalcUtil::GeoTools;
@@ -22,7 +23,7 @@ using namespace boost::gregorian;
 using namespace boost::posix_time;
 
 namespace AviationCalcUtil::GeoTools::GribTools {
-    class GribTile {
+    class AVIATIONCALC_EXPORTS GribTile {
 #ifdef _LIBRARY
     private:
         static vector<shared_ptr<GribTile>> gribTileList;
