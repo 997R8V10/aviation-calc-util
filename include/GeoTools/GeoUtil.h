@@ -7,17 +7,18 @@
 
 #include "GeoPoint.h"
 #include <tuple>
+#include <memory>
 
 using namespace std;
 
 namespace AviationCalcUtil::GeoTools {
     class GeoUtil {
     public:
-        static const double EARTH_RADIUS_M;
-        static const double STD_PRES_HPA;
-        static const double STD_TEMP_C;
-        static const double STD_LAPSE_RATE;
-        static const double STD_PRES_DROP;
+        static constexpr double EARTH_RADIUS_M = 6371e3;
+        static constexpr double STD_PRES_HPA = 1013.25;
+        static constexpr double STD_TEMP_C = 15;
+        static constexpr double STD_LAPSE_RATE = 2.0 / 1000.0;
+        static constexpr double STD_PRES_DROP = 30.0;
 
         /// Calculates the direct course to intercept towards a waypoint.
         /// Returns -1 if direct course is not possible to achieve.
@@ -26,7 +27,7 @@ namespace AviationCalcUtil::GeoTools {
         /// \param r Radius of Turn
         /// \param curBearing Aircraft's Current Bearing
         /// \return Direct bearing to waypoint after turn
-        static double calculateDirectBearingAfterTurn(GeoPoint *aircraft, GeoPoint *waypoint,
+        static double calculateDirectBearingAfterTurn(const GeoPoint &aircraft, const GeoPoint &waypoint,
                                                       double r, double curBearing);
 
         /// Calculates cross track error in meters.
@@ -36,16 +37,15 @@ namespace AviationCalcUtil::GeoTools {
         /// \param requiredCourse Output's course along great circle path at current position.
         /// \param alongTrackDistanceM Output's distance along great circle path. Negative if station passage has occurred.
         /// \return Cross track error (m). Right: Positive; Left: Negative;
-        static double
-        calculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, double course, double &requiredCourse,
-                                  double &alongTrackDistanceM);
+        static double calculateCrossTrackErrorM(const GeoPoint &aircraft, const GeoPoint &waypoint, double course,
+                                                double &requiredCourse, double &alongTrackDistanceM);
 
         /// Calculates required lead in distance for a turn.
         /// \param point Intersection between current course and desired course
         /// \param theta Amount of turn in degrees
         /// \param r Radius of turn
         /// \return Calculates distance prior to point that turn must begin. Units will match the units for r.
-        static double calculateTurnLeadDistance(GeoPoint *point, double theta, double r);
+        static double calculateTurnLeadDistance(const GeoPoint &point, double theta, double r);
 
         /// Calculates lead distance for a turn.
         /// \param pos Aircraft's current position.
@@ -58,16 +58,17 @@ namespace AviationCalcUtil::GeoTools {
         /// \param radiusOfTurn Output Radius of Turn (nautical miles)
         /// \param intersection Output Intersection Point
         /// \return Lead distance from intersection that turn must begin (nautical miles)
-        static double calculateTurnLeadDistance(GeoPoint *pos, GeoPoint *wp, double trueTrack, double tas,
+        static double calculateTurnLeadDistance(const GeoPoint &pos, const GeoPoint &wp, double trueTrack, double tas,
                                                 double course, double trueWindDir, double windSpd, double &radiusOfTurn,
-                                                GeoPoint &intersection);
+                                                std::unique_ptr<GeoPoint> &intersection);
 
         /// Calculates the intersection between the aircraft's current track and a course to/from a waypoint.
         /// \param position Aircraft Position
         /// <param name="wp"><c>GeoPoint</c> Waypoint</param>
         /// <param name="course"><c>double</c> Course To/From Waypoint (degrees).</param>
         /// <returns><c>GeoPoint</c> The intersection, should one exist; otherwise <c>null</c></returns>
-        static GeoPoint *findIntersection(GeoPoint *position, GeoPoint *wp, double trueTrack, double course);
+        static std::unique_ptr<GeoPoint> findIntersection(const GeoPoint &position, const GeoPoint &wp,
+                                                          double trueTrack, double course);
 
         /// <summary>
         /// Normalizes Longitude between -180 and +180 degrees
@@ -89,9 +90,8 @@ namespace AviationCalcUtil::GeoTools {
 
         static double calculateBankAngle(double radiusOfTurn, double groundSpeed);
 
-        static double
-        calculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing, double windSpeed,
-                                    double tas);
+        static double calculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing,
+                                                  double windSpeed, double tas);
 
         static double getHeadwindComponent(double windSpeed, double windBearing, double bearing);
 
@@ -101,9 +101,8 @@ namespace AviationCalcUtil::GeoTools {
 
         static double calculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn);
 
-        static tuple<double, double>
-        calculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi,
-                                         bool isRightTurn);
+        static tuple<double, double> calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
+                                                                      double radiusOfTurnNMi, bool isRightTurn);
 
         static double calculateAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
 

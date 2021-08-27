@@ -16,15 +16,16 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         double modelEpoch;
         std::string modelName;
         boost::gregorian::date releaseDate;
-        std::vector<std::vector<MagneticModelCoefficients *>> coeffs;
+        std::vector<std::vector<std::shared_ptr<MagneticModelCoefficients>>> coeffs;
 
     public:
-        MagneticModel(double modelEpoch, std::string modelName, boost::gregorian::date releaseDate, std::vector<MagneticModelCoefficients *> *coefficients);
+        MagneticModel(double modelEpoch, const std::string &modelName, const boost::gregorian::date &releaseDate,
+                      const std::vector<std::shared_ptr<MagneticModelCoefficients>> &coefficients);
 
-        MagneticModelCoefficients *getCoeffs(int n, int m);
-        double getModelEpoch();
-        std::string getModelName();
-        boost::gregorian::date getReleaseDate();
+        std::shared_ptr<const MagneticModelCoefficients> getCoeffs(int n, int m) const;
+        double getModelEpoch() const;
+        const std::string &getModelName() const;
+        const boost::gregorian::date &getReleaseDate() const;
     };
 }
 

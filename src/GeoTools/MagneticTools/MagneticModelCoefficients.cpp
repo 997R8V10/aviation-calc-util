@@ -16,7 +16,7 @@ MagneticModelCoefficients::MagneticModelCoefficients(int n, int m, double g_nm, 
     this->h_dot_nm = h_dot_nm;
 }
 
-int MagneticModelCoefficients::getN() {
+int MagneticModelCoefficients::getN() const {
     return n;
 }
 
@@ -24,7 +24,7 @@ void MagneticModelCoefficients::setN(int newN) {
     n = newN;
 }
 
-int MagneticModelCoefficients::getM() {
+int MagneticModelCoefficients::getM() const {
     return m;
 }
 
@@ -32,7 +32,7 @@ void MagneticModelCoefficients::setM(int newM) {
     m = newM;
 }
 
-double MagneticModelCoefficients::getG() {
+double MagneticModelCoefficients::getG() const {
     return g_nm;
 }
 
@@ -40,7 +40,7 @@ void MagneticModelCoefficients::setG(double newG) {
     g_nm = newG;
 }
 
-double MagneticModelCoefficients::getH() {
+double MagneticModelCoefficients::getH() const {
     return h_nm;
 }
 
@@ -48,7 +48,7 @@ void MagneticModelCoefficients::setH(double newH) {
     h_nm = newH;
 }
 
-double MagneticModelCoefficients::getGDot() {
+double MagneticModelCoefficients::getGDot() const {
     return g_dot_nm;
 }
 
@@ -56,7 +56,7 @@ void MagneticModelCoefficients::setGDot(double newGDot) {
     g_dot_nm = newGDot;
 }
 
-double MagneticModelCoefficients::getHDot() {
+double MagneticModelCoefficients::getHDot() const {
     return h_dot_nm;
 }
 
@@ -64,10 +64,11 @@ void MagneticModelCoefficients::setHDot(double newHDot) {
     h_dot_nm = newHDot;
 }
 
-MagneticModelCoefficients *MagneticModelCoefficients::getCopy() {
-    return new MagneticModelCoefficients(n, m, g_nm, h_nm, g_dot_nm, h_dot_nm);
+MagneticModelCoefficients::MagneticModelCoefficients(const MagneticModelCoefficients &o) :
+        n(o.getN()), m(o.getM()), g_nm(o.getG()), h_nm(o.getH()), g_dot_nm(o.getGDot()), h_dot_nm(o.getHDot()) {
 }
 
-MagneticModelCoefficients *MagneticModelCoefficients::getPointOnDate(double modelEpoch, boost::gregorian::date date) {
-    return nullptr;
+std::unique_ptr<MagneticModelCoefficients>
+MagneticModelCoefficients::getPointOnDate(double modelEpoch, const boost::gregorian::date &date) const {
+    return std::unique_ptr<MagneticModelCoefficients>();
 }

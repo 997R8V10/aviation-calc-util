@@ -11,6 +11,7 @@
 #endif
 #include <GeoPoint.h>
 #include <string>
+#include <memory>
 #include <GribDataPoint.h>
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include "boost/date_time/posix_time/posix_time.hpp"
@@ -24,42 +25,42 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     class GribTile {
 #ifdef _LIBRARY
     private:
-        static vector<GribTile *> *gribTileList;
+        static vector<shared_ptr<GribTile>> gribTileList;
         static mutex gribTileListLock;
         short topLat;
         short bottomLat;
         short leftLon;
         short rightLon;
         ptime forecastDateUtc;
-        vector<GribDataPoint *> *dataPoints;
+        vector<shared_ptr<GribDataPoint>> dataPoints;
         mutex gribDataListLock;
         bool downloaded;
 
-        ptime getOffsetDateUtc();
-        short getCycle();
-        short getForecastHour();
-        string getGribDateString();
-        string getCycleString();
-        string getForecastHourString();
+        ptime getOffsetDateUtc() const;
+        short getCycle() const;
+        short getForecastHour() const;
+        string getGribDateString() const;
+        string getCycleString() const;
+        string getForecastHourString() const;
         void extractData();
         void downloadTile();
-        string getDownloadUrl();
+        string getDownloadUrl() const;
 #endif
     public:
-        static GribTile *findOrCreateGribTile(GeoPoint *pos, ptime dateTime);
+        static shared_ptr<const GribTile> findOrCreateGribTile(const GeoPoint &pos, const ptime &dateTime);
 
         GribTile(double lat, double lon, ptime dateTime);
 
-        short getTopLat();
-        short getBottomLat();
-        short getLeftLon();
-        short getRightLon();
-        ptime getForecastDateUtc();
-        string getGribFileName();
-        GribDataPoint *getClosestPoint(GeoPoint *acftPos);
-        bool isValid(ptime dateTime);
-        bool isAcftInside(GeoPoint *pos);
-        bool equals(GribTile *o);
+        short getTopLat() const;
+        short getBottomLat() const;
+        short getLeftLon() const;
+        short getRightLon() const;
+        ptime getForecastDateUtc() const;
+        string getGribFileName() const;
+        shared_ptr<const GribDataPoint> getClosestPoint(const GeoPoint &acftPos);
+        bool isValid(const ptime &dateTime) const;
+        bool isAcftInside(const GeoPoint &pos) const;
+        bool equals(const GribTile &o) const;
 
         ~GribTile();
     };

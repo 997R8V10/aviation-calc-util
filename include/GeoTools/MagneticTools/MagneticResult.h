@@ -8,6 +8,7 @@
 #include "MagneticFieldElements.h"
 #include "MagneticModel.h"
 #include "GeoPoint.h"
+#include <memory>
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 using namespace AviationCalcUtil::GeoTools;
@@ -20,9 +21,9 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         double r;
         double t0;
         boost::gregorian::date t;
-        MagneticModel *model;
-        MagneticFieldElements *fieldElements;
-        MagneticFieldElements *secElements;
+        std::shared_ptr<const MagneticModel> model;
+        MagneticFieldElements fieldElements;
+        MagneticFieldElements secElements;
 
         void calculateMagneticField();
 
@@ -31,11 +32,12 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         void calculateDerivedValues();
 
     public:
-        MagneticResult(MagneticModel *model, GeoPoint *point, boost::gregorian::date date);
+        MagneticResult(const std::shared_ptr<const MagneticModel> &model, const GeoPoint &point,
+                       boost::gregorian::date date);
 
-        MagneticFieldElements *getMainFieldElements();
+        const MagneticFieldElements &getMainFieldElements() const;
 
-        MagneticFieldElements *getSecularFieldElements();
+        const MagneticFieldElements &getSecularFieldElements() const;
     };
 }
 

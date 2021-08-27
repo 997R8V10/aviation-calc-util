@@ -8,8 +8,6 @@
 #include <GeoPoint.h>
 #include <string>
 
-using namespace std;
-
 namespace AviationCalcUtil::GeoTools::GribTools {
     class GribDataPoint {
     private:
@@ -26,30 +24,52 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     public:
         GribDataPoint(double lat, double lon, int level_hPa);
 
-        double getDistanceFrom(GeoPoint *pos);
-        string toString();
+        double getDistanceFrom(const GeoPoint &pos) const;
 
-        double getLatitude();
-        double getLongitude();
-        double getLongitudeNormalized();
-        double getGeoPotentialHeightM();
+        std::string toString() const;
+
+        double getLatitude() const;
+
+        double getLongitude() const;
+
+        double getLongitudeNormalized() const;
+
+        double getGeoPotentialHeightM() const;
+
         void setGeoPotentialHeight(double newGeoPotHtM);
-        double getGeoPotentialHeightFt();
-        int getLevelHPa();
-        double getTempK();
+
+        double getGeoPotentialHeightFt() const;
+
+        int getLevelHPa() const;
+
+        double getTempK() const;
+
         void setTempK(double newTempK);
-        double getTempC();
-        double getVMpers();
+
+        double getTempC() const;
+
+        double getVMpers() const;
+
         void setVMpers(double newVMpers);
-        double getUMpers();
+
+        double getUMpers() const;
+
         void setUMpers(double newUMpers);
-        double getWindSpeedMpers();
-        double getWindSpeedKts();
-        double getWindDirRads();
-        double getWindDirDegs();
-        double getRelHumidity();
+
+        double getWindSpeedMpers() const;
+
+        double getWindSpeedKts() const;
+
+        double getWindDirRads() const;
+
+        double getWindDirDegs() const;
+
+        double getRelHumidity() const;
+
         void setRelHumidity(double newRelHumidity);
-        double getSfcPressHPa();
+
+        double getSfcPressHPa() const;
+
         void setSfcPressHPa(double newSfcPressHPa);
     };
 }

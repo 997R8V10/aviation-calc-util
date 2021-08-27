@@ -6,6 +6,7 @@
 #define AVIATION_CALC_UTIL_MAGNETICMODELCOEFFICIENTS_H
 
 #include <boost/date_time/gregorian/greg_date.hpp>
+#include <memory>
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
     class MagneticModelCoefficients {
@@ -18,35 +19,35 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         double h_dot_nm;
 
     public:
+        MagneticModelCoefficients(const MagneticModelCoefficients &o);
+
         MagneticModelCoefficients(int n, int m, double g_nm, double h_nm, double g_dot_nm, double h_dot_nm);
 
-        int getN();
+        int getN() const;
 
         void setN(int newN);
 
-        int getM();
+        int getM() const;
 
         void setM(int newM);
 
-        double getG();
+        double getG() const;
 
         void setG(double newG);
 
-        double getH();
+        double getH() const;
 
         void setH(double newH);
 
-        double getGDot();
+        double getGDot() const;
 
         void setGDot(double newGDot);
 
-        double getHDot();
+        double getHDot() const;
 
         void setHDot(double newHDot);
 
-        MagneticModelCoefficients *getCopy();
-
-        MagneticModelCoefficients *getPointOnDate(double modelEpoch, boost::gregorian::date date);
+        std::unique_ptr<MagneticModelCoefficients> getPointOnDate(double modelEpoch, const boost::gregorian::date &date) const;
     };
 }
 

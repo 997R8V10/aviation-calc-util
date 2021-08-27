@@ -3,43 +3,46 @@
 //
 
 #include "MagneticModel.h"
+
 #include "MagneticUtil.h"
 
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 using namespace std;
 using namespace boost::gregorian;
 
-MagneticModel::MagneticModel(double modelEpoch, std::string modelName, boost::gregorian::date releaseDate,
-                             std::vector<MagneticModelCoefficients *> *coefficients) {
+MagneticModel::MagneticModel(double modelEpoch, const std::string &modelName, const date &releaseDate,
+                             const std::vector<shared_ptr<MagneticModelCoefficients>> &coefficients) {
     this->modelEpoch = modelEpoch;
     this->modelName = modelName;
     this->releaseDate = date(releaseDate);
-    this->coeffs = vector<vector<MagneticModelCoefficients *>>(MagneticUtil::WMM_EXPANSION + 1);
+    vector<vector<shared_ptr<MagneticModelCoefficients>>> newCoeffs(MagneticUtil::WMM_EXPANSION + 1);
 
-    for (int i = 0; i < this->coeffs.size(); i++){
-        this->coeffs[i] = vector<MagneticModelCoefficients *>(MagneticUtil::WMM_EXPANSION + 1);
+    for (auto & coeff : this->coeffs){
+        coeff = vector<shared_ptr<MagneticModelCoefficients>>(MagneticUtil::WMM_EXPANSION + 1);
     }
 
-    for (MagneticModelCoefficients *coeff : *coefficients){
+    for (const shared_ptr<MagneticModelCoefficients> &coeff : coefficients){
         if (coeff->getN() <= MagneticUtil::WMM_EXPANSION && coeff->getM() <= MagneticUtil::WMM_EXPANSION)
         {
-            this->coeffs[coeff->getN()][coeff->getM()] = coeff->getCopy();
+            this->coeffs[coeff->getN()][coeff->getM()] = coeff;
         }
     }
+
+    coeffs = move(newCoeffs);
 }
 
-MagneticModelCoefficients *MagneticModel::getCoeffs(int n, int m) {
+shared_ptr<const MagneticModelCoefficients> MagneticModel::getCoeffs(int n, int m) const {
     return this->coeffs[n][m];
 }
 
-double MagneticModel::getModelEpoch() {
+double MagneticModel::getModelEpoch() const {
     return modelEpoch;
 }
 
-std::string MagneticModel::getModelName() {
+const std::string &MagneticModel::getModelName() const{
     return modelName;
 }
 
-boost::gregorian::date MagneticModel::getReleaseDate() {
+const date &MagneticModel::getReleaseDate() const {
     return releaseDate;
 }

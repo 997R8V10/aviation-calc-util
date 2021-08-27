@@ -4,8 +4,10 @@
 #define _LIBRARY
 
 #ifdef _WIN32
+
 #include <windows.h>
 #include <urlmon.h>
+
 #endif
 
 #ifdef __unix__
@@ -24,44 +26,41 @@
 
 using namespace AviationCalcUtil::GeoTools::GribTools;
 
-vector<GribTile *> *GribTile::gribTileList = new vector<GribTile *>();
+std::vector<std::shared_ptr<GribTile>> GribTile::gribTileList{};
 mutex GribTile::gribTileListLock;
 
-GribTile *GribTile::findOrCreateGribTile(GeoPoint *pos, ptime dateTime) {
-    GribTile *foundTile = nullptr;
+std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &pos, const ptime &dateTime) {
     gribTileListLock.lock();
 
     // Look for tile
-    for (GribTile *tile : *gribTileList) {
+    for (const shared_ptr<GribTile> &tile : gribTileList) {
         if (tile->isAcftInside(pos) && tile->isValid(dateTime)) {
-            foundTile = tile;
-            break;
+            gribTileListLock.unlock();
+            return tile;
         }
     }
 
     // Create if not found
-    if (foundTile == nullptr) {
-        foundTile = new GribTile(pos->getLat(), pos->getLon(), dateTime);
-        gribTileList->push_back(foundTile);
-    }
+    auto newTile = std::make_shared<GribTile>(pos.getLat(), pos.getLon(), dateTime);
+    gribTileList.push_back(newTile);
     gribTileListLock.unlock();
 
-    return foundTile;
+    return newTile;
 }
 
-ptime GribTile::getOffsetDateUtc() {
+ptime GribTile::getOffsetDateUtc() const {
     return forecastDateUtc - hours(6);
 }
 
-short GribTile::getCycle() {
+short GribTile::getCycle() const {
     return (short) (getOffsetDateUtc().time_of_day().hours() * 6 / 6);
 }
 
-short GribTile::getForecastHour() {
+short GribTile::getForecastHour() const {
     return (short) (getOffsetDateUtc().time_of_day().hours() - getCycle() + 6);
 }
 
-string GribTile::getGribDateString() {
+string GribTile::getGribDateString() const {
     static std::locale loc(std::cout.getloc(),
                            new wtime_facet(L"%Y%m%d"));
     stringstream ss;
@@ -70,20 +69,20 @@ string GribTile::getGribDateString() {
     return ss.str();
 }
 
-string GribTile::getCycleString() {
+string GribTile::getCycleString() const {
     stringstream ss;
     ss << setw(2) << setfill('0') << getCycle();
     return ss.str();
 }
 
-string GribTile::getForecastHourString() {
+string GribTile::getForecastHourString() const {
     stringstream ss;
     ss << setw(3) << setfill('0') << getForecastHour();
     return ss.str();
 }
 
 void GribTile::extractData() {
-    auto *sfcValues = new vector<GribDataPoint *>();
+    std::vector<std::shared_ptr<GribDataPoint>> sfcValues {};
 
     // Extract Data from Grib File
     int err = 0;
@@ -119,24 +118,26 @@ void GribTile::extractData() {
         CODES_CHECK(codes_get_length(h, "levType", &len), 0);
         char *levelTypeCArr = new char[len];
         codes_get_string(h, "levType", levelTypeCArr, &len);
-        string *levelType = new string(levelTypeCArr);
+        string levelType(levelTypeCArr);
+        delete[] levelTypeCArr;
 
         // Get Short Name
         CODES_CHECK(codes_get_length(h, "shortName", &len), 0);
         char *shortNameCArr = new char[len];
         codes_get_string(h, "shortName", shortNameCArr, &len);
-        string *shortName = new string(shortNameCArr);
+        string shortName(shortNameCArr);
+        delete[] shortNameCArr;
 
         // Get level
         long level = -1;
 
         bool isSurfaceMsg = false;
         bool isIsobaricMsg = false;
-        if (*levelType == "isobaricInhPa") {
+        if (levelType == "isobaricInhPa") {
             isIsobaricMsg = true;
 
             CODES_CHECK(codes_get_long(h, "level", &level), 0);
-        } else if (*levelType == "meanSea" && *shortName == "prmsl") {
+        } else if (levelType == "meanSea" && shortName == "prmsl") {
             isSurfaceMsg = true;
         }
 
@@ -152,10 +153,10 @@ void GribTile::extractData() {
                 }
 
                 // Get GRID Point if it exists
-                GribDataPoint *foundPoint = nullptr;
+                std::shared_ptr<GribDataPoint> foundPoint(nullptr);
                 if (isIsobaricMsg) {
                     gribDataListLock.lock();
-                    for (GribDataPoint *pt : *dataPoints) {
+                    for (const std::shared_ptr<GribDataPoint> &pt : dataPoints) {
                         if (pt->getLatitude() == lat && pt->getLongitude() == lon && pt->getLevelHPa() == level) {
                             foundPoint = pt;
                             break;
@@ -163,7 +164,7 @@ void GribTile::extractData() {
                     }
                     gribDataListLock.unlock();
                 } else {
-                    for (GribDataPoint *pt : *sfcValues) {
+                    for (const std::shared_ptr<GribDataPoint> &pt : sfcValues) {
                         if (pt->getLatitude() == lat && pt->getLongitude() == lon && level == 0) {
                             foundPoint = pt;
                             break;
@@ -173,28 +174,28 @@ void GribTile::extractData() {
 
                 // Create point if it doesn't exist
                 if (foundPoint == nullptr) {
-                    foundPoint = new GribDataPoint(lat, lon, level);
+                    foundPoint = std::make_shared<GribDataPoint>(lat, lon, level);
 
                     if (isIsobaricMsg) {
                         gribDataListLock.lock();
-                        dataPoints->push_back(foundPoint);
+                        dataPoints.push_back(foundPoint);
                         gribDataListLock.unlock();
                     } else {
-                        sfcValues->push_back(foundPoint);
+                        sfcValues.push_back(foundPoint);
                     }
                 }
 
                 // Set values
                 if (isIsobaricMsg) {
-                    if (*shortName == "u") {
+                    if (shortName == "u") {
                         foundPoint->setUMpers(value);
-                    } else if (*shortName == "v") {
+                    } else if (shortName == "v") {
                         foundPoint->setVMpers(value);
-                    } else if (*shortName == "t") {
+                    } else if (shortName == "t") {
                         foundPoint->setTempK(value);
-                    } else if (*shortName == "gh") {
+                    } else if (shortName == "gh") {
                         foundPoint->setGeoPotentialHeight(value);
-                    } else if (*shortName == "rh") {
+                    } else if (shortName == "rh") {
                         foundPoint->setRelHumidity(value);
                     }
                 } else {
@@ -215,8 +216,8 @@ void GribTile::extractData() {
 
     // Add Surface pressures back in
     gribDataListLock.lock();
-    for (GribDataPoint *point : *dataPoints) {
-        for (GribDataPoint *sfc : *sfcValues) {
+    for (const std::shared_ptr<GribDataPoint> &point : dataPoints) {
+        for (const std::shared_ptr<GribDataPoint> &sfc : sfcValues) {
             if (sfc->getLongitude() == point->getLongitude() && sfc->getLatitude() == point->getLatitude()) {
                 point->setSfcPressHPa(sfc->getSfcPressHPa());
             }
@@ -270,10 +271,6 @@ void GribTile::downloadTile() {
 GribTile::GribTile(double lat, double lon, ptime dateTime) {
     downloaded = false;
 
-    gribDataListLock.lock();
-    dataPoints = new vector<GribDataPoint *>();
-    gribDataListLock.unlock();
-
     // Create tile bounds
     leftLon = max((short) floor(lon), (short) -180);
     rightLon = min((short) ceil(lon), (short) 180);
@@ -289,27 +286,27 @@ GribTile::GribTile(double lat, double lon, ptime dateTime) {
     }).detach();
 }
 
-short GribTile::getTopLat() {
+short GribTile::getTopLat() const{
     return topLat;
 }
 
-short GribTile::getBottomLat() {
+short GribTile::getBottomLat() const {
     return bottomLat;
 }
 
-short GribTile::getLeftLon() {
+short GribTile::getLeftLon() const {
     return leftLon;
 }
 
-short GribTile::getRightLon() {
+short GribTile::getRightLon() const {
     return rightLon;
 }
 
-ptime GribTile::getForecastDateUtc() {
+ptime GribTile::getForecastDateUtc() const {
     return forecastDateUtc;
 }
 
-string GribTile::getGribFileName() {
+string GribTile::getGribFileName() const {
     stringstream ss;
     ss << "GribTile_" << getGribDateString()
        << "_t" << getCycleString() << "z"
@@ -321,12 +318,12 @@ string GribTile::getGribFileName() {
     return ss.str();
 }
 
-GribDataPoint *GribTile::getClosestPoint(GeoPoint *acftPos) {
+std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &acftPos) {
     double minDist = -1;
-    GribDataPoint *pt = nullptr;
+    std::shared_ptr<GribDataPoint> pt(nullptr);
 
     gribDataListLock.lock();
-    for (GribDataPoint *point : *dataPoints) {
+    for (const std::shared_ptr<GribDataPoint> &point : dataPoints) {
         double dist = point->getDistanceFrom(acftPos);
         if (pt == nullptr || dist < minDist) {
             pt = point;
@@ -338,21 +335,21 @@ GribDataPoint *GribTile::getClosestPoint(GeoPoint *acftPos) {
     return pt;
 }
 
-bool GribTile::isValid(ptime dateTime) {
+bool GribTile::isValid(const ptime &dateTime) const{
     time_duration td = getForecastDateUtc() - dateTime;
     time_duration tdC = hours(1);
     return td.abs().hours() < tdC.hours();
 }
 
-bool GribTile::isAcftInside(GeoPoint *pos) {
-    return pos->getLat() >= bottomLat && pos->getLat() <= topLat
-           && pos->getLon() >= leftLon && pos->getLon() <= rightLon;
+bool GribTile::isAcftInside(const GeoPoint &pos) const{
+    return pos.getLat() >= bottomLat && pos.getLat() <= topLat
+           && pos.getLon() >= leftLon && pos.getLon() <= rightLon;
 }
 
-bool GribTile::equals(GribTile *o) {
-    return leftLon == o->getLeftLon() && rightLon == o->getRightLon()
-           && bottomLat == o->getBottomLat() && topLat == o->getTopLat()
-           && isValid(o->getForecastDateUtc());
+bool GribTile::equals(const GribTile &o) const {
+    return leftLon == o.getLeftLon() && rightLon == o.getRightLon()
+           && bottomLat == o.getBottomLat() && topLat == o.getTopLat()
+           && isValid(o.getForecastDateUtc());
 }
 
 GribTile::~GribTile() {
@@ -362,7 +359,7 @@ GribTile::~GribTile() {
     }
 }
 
-string GribTile::getDownloadUrl() {
+string GribTile::getDownloadUrl() const{
     // Generate URL
     stringstream ss;
     string cycleStr = getCycleString();

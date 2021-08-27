@@ -2,26 +2,29 @@
 // Created by pshivaraman on 2021-08-19.
 //
 
-#include "GeoPoint.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+#include "GeoPoint.h"
 #include <limits>
+#include <memory>
 #include "MathUtil.h"
 #include "GeoUtil.h"
 
 using namespace AviationCalcUtil::MathTools;
 using namespace AviationCalcUtil::GeoTools;
 
-GeoPoint::GeoPoint(GeoPoint *point) : GeoPoint(point->getLat(), point->getLon(), point->getAlt()) {}
-
-GeoPoint::GeoPoint(double lat, double lon, double alt) {
-    setLat(lat);
-    setLon(lon);
-    this->alt = alt;
+GeoPoint::GeoPoint(const GeoPoint &point) {
+    lat = point.getLat();
+    lon = point.getLon();
+    alt = point.getAlt();
 }
 
-GeoPoint::GeoPoint(double lat, double lon) : GeoPoint(lat, lon, 0) {}
+GeoPoint::GeoPoint(double lat, double lon, double alt) {
+    this->lat = lat;
+    this->lon = lon;
+    this->alt = alt;
+}
 
 void GeoPoint::moveByM(double bearing, double distance) {
     double R = GeoUtil::EARTH_RADIUS_M + MathUtil::convertFeetToMeters(alt);
@@ -42,11 +45,11 @@ void GeoPoint::moveByNMi(double bearing, double distance) {
     moveByM(bearing, MathUtil::convertNauticalMilesToMeters(distance));
 }
 
-double GeoPoint::flatDistanceM(GeoPoint *point1, GeoPoint *point2) {
-    double phi1 = MathUtil::convertDegreesToRadians(point1->getLat());
-    double phi2 = MathUtil::convertDegreesToRadians(point2->getLat());
-    double deltaPhi = MathUtil::convertDegreesToRadians(point2->getLat() - point1->getLat());
-    double deltaLambda = MathUtil::convertDegreesToRadians(point2->getLon() - point1->getLon());
+double GeoPoint::flatDistanceM(const GeoPoint &point1, const GeoPoint &point2) {
+    double phi1 = MathUtil::convertDegreesToRadians(point1.getLat());
+    double phi2 = MathUtil::convertDegreesToRadians(point2.getLat());
+    double deltaPhi = MathUtil::convertDegreesToRadians(point2.getLat() - point1.getLat());
+    double deltaLambda = MathUtil::convertDegreesToRadians(point2.getLon() - point1.getLon());
 
     double a = std::pow(std::sin(deltaPhi / 2), 2) +
             std::cos(phi1) * std::cos(phi2) *
@@ -59,27 +62,27 @@ double GeoPoint::flatDistanceM(GeoPoint *point1, GeoPoint *point2) {
     return d;
 }
 
-double GeoPoint::flatDistanceNMi(GeoPoint *point1, GeoPoint *point2) {
+double GeoPoint::flatDistanceNMi(const GeoPoint &point1, const GeoPoint &point2) {
     return MathUtil::convertMetersToNauticalMiles(flatDistanceM(point1, point2));
 }
 
-double GeoPoint::distanceM(GeoPoint *point1, GeoPoint *point2) {
+double GeoPoint::distanceM(const GeoPoint &point1, const GeoPoint &point2) {
     double flatDist = flatDistanceM(point1, point2);
-    double altDist = MathUtil::convertFeetToMeters(std::fabs(point2->getAlt() - point1->getAlt()));
+    double altDist = MathUtil::convertFeetToMeters(std::fabs(point2.getAlt() - point1.getAlt()));
 
     return std::sqrt(std::pow(flatDist, 2) + std::pow(altDist, 2));
 }
 
-double GeoPoint::distanceNMi(GeoPoint *point1, GeoPoint *point2) {
+double GeoPoint::distanceNMi(const GeoPoint &point1, const GeoPoint &point2) {
     return MathUtil::convertMetersToNauticalMiles(distanceM(point1, point2));
 }
 
-GeoPoint *GeoPoint::intersection(GeoPoint *point1, double bearing1, GeoPoint *point2, double bearing2) {
+std::unique_ptr<GeoPoint> GeoPoint::intersection(const GeoPoint &point1, double bearing1, const GeoPoint &point2, double bearing2) {
     // Conversions to radians
-    double phi1 = MathUtil::convertDegreesToRadians(point1->getLat());
-    double phi2 = MathUtil::convertDegreesToRadians(point2->getLat());
-    double lambda1 = MathUtil::convertDegreesToRadians(point1->getLon());
-    double lambda2 = MathUtil::convertDegreesToRadians(point2->getLon());
+    double phi1 = MathUtil::convertDegreesToRadians(point1.getLat());
+    double phi2 = MathUtil::convertDegreesToRadians(point2.getLat());
+    double lambda1 = MathUtil::convertDegreesToRadians(point1.getLon());
+    double lambda2 = MathUtil::convertDegreesToRadians(point2.getLon());
     double theta13 = MathUtil::convertDegreesToRadians(bearing1);
     double theta23 = MathUtil::convertDegreesToRadians(bearing2);
     double deltaPhi = phi2 - phi1;
@@ -92,7 +95,7 @@ GeoPoint *GeoPoint::intersection(GeoPoint *point1, double bearing1, GeoPoint *po
     // Coincident points
     if (sigma12 < std::numeric_limits<double>::epsilon())
     {
-        return point1;
+        return std::make_unique<GeoPoint>(point1);
     }
 
     // Initial/Final Bearing between points
@@ -129,15 +132,15 @@ GeoPoint *GeoPoint::intersection(GeoPoint *point1, double bearing1, GeoPoint *po
 
     double lambda3 = lambda1 + deltaLambda13;
 
-    return new GeoPoint(MathUtil::convertRadiansToDegrees(phi3), MathUtil::convertRadiansToDegrees(lambda3));
+    return std::make_unique<GeoPoint>(MathUtil::convertRadiansToDegrees(phi3), MathUtil::convertRadiansToDegrees(lambda3));
 }
 
-double GeoPoint::initialBearing(GeoPoint *point1, GeoPoint *point2) {
+double GeoPoint::initialBearing(const GeoPoint &point1, const GeoPoint &point2) {
     // Convert to Radians
-    double phi1 = MathUtil::convertDegreesToRadians(point1->getLat());
-    double phi2 = MathUtil::convertDegreesToRadians(point2->getLat());
-    double lambda1 = MathUtil::convertDegreesToRadians(point1->getLon());
-    double lambda2 = MathUtil::convertDegreesToRadians(point2->getLon());
+    double phi1 = MathUtil::convertDegreesToRadians(point1.getLat());
+    double phi2 = MathUtil::convertDegreesToRadians(point2.getLat());
+    double lambda1 = MathUtil::convertDegreesToRadians(point1.getLon());
+    double lambda2 = MathUtil::convertDegreesToRadians(point2.getLon());
 
     // Find angle between the two
     double y = std::sin(lambda2 - lambda1) * std::cos(phi2);
@@ -149,16 +152,16 @@ double GeoPoint::initialBearing(GeoPoint *point1, GeoPoint *point2) {
     return GeoUtil::normalizeHeading(MathUtil::convertRadiansToDegrees(theta));
 }
 
-double GeoPoint::finalBearing(GeoPoint *point1, GeoPoint *point2) {
+double GeoPoint::finalBearing(const GeoPoint &point1, const GeoPoint &point2) {
     // Calculate initial bearing from end to start and reverse
     return std::fmod(initialBearing(point2, point1) + 180, 360);
 }
 
-bool GeoPoint::equals(GeoPoint *o) {
-    return lat == o->getLat() && lon == o->getLon();
+bool GeoPoint::equals(const GeoPoint &o) const {
+    return lat == o.getLat() && lon == o.getLon();
 }
 
-double GeoPoint::getLat() {
+double GeoPoint::getLat() const {
     return lat;
 }
 
@@ -166,7 +169,7 @@ void GeoPoint::setLat(double newLat) {
     lat = std::fmin(std::fmax(newLat, -90), 90);
 }
 
-double GeoPoint::getLon() {
+double GeoPoint::getLon() const {
     return lon;
 }
 
@@ -174,7 +177,7 @@ void GeoPoint::setLon(double newLon) {
     lon = GeoUtil::normalizeLongitude(newLon);
 }
 
-double GeoPoint::getAlt() {
+double GeoPoint::getAlt() const {
     return alt;
 }
 

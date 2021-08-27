@@ -16,7 +16,7 @@ MagneticFieldElements::MagneticFieldElements() {
     decl = 0;
 }
 
-double MagneticFieldElements::getX() {
+double MagneticFieldElements::getX() const {
     return x;
 }
 
@@ -24,7 +24,7 @@ void MagneticFieldElements::setX(double newX) {
     x = newX;
 }
 
-double MagneticFieldElements::getY() {
+double MagneticFieldElements::getY() const {
     return y;
 }
 
@@ -32,7 +32,7 @@ void MagneticFieldElements::setY(double newY) {
     y = newY;
 }
 
-double MagneticFieldElements::getZ() {
+double MagneticFieldElements::getZ() const {
     return z;
 }
 
@@ -40,7 +40,7 @@ void MagneticFieldElements::setZ(double newZ) {
     z = newZ;
 }
 
-double MagneticFieldElements::getH() {
+double MagneticFieldElements::getH() const {
     return h;
 }
 
@@ -48,7 +48,7 @@ void MagneticFieldElements::setH(double newH) {
     h = newH;
 }
 
-double MagneticFieldElements::getF() {
+double MagneticFieldElements::getF() const {
     return f;
 }
 
@@ -56,7 +56,7 @@ void MagneticFieldElements::setF(double newF) {
     f = newF;
 }
 
-double MagneticFieldElements::getDecl() {
+double MagneticFieldElements::getDecl() const {
     return decl;
 }
 
@@ -64,7 +64,7 @@ void MagneticFieldElements::setDecl(double newDecl) {
     decl = newDecl;
 }
 
-double MagneticFieldElements::getIncl() {
+double MagneticFieldElements::getIncl() const {
     return incl;
 }
 

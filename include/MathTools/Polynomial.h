@@ -5,22 +5,23 @@
 #ifndef AVIATION_CALC_UTIL_POLYNOMIAL_H
 #define AVIATION_CALC_UTIL_POLYNOMIAL_H
 #include <vector>
+#include <memory>
 
 using namespace std;
 
 namespace AviationCalcUtil::MathTools {
     class Polynomial {
     private:
-        vector<double> *coefficients;
+        vector<double> coefficients;
 
     public:
-        explicit Polynomial(vector<double> *coefficients);
+        explicit Polynomial(const vector<double> &coefficients);
 
-        double evaluate(double x);
+        double evaluate(double x) const;
 
-        Polynomial *derivative(int n);
+        shared_ptr<Polynomial> derivative(int n) const;
 
-        vector<double> *getCoefficients();
+        const vector<double> &getCoefficients() const;
     };
 }
 
