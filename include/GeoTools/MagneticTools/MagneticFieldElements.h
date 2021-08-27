@@ -8,7 +8,7 @@
 #include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class AVIATIONCALC_EXPORTS MagneticFieldElements {
+    class AVIATIONCALC_EXPORT MagneticFieldElements {
     private:
         double x;
         double y;

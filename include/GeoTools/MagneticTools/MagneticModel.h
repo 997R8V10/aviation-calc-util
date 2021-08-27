@@ -12,7 +12,7 @@
 #include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class AVIATIONCALC_EXPORTS MagneticModel {
+    class MagneticModel {
     private:
         double modelEpoch;
         std::string modelName;
@@ -20,13 +20,13 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         std::vector<std::vector<std::shared_ptr<MagneticModelCoefficients>>> coeffs;
 
     public:
-        MagneticModel(double modelEpoch, const std::string &modelName, const boost::gregorian::date &releaseDate,
+        AVIATIONCALC_EXPORT MagneticModel(double modelEpoch, const std::string &modelName, const boost::gregorian::date &releaseDate,
                       const std::vector<std::shared_ptr<MagneticModelCoefficients>> &coefficients);
 
-        std::shared_ptr<const MagneticModelCoefficients> getCoeffs(int n, int m) const;
-        double getModelEpoch() const;
-        const std::string &getModelName() const;
-        const boost::gregorian::date &getReleaseDate() const;
+        AVIATIONCALC_EXPORT std::shared_ptr<const MagneticModelCoefficients> getCoeffs(int n, int m) const;
+        AVIATIONCALC_EXPORT double getModelEpoch() const;
+        AVIATIONCALC_EXPORT const std::string &getModelName() const;
+        AVIATIONCALC_EXPORT const boost::gregorian::date &getReleaseDate() const;
     };
 }
 

@@ -18,16 +18,16 @@
 using namespace std;
 
 namespace AviationCalcUtil::MathTools {
-    class AVIATIONCALC_EXPORTS LegendreUtil {
+    class LegendreUtil {
 #ifdef _LIBRARY
     private:
         inline static map<tuple<int, int>, shared_ptr<Polynomial>> legendreCache;
         static mutex legendreCacheLock;
 #endif
     public:
-        static shared_ptr<const Polynomial> legendrePolynomial(int n);
-        static double factorialRatio(int n, int m);
-        static double legendreFunction(int n, int m, double x);
+        AVIATIONCALC_EXPORT static shared_ptr<const Polynomial> legendrePolynomial(int n);
+        AVIATIONCALC_EXPORT static double factorialRatio(int n, int m);
+        AVIATIONCALC_EXPORT static double legendreFunction(int n, int m, double x);
     };
 }
 

@@ -10,7 +10,7 @@
 #include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class AVIATIONCALC_EXPORTS MagneticModelCoefficients {
+    class AVIATIONCALC_EXPORT MagneticModelCoefficients {
     private:
         int n;
         int m;

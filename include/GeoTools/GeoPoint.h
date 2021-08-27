@@ -9,7 +9,7 @@
 #include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools {
-    class AVIATIONCALC_EXPORTS GeoPoint {
+    class AVIATIONCALC_EXPORT GeoPoint {
     private:
         double lat;
         double lon;

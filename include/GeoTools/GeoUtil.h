@@ -13,7 +13,7 @@
 using namespace std;
 
 namespace AviationCalcUtil::GeoTools {
-    class AVIATIONCALC_EXPORTS GeoUtil {
+    class AVIATIONCALC_EXPORT GeoUtil {
     public:
         static constexpr double EARTH_RADIUS_M = 6371e3;
         static constexpr double STD_PRES_HPA = 1013.25;

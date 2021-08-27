@@ -1,3 +1,12 @@
+### Aviation Calc Util CMake File
+
+
+# Includes
+include(FetchContent)
+include(GenerateExportHeader)
+
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -5,9 +14,6 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.76.0 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 # End Boost
-
-include(FetchContent)
-include(GenerateExportHeader)
 
 # ecCodes
 FetchContent_Declare(
@@ -17,7 +23,7 @@ FetchContent_Declare(
 
 FetchContent_GetProperties(ecCodes)
 if (NOT eccodes_POPULATED)
-    FetchContent_Populate(ecCodes)
+    FetchContent_Populate(ecCodes)    
 
     set(ENABLE_NETCDF OFF CACHE INTERNAL "")
     set(ENABLE_JPG OFF CACHE INTERNAL "")
@@ -45,6 +51,7 @@ if (NOT eccodes_POPULATED)
 endif ()
 # End ecCodes
 
+# Add Source Files
 add_library(aviationcalc SHARED
         GeoTools/GeoUtil.cpp
         GeoTools/GeoPoint.cpp
@@ -60,6 +67,7 @@ add_library(aviationcalc SHARED
         MathTools/Polynomial.cpp
         )
 
+# Set Include Folders
 target_include_directories(aviationcalc PUBLIC
         ${CMAKE_BINARY_DIR}/exports
         ${PROJECT_SOURCE_DIR}/include/GeoTools
@@ -69,6 +77,7 @@ target_include_directories(aviationcalc PUBLIC
         ${PROJECT_SOURCE_DIR}/include/Timers
         )
 
+# Set Output Folders
 set_target_properties(aviationcalc
         PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
@@ -76,6 +85,7 @@ set_target_properties(aviationcalc
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
         )
 
+# Link Libraries
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     target_link_libraries(aviationcalc Urlmon.lib ${BOOST_LIBRARIES} eccodes)
@@ -83,8 +93,8 @@ else ()
     target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes curl)
 endif ()
 
+# DLL Export Headers
 GENERATE_EXPORT_HEADER(aviationcalc
-        BASE_NAME aviationcalc
-        EXPORT_MACRO_NAME AVIATIONCALC_EXPORTS
+        BASE_NAME AVIATIONCALC
         EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/aviationcalc_exports.h
         STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)

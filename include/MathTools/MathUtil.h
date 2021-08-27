@@ -8,7 +8,7 @@
 #include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::MathTools {
-    class AVIATIONCALC_EXPORTS MathUtil {
+    class AVIATIONCALC_EXPORT MathUtil {
     public:
         // Constants
         constexpr static double CONV_FACTOR_KELVIN_C = 273.15;

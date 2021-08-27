@@ -11,18 +11,18 @@
 using namespace std;
 
 namespace AviationCalcUtil::MathTools {
-    class AVIATIONCALC_EXPORTS Polynomial {
+    class Polynomial {
     private:
         vector<double> coefficients;
 
     public:
-        explicit Polynomial(const vector<double> &coefficients);
+        AVIATIONCALC_EXPORT explicit Polynomial(const vector<double> &coefficients);
 
-        double evaluate(double x) const;
+        AVIATIONCALC_EXPORT double evaluate(double x) const;
 
-        shared_ptr<Polynomial> derivative(int n) const;
+        AVIATIONCALC_EXPORT shared_ptr<Polynomial> derivative(int n) const;
 
-        const vector<double> &getCoefficients() const;
+        AVIATIONCALC_EXPORT const vector<double> &getCoefficients() const;
     };
 }
 

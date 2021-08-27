@@ -21,7 +21,7 @@
 using namespace AviationCalcUtil::GeoTools;
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class AVIATIONCALC_EXPORTS MagneticUtil {
+    class MagneticUtil {
 #ifdef _LIBRARY
     private:
         inline static std::shared_ptr<MagneticModel> model;
@@ -29,43 +29,43 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
 #endif
 
     public:
-        static constexpr double EARTH_WGS84_SEMI_MAJOR_AXIS = 6378137.0;
-        static constexpr double EARTH_WGS84_RECIPROCAL_FLATTENING = 298.257223563;
-        static constexpr int WMM_EXPANSION = 12;
-        static constexpr double GEOMAGNETIC_REFERENCE_RADIUS = 6371200.0;
+        AVIATIONCALC_EXPORT static constexpr double EARTH_WGS84_SEMI_MAJOR_AXIS = 6378137.0;
+        AVIATIONCALC_EXPORT static constexpr double EARTH_WGS84_RECIPROCAL_FLATTENING = 298.257223563;
+        AVIATIONCALC_EXPORT static constexpr int WMM_EXPANSION = 12;
+        AVIATIONCALC_EXPORT static constexpr double GEOMAGNETIC_REFERENCE_RADIUS = 6371200.0;
 
-        static void loadData();
+        AVIATIONCALC_EXPORT static void loadData();
 
-        static std::unique_ptr<MagneticResult>
+        AVIATIONCALC_EXPORT static std::unique_ptr<MagneticResult>
         getMagneticField(const GeoPoint &point, const boost::gregorian::date &date);
 
-        static double getEpochYear(const boost::gregorian::date &date);
+        AVIATIONCALC_EXPORT static double getEpochYear(const boost::gregorian::date &date);
 
-        static void getSpherical(const GeoPoint &point, double &lambda, double &phiPrime, double &r);
+        AVIATIONCALC_EXPORT static void getSpherical(const GeoPoint &point, double &lambda, double &phiPrime, double &r);
 
         /// Converts Magnetic Bearings to True Bearings with declination
         /// \param magneticBearing Magnetic Bearing (degrees)
         /// \param declination Magnetic Declination (degrees)
         /// \return True Bearing (degrees)
-        static double convertMagneticToTrue(double magneticBearing, double declination);
+        AVIATIONCALC_EXPORT static double convertMagneticToTrue(double magneticBearing, double declination);
 
         /// Converts Magnetic Bearings to True Bearings at a position
         /// \param magneticBearing Magnetic Bearing (degrees)
         /// \param position Position
         /// \return True Bearing (degrees)
-        static double convertMagneticToTrue(double magneticBearing, const GeoPoint &position);
+        AVIATIONCALC_EXPORT static double convertMagneticToTrue(double magneticBearing, const GeoPoint &position);
 
         /// Converts True Bearings to Magnetic Bearings with declination
         /// \param trueBearing True Bearing (degrees)
         /// \param declination Magnetic Declination (degrees)
         /// \return Magnetic Bearing (degrees)
-        static double convertTrueToMagnetic(double trueBearing, double declination);
+        AVIATIONCALC_EXPORT static double convertTrueToMagnetic(double trueBearing, double declination);
 
         /// Converts True Bearings to Magnetic Bearings at a position
         /// \param trueBearing True Bearing (degrees)
         /// \param position Position
         /// \return Magnetic Bearing (degrees)
-        static double convertTrueToMagnetic(double trueBearing, const GeoPoint &position);
+        AVIATIONCALC_EXPORT static double convertTrueToMagnetic(double trueBearing, const GeoPoint &position);
     };
 }
 

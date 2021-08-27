@@ -14,7 +14,7 @@
 
 using namespace AviationCalcUtil::GeoTools;
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class AVIATIONCALC_EXPORTS MagneticResult {
+    class MagneticResult {
     private:
         double lambda;
         double phi;
@@ -33,12 +33,12 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         void calculateDerivedValues();
 
     public:
-        MagneticResult(const std::shared_ptr<const MagneticModel> &model, const GeoPoint &point,
+        AVIATIONCALC_EXPORT MagneticResult(const std::shared_ptr<const MagneticModel> &model, const GeoPoint &point,
                        boost::gregorian::date date);
 
-        const MagneticFieldElements &getMainFieldElements() const;
+        AVIATIONCALC_EXPORT const MagneticFieldElements &getMainFieldElements() const;
 
-        const MagneticFieldElements &getSecularFieldElements() const;
+        AVIATIONCALC_EXPORT const MagneticFieldElements &getSecularFieldElements() const;
     };
 }
 

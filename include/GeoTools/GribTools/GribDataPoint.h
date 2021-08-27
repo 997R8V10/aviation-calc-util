@@ -10,7 +10,7 @@
 #include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::GribTools {
-    class AVIATIONCALC_EXPORTS GribDataPoint {
+    class GribDataPoint {
     private:
         double latitude;
         double longitude;
@@ -23,55 +23,55 @@ namespace AviationCalcUtil::GeoTools::GribTools {
         double sfcPress_hPa;
 
     public:
-        GribDataPoint(double lat, double lon, int level_hPa);
+        AVIATIONCALC_EXPORT GribDataPoint(double lat, double lon, int level_hPa);
 
-        double getDistanceFrom(const GeoPoint &pos) const;
+        AVIATIONCALC_EXPORT double getDistanceFrom(const GeoPoint &pos) const;
 
-        std::string toString() const;
+        AVIATIONCALC_EXPORT std::string toString() const;
 
-        double getLatitude() const;
+        AVIATIONCALC_EXPORT double getLatitude() const;
 
-        double getLongitude() const;
+        AVIATIONCALC_EXPORT double getLongitude() const;
 
-        double getLongitudeNormalized() const;
+        AVIATIONCALC_EXPORT double getLongitudeNormalized() const;
 
-        double getGeoPotentialHeightM() const;
+        AVIATIONCALC_EXPORT double getGeoPotentialHeightM() const;
 
-        void setGeoPotentialHeight(double newGeoPotHtM);
+        AVIATIONCALC_EXPORT void setGeoPotentialHeight(double newGeoPotHtM);
 
-        double getGeoPotentialHeightFt() const;
+        AVIATIONCALC_EXPORT double getGeoPotentialHeightFt() const;
 
-        int getLevelHPa() const;
+        AVIATIONCALC_EXPORT int getLevelHPa() const;
 
-        double getTempK() const;
+        AVIATIONCALC_EXPORT double getTempK() const;
 
-        void setTempK(double newTempK);
+        AVIATIONCALC_EXPORT void setTempK(double newTempK);
 
-        double getTempC() const;
+        AVIATIONCALC_EXPORT double getTempC() const;
 
-        double getVMpers() const;
+        AVIATIONCALC_EXPORT double getVMpers() const;
 
-        void setVMpers(double newVMpers);
+        AVIATIONCALC_EXPORT void setVMpers(double newVMpers);
 
-        double getUMpers() const;
+        AVIATIONCALC_EXPORT double getUMpers() const;
 
-        void setUMpers(double newUMpers);
+        AVIATIONCALC_EXPORT void setUMpers(double newUMpers);
 
-        double getWindSpeedMpers() const;
+        AVIATIONCALC_EXPORT double getWindSpeedMpers() const;
 
-        double getWindSpeedKts() const;
+        AVIATIONCALC_EXPORT double getWindSpeedKts() const;
 
-        double getWindDirRads() const;
+        AVIATIONCALC_EXPORT double getWindDirRads() const;
 
-        double getWindDirDegs() const;
+        AVIATIONCALC_EXPORT double getWindDirDegs() const;
 
-        double getRelHumidity() const;
+        AVIATIONCALC_EXPORT double getRelHumidity() const;
 
-        void setRelHumidity(double newRelHumidity);
+        AVIATIONCALC_EXPORT void setRelHumidity(double newRelHumidity);
 
-        double getSfcPressHPa() const;
+        AVIATIONCALC_EXPORT double getSfcPressHPa() const;
 
-        void setSfcPressHPa(double newSfcPressHPa);
+        AVIATIONCALC_EXPORT void setSfcPressHPa(double newSfcPressHPa);
     };
 }
 
