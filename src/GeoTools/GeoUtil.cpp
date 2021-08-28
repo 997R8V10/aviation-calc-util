@@ -27,6 +27,10 @@ double GeoUtil::calculateMaxBankAngle(double groundSpeed, double bankLimit, doub
 }
 
 double GeoUtil::calculateRadiusOfTurn(double bankAngle, double groundSpeed) {
+    if (groundSpeed == 0){
+        return 1;
+    }
+
     // Acceleration due to gravity in NMi/hour^2
     double g = 68648.8121;
     return std::pow(groundSpeed, 2) / (g * std::tan(MathUtil::convertDegreesToRadians(bankAngle)));

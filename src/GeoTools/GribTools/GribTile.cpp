@@ -30,6 +30,10 @@ std::vector<std::shared_ptr<GribTile>> GribTile::gribTileList{};
 mutex GribTile::gribTileListLock;
 
 std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &pos, const ptime &dateTime) {
+    if (std::isnan(pos.getLat()) || std::isnan(pos.getLon())){
+        return nullptr;
+    }
+    
     gribTileListLock.lock();
 
     // Look for tile
