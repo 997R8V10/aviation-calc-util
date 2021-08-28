@@ -86,13 +86,15 @@ MagneticResult::MagneticResult(const std::shared_ptr<const MagneticModel>& model
                                boost::gregorian::date date) {
     this->model = model;
 
-    t0 = model->getModelEpoch();
     t = date;
 
     if (model == nullptr)
     {
+        t0 = MagneticUtil::getEpochYear(date);
         return;
     }
+
+    t0 = model->getModelEpoch();
 
     // Convert to spherical
     // Equations 7-8
