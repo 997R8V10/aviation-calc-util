@@ -117,17 +117,17 @@ tuple<double, double> GeoUtil::calculateChordHeadingAndDistance(double startHead
     return {chordHeading, chordLengthNMi};
 }
 
-double GeoUtil::calculateAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
+double GeoUtil::convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
     double pressDiff = pres_set_hpa - sfc_pres_hpa;
     return alt_ind_ft - (STD_PRES_DROP * pressDiff);
 }
 
-double GeoUtil::calculateIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
+double GeoUtil::convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
     double pressDiff = pres_set_hpa - sfc_pres_hpa;
     return alt_abs_ft + (STD_PRES_DROP * pressDiff);
 }
 
-double GeoUtil::calculatePressureAlt(double alt_ind_ft, double pres_set_hpa) {
+double GeoUtil::convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
     double pressDiff = pres_set_hpa - STD_PRES_HPA;
     return alt_ind_ft - (STD_PRES_DROP * pressDiff);
 }
@@ -140,7 +140,7 @@ double GeoUtil::calculateIsaTemp(double alt_pres_ft) {
     return STD_TEMP_C - (alt_pres_ft * STD_LAPSE_RATE);
 }
 
-double GeoUtil::calculateDensityAlt(double alt_pres_ft, double sat) {
+double GeoUtil::convertPressureToDensityAlt(double alt_pres_ft, double sat) {
     double isaDev = sat - calculateIsaTemp(alt_pres_ft);
 
     return alt_pres_ft + (118.8 * isaDev);
@@ -148,7 +148,7 @@ double GeoUtil::calculateDensityAlt(double alt_pres_ft, double sat) {
 
 double GeoUtil::calculateTAS(double ias, double pres_set_hpa, double alt_ind_ft, double sat) {
     double daStdTemp = MathUtil::CONV_FACTOR_KELVIN_C + STD_TEMP_C -
-                       (calculateDensityAlt(calculatePressureAlt(alt_ind_ft, pres_set_hpa), sat) * STD_LAPSE_RATE);
+                       (convertPressureToDensityAlt(convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa), sat) * STD_LAPSE_RATE);
     double tempRatio = daStdTemp / (STD_TEMP_C + MathUtil::CONV_FACTOR_KELVIN_C);
     double densityRatio = std::pow(tempRatio, 1 / 0.234969);
     double tasCoeff = 1 / (std::sqrt(densityRatio));

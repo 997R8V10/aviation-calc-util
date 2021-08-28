@@ -105,15 +105,16 @@ namespace AviationCalcUtil::GeoTools {
         static tuple<double, double> calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
                                                                       double radiusOfTurnNMi, bool isRightTurn);
 
-        static double calculateAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
 
-        static double calculateIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa);
+        static double convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
 
-        static double calculatePressureAlt(double alt_ind_ft, double pres_set_hpa);
+        static double convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa);
+
+        static double convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa);
 
         static double calculateIsaTemp(double alt_pres_ft);
 
-        static double calculateDensityAlt(double alt_pres_ft, double sat);
+        static double convertPressureToDensityAlt(double alt_pres_ft, double sat);
 
         static double calculateTAS(double ias, double pres_set_hpa, double alt_ind_ft, double sat);
 
