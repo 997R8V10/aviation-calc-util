@@ -26,27 +26,15 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
 
         int getN() const;
 
-        void setN(int newN);
-
         int getM() const;
-
-        void setM(int newM);
 
         double getG() const;
 
-        void setG(double newG);
-
         double getH() const;
-
-        void setH(double newH);
 
         double getGDot() const;
 
-        void setGDot(double newGDot);
-
         double getHDot() const;
-
-        void setHDot(double newHDot);
 
         std::unique_ptr<MagneticModelCoefficients> getPointOnDate(double modelEpoch, const boost::gregorian::date &date) const;
     };

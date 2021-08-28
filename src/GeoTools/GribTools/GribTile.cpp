@@ -33,7 +33,7 @@ std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &p
     if (std::isnan(pos.getLat()) || std::isnan(pos.getLon())){
         return nullptr;
     }
-    
+
     gribTileListLock.lock();
 
     // Look for tile

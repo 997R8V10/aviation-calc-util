@@ -63,6 +63,7 @@ void MagneticUtil::loadData() {
 
     if (i < 4){
         throw std::invalid_argument("WMM.COF file is invalid!");
+        return;
     }
 
     modelLock.lock();
