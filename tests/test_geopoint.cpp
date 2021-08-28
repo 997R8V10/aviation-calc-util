@@ -5,9 +5,11 @@
 #include <iostream>
 #include <memory>
 #include <GeoTools/GeoPoint.h>
+#include <GeoTools/MagneticTools/MagneticUtil.h>
 
 using namespace std;
 using namespace AviationCalcUtil::GeoTools;
+using namespace AviationCalcUtil::GeoTools::MagneticTools;
 
 void test_distanceM_1(){
     cout << "Test Distance(M) 001:" << endl;
@@ -50,11 +52,25 @@ void test_intersection_2(){
     cout << endl;
 }
 
+void test_loadData(){
+    cout << "Test Load Data:" << endl;
+    try {
+        MagneticUtil::loadData();
+        cout << "\t Loaded Succesfully!" << endl;
+    } catch (const std::invalid_argument &ex){
+        cout << "\t" << ex.what() << endl;
+    }
+    cout <<  endl;
+}
+
 int main(){
-    cout << "Tests" << endl;
+    cout << "GeoPoint Tests" << endl;
     test_distanceM_1();
     test_intersection_1();
     test_intersection_2();
+
+    cout << "Magnetic Tests" << endl;
+    test_loadData();
 
     return 0;
 }

@@ -7,6 +7,7 @@
 #include "GeoTools/GeoUtil.h"
 #include <fstream>
 #include <string>
+#include <iostream>
 #include <boost/date_time.hpp>
 
 #define _USE_MATH_DEFINES
@@ -29,6 +30,12 @@ void MagneticUtil::loadData() {
     // Read file
     std::ifstream cofFile(filename);
 
+    if (!cofFile.is_open()){
+        throw std::invalid_argument("Error Opening Magnetic File: WMM.COF!");
+    }
+
+    cofFile.exceptions(std::ifstream::failbit|std::ifstream::badbit);
+
     // Initial Values
     double epochDate = 0;
     std::string modelName;
@@ -39,35 +46,50 @@ void MagneticUtil::loadData() {
     // Loop through file
     std::string line;
     int i = 0;
-    while (std::getline(cofFile, line)){
-        std::stringstream ss(line);
-        if (i == 0){
-            std::string dfStr("%m/%d/%Y");
-            boost::gregorian::date_input_facet df(dfStr);
+    try{
+        while (std::getline(cofFile, line)){
+            std::stringstream ss(line);
 
-            ss.imbue(std::locale(ss.getloc(), &df));
-            ss >> epochDate >> modelName >> releaseDate;
-        } else {
-            int n, m;
-            double g, h, g_dot, h_dot;
-            ss >> n >> m >> g >> h >> g_dot >> h_dot;
+            if (i == 0){
+                std::string strDate;
 
-            if (n > 9999){
-                // Assume end of file
-                break;
+                // Read line
+                ss >> epochDate >> modelName >> strDate;
+
+                // Get Release Date
+                const std::locale loc = std::locale(std::locale::classic(), new boost::gregorian::date_input_facet("%m/%d/%Y"));
+                std::istringstream is(strDate);
+                is.imbue(loc);
+
+                is >> releaseDate;
+            } else {
+                int n, m;
+                double g, h, g_dot, h_dot;
+                ss >> n >> m >> g >> h >> g_dot >> h_dot;
+
+                if (n > 9999){
+                    // Assume end of file
+                    break;
+                }
+                coefficients.push_back(std::make_shared<MagneticModelCoefficients>(n, m, g, h, g_dot, h_dot));
             }
-            coefficients.push_back(std::make_shared<MagneticModelCoefficients>(n, m, g, h, g_dot, h_dot));
+            i++;
         }
-        i++;
+    } catch (const std::ifstream::failure &ex){
+        if (cofFile.bad() || cofFile.fail()){
+            cofFile.close();
+            throw std::invalid_argument("WMM.COF file is invalid!");
+        }
     }
+
+    cofFile.close();
 
     if (i < 4){
         throw std::invalid_argument("WMM.COF file is invalid!");
-        return;
     }
 
     modelLock.lock();
-    model = std::make_shared<MagneticModel>(epochDate, modelName, releaseDate, coefficients);
+    //model = std::make_shared<MagneticModel>(epochDate, modelName, releaseDate, coefficients);
     modelLock.unlock();
 }
 

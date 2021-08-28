@@ -1,4 +1,10 @@
-ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
+# Boost
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(Boost 1.76.0 REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+# End Boost
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 

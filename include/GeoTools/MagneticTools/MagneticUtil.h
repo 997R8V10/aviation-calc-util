@@ -10,12 +10,10 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 #ifdef _LIBRARY
-
 #include "MagneticModel.h"
 #include <mutex>
 #include <memory>
 #include "aviationcalc_exports.h"
-
 #endif
 
 using namespace AviationCalcUtil::GeoTools;
