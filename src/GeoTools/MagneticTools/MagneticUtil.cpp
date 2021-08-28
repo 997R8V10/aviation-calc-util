@@ -2,9 +2,9 @@
 // Created by Prithvisagar Shivaraman on 8/24/21.
 //
 #define _LIBRARY
-#include "MagneticUtil.h"
-#include "MathUtil.h"
-#include "GeoUtil.h"
+#include "GeoTools/MagneticTools/MagneticUtil.h"
+#include "MathTools/MathUtil.h"
+#include "GeoTools/GeoUtil.h"
 #include <fstream>
 #include <string>
 #include <boost/date_time.hpp>

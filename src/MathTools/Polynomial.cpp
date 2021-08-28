@@ -2,7 +2,7 @@
 // Created by pshivaraman on 2021-08-23.
 //
 
-#include "Polynomial.h"
+#include "MathTools/Polynomial.h"
 
 #define _USE_MATH_DEFINES
 #include <cmath>

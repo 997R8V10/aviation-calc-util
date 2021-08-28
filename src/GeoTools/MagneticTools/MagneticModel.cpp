@@ -2,9 +2,8 @@
 // Created by Prithvisagar Shivaraman on 8/24/21.
 //
 
-#include "MagneticModel.h"
-
-#include "MagneticUtil.h"
+#include "GeoTools/MagneticTools/MagneticModel.h"
+#include "GeoTools/MagneticTools/MagneticUtil.h"
 
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 using namespace std;

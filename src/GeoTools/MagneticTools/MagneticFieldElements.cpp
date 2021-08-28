@@ -2,7 +2,7 @@
 // Created by Prithvisagar Shivaraman on 8/24/21.
 //
 
-#include "MagneticFieldElements.h"
+#include "GeoTools/MagneticTools/MagneticFieldElements.h"
 
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 

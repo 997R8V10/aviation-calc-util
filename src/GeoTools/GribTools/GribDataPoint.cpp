@@ -2,9 +2,9 @@
 // Created by pshivaraman on 2021-08-23.
 //
 
-#include "GribDataPoint.h"
-#include <MathUtil.h>
-#include <GeoUtil.h>
+#include "GeoTools/GribTools/GribDataPoint.h"
+#include "MathTools/MathUtil.h"
+#include "GeoTools/GeoUtil.h"
 #include <sstream>
 
 #define _USE_MATH_DEFINES

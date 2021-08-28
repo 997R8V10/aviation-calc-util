@@ -2,12 +2,12 @@
 // Created by Prithvisagar Shivaraman on 8/24/21.
 //
 
-#include "MagneticResult.h"
-#include "LegendreUtil.h"
+#include "GeoTools/MagneticTools/MagneticResult.h"
+#include "MathTools/LegendreUtil.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include <MathUtil.h>
-#include "MagneticUtil.h"
+#include "MathTools/MathUtil.h"
+#include "GeoTools/MagneticTools/MagneticUtil.h"
 
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 using namespace AviationCalcUtil::MathTools;

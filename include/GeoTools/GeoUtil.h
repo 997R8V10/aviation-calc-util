@@ -5,7 +5,7 @@
 #ifndef AVIATION_SIM_UTIL_GEOUTIL_H
 #define AVIATION_SIM_UTIL_GEOUTIL_H
 
-#include "GeoPoint.h"
+#include "GeoTools/GeoPoint.h"
 #include <tuple>
 #include <memory>
 #include "aviationcalc_exports.h"

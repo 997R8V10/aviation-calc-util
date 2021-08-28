@@ -2,7 +2,7 @@
 // Created by Prithvisagar Shivaraman on 8/24/21.
 //
 
-#include "MagneticModelCoefficients.h"
+#include "GeoTools/MagneticTools/MagneticModelCoefficients.h"
 
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 

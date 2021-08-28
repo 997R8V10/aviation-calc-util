@@ -14,7 +14,7 @@
 #include <curl/curl.h>
 #endif
 
-#include "GribTile.h"
+#include "GeoTools/GribTools/GribTile.h"
 #include <sstream>
 #include <iomanip>
 #include <fstream>

@@ -8,7 +8,7 @@
 #include <string>
 #include <boost/date_time/gregorian/greg_date.hpp>
 #include <vector>
-#include "MagneticModelCoefficients.h"
+#include "GeoTools/MagneticTools/MagneticModelCoefficients.h"
 #include "aviationcalc_exports.h"
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {

@@ -1,6 +1,5 @@
 ### Aviation Calc Util CMake File
 
-
 # Includes
 include(FetchContent)
 include(GenerateExportHeader)
@@ -70,11 +69,7 @@ add_library(aviationcalc SHARED
 # Set Include Folders
 target_include_directories(aviationcalc PUBLIC
         ${CMAKE_BINARY_DIR}/exports
-        ${PROJECT_SOURCE_DIR}/include/GeoTools
-        ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools
-        ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools
-        ${PROJECT_SOURCE_DIR}/include/MathTools
-        ${PROJECT_SOURCE_DIR}/include/Timers
+        ${PROJECT_SOURCE_DIR}/include
         )
 
 # Set Output Folders

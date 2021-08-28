@@ -5,8 +5,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include "GeoUtil.h"
-#include "MathUtil.h"
+#include "GeoTools/GeoUtil.h"
+#include "MathTools/MathUtil.h"
 
 using namespace AviationCalcUtil::GeoTools;
 using namespace AviationCalcUtil::MathTools;

@@ -5,9 +5,9 @@
 #ifndef AVIATION_CALC_UTIL_MAGNETICRESULT_H
 #define AVIATION_CALC_UTIL_MAGNETICRESULT_H
 
-#include "MagneticFieldElements.h"
-#include "MagneticModel.h"
-#include "GeoPoint.h"
+#include "GeoTools/MagneticTools/MagneticFieldElements.h"
+#include "GeoTools/MagneticTools/MagneticModel.h"
+#include "GeoTools/GeoPoint.h"
 #include <memory>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "aviationcalc_exports.h"

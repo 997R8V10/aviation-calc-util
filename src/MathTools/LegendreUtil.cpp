@@ -2,8 +2,8 @@
 // Created by pshivaraman on 2021-08-23.
 //
 #define _LIBRARY
-#include "LegendreUtil.h"
-#include "MathUtil.h"
+#include "MathTools/LegendreUtil.h"
+#include "MathTools/MathUtil.h"
 
 #define _USE_MATH_DEFINES
 #include <cmath>

@@ -12,7 +12,7 @@
 #endif
 
 #include <memory>
-#include "Polynomial.h"
+#include "MathTools/Polynomial.h"
 #include "aviationcalc_exports.h"
 
 using namespace std;

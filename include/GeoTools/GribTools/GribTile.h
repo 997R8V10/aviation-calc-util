@@ -9,12 +9,12 @@
 #include <vector>
 #include <mutex>
 #endif
-#include <GeoPoint.h>
+#include "GeoTools/GeoPoint.h"
 #include <string>
 #include <memory>
-#include <GribDataPoint.h>
-#include "boost/date_time/gregorian/gregorian.hpp"
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include "GeoTools/GribTools/GribDataPoint.h"
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "aviationcalc_exports.h"
 
 using namespace std;

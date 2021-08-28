@@ -5,7 +5,7 @@
 #ifndef AVIATION_CALC_UTIL_GRIBDATAPOINT_H
 #define AVIATION_CALC_UTIL_GRIBDATAPOINT_H
 
-#include <GeoPoint.h>
+#include "GeoTools/GeoPoint.h"
 #include <string>
 #include "aviationcalc_exports.h"
 
