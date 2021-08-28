@@ -194,7 +194,7 @@ void GribTile::extractData() {
                     } else if (shortName == "t") {
                         foundPoint->setTempK(value);
                     } else if (shortName == "gh") {
-                        foundPoint->setGeoPotentialHeight(value);
+                        foundPoint->setGeoPotentialHeightM(value);
                     } else if (shortName == "rh") {
                         foundPoint->setRelHumidity(value);
                     }
@@ -318,7 +318,7 @@ string GribTile::getGribFileName() const {
     return ss.str();
 }
 
-std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &acftPos) {
+std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &acftPos) const{
     double minDist = -1;
     std::shared_ptr<GribDataPoint> pt(nullptr);
 

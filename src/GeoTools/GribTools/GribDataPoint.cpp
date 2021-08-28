@@ -57,7 +57,7 @@ double GribTools::GribDataPoint::getGeoPotentialHeightM() const {
     return geoPotHeight_M;
 }
 
-void GribTools::GribDataPoint::setGeoPotentialHeight(double newGeoPotHtM) {
+void GribTools::GribDataPoint::setGeoPotentialHeightM(double newGeoPotHtM) {
     geoPotHeight_M = newGeoPotHtM;
 }
 

@@ -37,7 +37,7 @@ namespace AviationCalcUtil::GeoTools::GribTools {
 
         AVIATIONCALC_EXPORT double getGeoPotentialHeightM() const;
 
-        AVIATIONCALC_EXPORT void setGeoPotentialHeight(double newGeoPotHtM);
+        AVIATIONCALC_EXPORT void setGeoPotentialHeightM(double newGeoPotHtM);
 
         AVIATIONCALC_EXPORT double getGeoPotentialHeightFt() const;
 
