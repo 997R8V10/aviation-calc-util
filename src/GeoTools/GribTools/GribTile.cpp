@@ -34,12 +34,11 @@ std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &p
         return nullptr;
     }
 
-    gribTileListLock.lock();
+    const std::lock_guard<std::mutex> gt_lock(gribTileListLock);
 
     // Look for tile
     for (const shared_ptr<GribTile> &tile : gribTileList) {
         if (tile->isAcftInside(pos) && tile->isValid(dateTime)) {
-            gribTileListLock.unlock();
             return tile;
         }
     }
@@ -47,7 +46,6 @@ std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &p
     // Create if not found
     auto newTile = std::make_shared<GribTile>(pos.getLat(), pos.getLon(), dateTime);
     gribTileList.push_back(newTile);
-    gribTileListLock.unlock();
 
     return newTile;
 }
@@ -84,9 +82,16 @@ string GribTile::getForecastHourString() const {
     return ss.str();
 }
 
+static void eccodes_assertion_proc(const char *message) {
+    throw std::exception(message);
+}
+
 void GribTile::extractData() {
     // Set GRIB Context Definitions Path
     grib_context_set_definitions_path(grib_context_get_default(), "eccodes/definitions");
+
+    // Override asserts
+    codes_set_codes_assertion_failed_proc(&eccodes_assertion_proc);
 
     std::vector<std::shared_ptr<GribDataPoint>> sfcValues{};
 
@@ -161,14 +166,13 @@ void GribTile::extractData() {
                 // Get GRID Point if it exists
                 std::shared_ptr<GribDataPoint> foundPoint(nullptr);
                 if (isIsobaricMsg) {
-                    gribDataListLock.lock();
+                    const std::lock_guard<std::mutex> gd_lock(gribDataListLock);
                     for (const std::shared_ptr<GribDataPoint> &pt : dataPoints) {
                         if (pt->getLatitude() == lat && pt->getLongitude() == lon && pt->getLevelHPa() == level) {
                             foundPoint = pt;
                             break;
                         }
                     }
-                    gribDataListLock.unlock();
                 } else {
                     for (const std::shared_ptr<GribDataPoint> &pt : sfcValues) {
                         if (pt->getLatitude() == lat && pt->getLongitude() == lon && level == 0) {
@@ -183,9 +187,8 @@ void GribTile::extractData() {
                     foundPoint = std::make_shared<GribDataPoint>(lat, lon, level);
 
                     if (isIsobaricMsg) {
-                        gribDataListLock.lock();
+                        const std::lock_guard<std::mutex> gd_lock(gribDataListLock);
                         dataPoints.push_back(foundPoint);
-                        gribDataListLock.unlock();
                     } else {
                         sfcValues.push_back(foundPoint);
                     }
@@ -216,12 +219,14 @@ void GribTile::extractData() {
         /* At the end the codes_handle is deleted to free memory. */
         codes_handle_delete(h);
     }
-
     // Close file
     fclose(file);
 
+    // Reset Asserts
+    codes_set_codes_assertion_failed_proc(NULL);
+
     // Add Surface pressures back in
-    gribDataListLock.lock();
+    const std::lock_guard<std::mutex> gd_lock(gribDataListLock);
     for (const std::shared_ptr<GribDataPoint> &point : dataPoints) {
         for (const std::shared_ptr<GribDataPoint> &sfc : sfcValues) {
             if (sfc->getLongitude() == point->getLongitude() && sfc->getLatitude() == point->getLatitude()) {
@@ -229,7 +234,7 @@ void GribTile::extractData() {
             }
         }
     }
-    gribDataListLock.unlock();
+
 }
 
 void GribTile::downloadTile() {
@@ -267,7 +272,13 @@ void GribTile::downloadTile() {
 #endif
 
         // Extract Data
-        extractData();
+        try {
+            extractData();
+        } catch (const std::exception &ex) {
+            std::cout << "Error loading GRIB data!" << ex.what() << endl;
+            downloaded = false;
+            return;
+        }
 
         // Set Downloaded flag
         downloaded = true;
@@ -283,16 +294,16 @@ GribTile::GribTile(double lat, double lon, ptime dateTime) {
     bottomLat = max((short) floor(lat), (short) -90);
     topLat = min((short) ceil(lat), (short) 90);
 
-    if (leftLon == rightLon){
-        if (rightLon == 180){
+    if (leftLon == rightLon) {
+        if (rightLon == 180) {
             leftLon--;
         } else {
             rightLon++;
         }
     }
 
-    if (topLat == bottomLat){
-        if (topLat == 90){
+    if (topLat == bottomLat) {
+        if (topLat == 90) {
             bottomLat--;
         } else {
             topLat++;
@@ -303,9 +314,9 @@ GribTile::GribTile(double lat, double lon, ptime dateTime) {
     forecastDateUtc = dateTime;
 
     // Download asynchronously
-    //thread([this]() {
+    thread([this]() {
         downloadTile();
-    //}).detach();
+    }).detach();
 }
 
 short GribTile::getTopLat() const {
@@ -344,7 +355,7 @@ std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &a
     double minDist = -1;
     std::shared_ptr<GribDataPoint> pt(nullptr);
 
-    gribDataListLock.lock();
+    const std::lock_guard<std::mutex> gd_lock(gribDataListLock);
     for (const std::shared_ptr<GribDataPoint> &point : dataPoints) {
         double dist = point->getDistanceFrom(acftPos);
         if (pt == nullptr || dist < minDist) {
@@ -352,7 +363,6 @@ std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &a
             minDist = dist;
         }
     }
-    gribDataListLock.unlock();
 
     return pt;
 }
