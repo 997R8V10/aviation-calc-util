@@ -34,7 +34,19 @@ set_target_properties(aviationcalc
         )
 
 # Link Libraries
-target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes Poco::Poco)
+if (WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+    target_link_libraries(aviationcalc
+            Urlmon
+            Boost::boost
+            Boost::filesystem
+            Boost::disable_autolinking
+            Boost::dynamic_linking
+            eccodes)
+else ()
+    find_package(CURL REQUIRED)
+    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes CURL::CURL)
+endif ()
 
 # DLL Export Headers
 GENERATE_EXPORT_HEADER(aviationcalc
