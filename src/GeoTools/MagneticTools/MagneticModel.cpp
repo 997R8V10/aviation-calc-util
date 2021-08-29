@@ -17,21 +17,18 @@ MagneticModel::MagneticModel(double modelEpoch, const std::string &modelName, co
     vector<vector<shared_ptr<MagneticModelCoefficients>>> newCoeffs(MagneticUtil::WMM_EXPANSION + 1);
 
     // Initialize vector
-    int n = 0;
-    for (auto & coeff : this->coeffs){
-        int m = 0;
-        coeff = vector<shared_ptr<MagneticModelCoefficients>>(MagneticUtil::WMM_EXPANSION + 1);
-        for (auto & subCoeff: coeff){
-            subCoeff = make_shared<MagneticModelCoefficients>(n, m, 0, 0, 0, 0);
-            m++;
+    for (int n = 0; n <= MagneticUtil::WMM_EXPANSION; n++){
+        auto coeffRow = vector<shared_ptr<MagneticModelCoefficients>>(MagneticUtil::WMM_EXPANSION + 1);
+        for (int m = 0; m <= MagneticUtil::WMM_EXPANSION; m++){
+            coeffRow.push_back(make_shared<MagneticModelCoefficients>(n, m, 0, 0, 0, 0));
         }
-        n++;
+        newCoeffs.push_back(coeffRow);
     }
 
     for (const shared_ptr<MagneticModelCoefficients> &coeff : coefficients){
         if (coeff->getN() <= MagneticUtil::WMM_EXPANSION && coeff->getM() <= MagneticUtil::WMM_EXPANSION)
         {
-            this->coeffs[coeff->getN()][coeff->getM()] = coeff;
+            newCoeffs[coeff->getN()][coeff->getM()] = coeff;
         }
     }
 
@@ -39,7 +36,10 @@ MagneticModel::MagneticModel(double modelEpoch, const std::string &modelName, co
 }
 
 shared_ptr<const MagneticModelCoefficients> MagneticModel::getCoeffs(int n, int m) const {
-    return this->coeffs[n][m];
+    if (n <= MagneticUtil::WMM_EXPANSION && m <= MagneticUtil::WMM_EXPANSION){
+        return this->coeffs[n][m];
+    }
+    return make_shared<MagneticModelCoefficients>(n, m, 0, 0, 0, 0);
 }
 
 double MagneticModel::getModelEpoch() const {
