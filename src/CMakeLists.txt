@@ -91,7 +91,9 @@ if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     target_link_libraries(aviationcalc Urlmon.lib ${BOOST_LIBRARIES} eccodes)
 else ()
-    target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes curl)
+    find_package(CURL REQUIRED)
+    include_directories(${CURL_INCLUDE_DIR})
+    target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes ${CURL_LIBRARIES})
 endif ()
 
 # DLL Export Headers

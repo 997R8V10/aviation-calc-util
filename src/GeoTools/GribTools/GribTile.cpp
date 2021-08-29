@@ -20,6 +20,8 @@
 #include <fstream>
 #include <cstdio>
 #include <thread>
+#include <stdexcept>
+#include <filesystem>
 #include "eccodes.h"
 
 #define MAX_VAL_LEN 1024
@@ -84,7 +86,7 @@ string GribTile::getForecastHourString() const {
 }
 
 static void eccodes_assertion_proc(const char *message) {
-    throw std::exception(message);
+    throw std::runtime_error(message);
 }
 
 static void eccodes_print_error(const string& key, int error) {
@@ -290,7 +292,7 @@ void GribTile::downloadTile() {
             res = curl_easy_perform(curl);
             /* always cleanup */
             curl_easy_cleanup(curl);
-            fclose(fp);
+            fclose(file);
         }
 #endif
 
@@ -364,6 +366,7 @@ ptime GribTile::getForecastDateUtc() const {
 
 string GribTile::getGribFileName() const {
     stringstream ss;
+    ss << std::filesystem::temp_directory_path() << "aviationcalc/gribtiles/";
     ss << "GribTile_" << getGribDateString()
        << "_t" << getCycleString() << "z"
        << "_f" << getForecastHourString()
