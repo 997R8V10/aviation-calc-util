@@ -16,8 +16,16 @@ MagneticModel::MagneticModel(double modelEpoch, const std::string &modelName, co
     this->releaseDate = date(releaseDate);
     vector<vector<shared_ptr<MagneticModelCoefficients>>> newCoeffs(MagneticUtil::WMM_EXPANSION + 1);
 
+    // Initialize vector
+    int n = 0;
     for (auto & coeff : this->coeffs){
+        int m = 0;
         coeff = vector<shared_ptr<MagneticModelCoefficients>>(MagneticUtil::WMM_EXPANSION + 1);
+        for (auto & subCoeff: coeff){
+            subCoeff = make_shared<MagneticModelCoefficients>(n, m, 0, 0, 0, 0);
+            m++;
+        }
+        n++;
     }
 
     for (const shared_ptr<MagneticModelCoefficients> &coeff : coefficients){
