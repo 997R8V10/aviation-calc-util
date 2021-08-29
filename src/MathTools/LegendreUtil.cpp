@@ -35,14 +35,13 @@ double LegendreUtil::legendreFunction(int n, int m, double x) {
     std::shared_ptr<Polynomial> p;
     tuple<int, int> key = make_tuple(n, m);
 
-    legendreCacheLock.lock();
+    const std::lock_guard<std::mutex> gd_lock(legendreCacheLock);
     try {
         p = legendreCache.at(key);
     } catch (const std::out_of_range&){
         p = legendrePolynomial(n)->derivative(m);
         legendreCache.at(key) = p;
     }
-    legendreCacheLock.unlock();
 
     return pow(1 - pow(x, 2), m / 2.0) * p->evaluate(x);
 }

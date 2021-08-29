@@ -88,19 +88,17 @@ void MagneticUtil::loadData() {
         throw std::invalid_argument("WMM.COF file is invalid!");
     }
 
-    modelLock.lock();
-    //model = std::make_shared<MagneticModel>(epochDate, modelName, releaseDate, coefficients);
-    modelLock.unlock();
+    const std::lock_guard<std::mutex> gd_lock(modelLock);
+    model = std::make_shared<MagneticModel>(epochDate, modelName, releaseDate, coefficients);
 }
 
 std::unique_ptr<MagneticResult> MagneticUtil::getMagneticField(const GeoPoint &point, const boost::gregorian::date &date) {
-    modelLock.lock();
+    const std::lock_guard<std::mutex> gd_lock(modelLock);
     if (model == nullptr){
         try {
             loadData();
         } catch (const std::exception&){}
     }
-    modelLock.unlock();
 
     return std::make_unique<MagneticResult>(model, point, date);
 }
