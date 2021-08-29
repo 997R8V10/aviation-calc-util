@@ -1,60 +1,7 @@
 ### Aviation Calc Util CMake File
 
-# Includes
-include(FetchContent)
-include(GenerateExportHeader)
-
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
-
-# Boost
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.76.0 REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
-# End Boost
-
-# ecCodes
-FetchContent_Declare(
-        ecCodes
-        URL https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz
-)
-
-FetchContent_GetProperties(ecCodes)
-if (NOT eccodes_POPULATED)
-    FetchContent_Populate(ecCodes)
-
-    set(ENABLE_NETCDF OFF CACHE INTERNAL "")
-    set(ENABLE_JPG OFF CACHE INTERNAL "")
-    set(ENABLE_FORTRAN OFF CACHE INTERNAL "")
-    set(ENABLE_PRODUCT_BUFR OFF CACHE INTERNAL "")
-    set(ENABLE_BUILD_TOOLS OFF CACHE INTERNAL "")
-    set(ENABLE_EXAMPLES OFF CACHE INTERNAL "")
-    set(ENABLE_TESTS OFF CACHE INTERNAL "")
-    set(ENABLE_INSTALL_ECCODES_DEFINITIONS ON CACHE INTERNAL "")
-    set(ENABLE_INSTALL_ECCODES_SAMPLES OFF CACHE INTERNAL "")
-
-    IF (WIN32)
-        set(ENABLE_ECCODES_THREADS OFF CACHE INTERNAL "")
-        set(ENABLE_ECCODES_OMP_THREADS ON CACHE INTERNAL "")
-
-        # Copy an additional/replacement file into the populated source
-        file(COPY ecbuild-replace/ecbuild_check_os.cmake DESTINATION ${eccodes_SOURCE_DIR}/cmake)
-    ELSE ()
-        set(ENABLE_ECCODES_THREADS ON CACHE INTERNAL "")
-        set(ENABLE_ECCODES_OMP_THREADS OFF CACHE INTERNAL "")
-    ENDIF ()
-
-    add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})
-
-    include_directories(
-            ${eccodes_SOURCE_DIR}
-            ${eccodes_BINARY_DIR}
-            ${eccodes_SOURCE_DIR}/src
-            ${eccodes_BINARY_DIR}/src
-    )
-endif ()
-# End ecCodes
+# Get Headers
+file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/*.h")
 
 # Add Source Files
 add_library(aviationcalc SHARED
@@ -89,11 +36,16 @@ set_target_properties(aviationcalc
 # Link Libraries
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
-    target_link_libraries(aviationcalc Urlmon.lib ${BOOST_LIBRARIES} eccodes)
+    target_link_libraries(aviationcalc
+            Urlmon
+            Boost::boost
+            Boost::filesystem
+            Boost::disable_autolinking
+            Boost::dynamic_linking
+            eccodes)
 else ()
     find_package(CURL REQUIRED)
-    include_directories(${CURL_INCLUDE_DIR})
-    target_link_libraries(aviationcalc ${BOOST_LIBRARIES} eccodes ${CURL_LIBRARIES})
+    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes CURL::CURL)
 endif ()
 
 # DLL Export Headers
@@ -108,5 +60,5 @@ add_custom_command(TARGET aviationcalc
         COMMAND ${CMAKE_COMMAND}
         -Dsrc_dir="${eccodes_SOURCE_DIR}/definitions"
         -Ddst_dir="${CMAKE_BINARY_DIR}/bin/eccodes/definitions"
-        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/update_eccodes_definitions.cmake"
+        -P "${PROJECT_SOURCE_DIR}/cmakescripts/update_eccodes_definitions.cmake"
         )

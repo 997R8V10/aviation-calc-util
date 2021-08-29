@@ -7,6 +7,7 @@
 
 #include <windows.h>
 #include <urlmon.h>
+#include <fileapi.h>
 
 #endif
 
@@ -21,7 +22,6 @@
 #include <cstdio>
 #include <thread>
 #include <stdexcept>
-#include <filesystem>
 #include "eccodes.h"
 
 #define MAX_VAL_LEN 1024
@@ -262,6 +262,10 @@ void GribTile::extractData() {
 
 }
 
+std::filesystem::path GribTile::getGribPath() const {
+    return std::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+}
+
 void GribTile::downloadTile() {
     if (!downloaded) {
         string gribFileName = getGribFileName();
@@ -272,6 +276,8 @@ void GribTile::downloadTile() {
 
         // Download file (Windows & Unix)
 #ifdef _WIN32
+        // Create folder if doesn't exist
+        CreateDirectory(getGribPath().string().c_str(), NULL);
         HRESULT hr = URLDownloadToFile(NULL, url.c_str(), gribFileName.c_str(), 0, NULL);
 
         if (!SUCCEEDED(hr)) {
@@ -366,8 +372,8 @@ ptime GribTile::getForecastDateUtc() const {
 
 string GribTile::getGribFileName() const {
     stringstream ss;
-    auto path = std::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
-    
+    auto path = getGribPath();
+
     ss << "GribTile_" << getGribDateString()
        << "_t" << getCycleString() << "z"
        << "_f" << getForecastHourString()
