@@ -55,7 +55,8 @@ ptime GribTile::getOffsetDateUtc() const {
 }
 
 short GribTile::getCycle() const {
-    return (short) (getOffsetDateUtc().time_of_day().hours() * 6 / 6);
+    auto tdHours = getOffsetDateUtc().time_of_day().hours();
+    return (short) (tdHours / 6 * 6);
 }
 
 short GribTile::getForecastHour() const {
@@ -86,6 +87,10 @@ static void eccodes_assertion_proc(const char *message) {
     throw std::exception(message);
 }
 
+static void eccodes_print_error(const string& key, int error) {
+    cerr << "ECCodes Error: " << key << ": " << codes_get_error_message(error) << endl;
+}
+
 void GribTile::extractData() {
     // Set GRIB Context Definitions Path
     grib_context_set_definitions_path(grib_context_get_default(), "eccodes/definitions");
@@ -106,34 +111,45 @@ void GribTile::extractData() {
 
     FILE *file = fopen(filename.c_str(), "rb");
     if (!file) {
-        fprintf(stderr, "Error: unable to open file %s\n", filename.c_str());
+        std::cerr << "Error unable to open file" << filename.c_str() << std::endl;
         return;
     }
 
     /* Loop on all the messages in a file.*/
     while ((h = codes_handle_new_from_file(0, file, PRODUCT_GRIB, &err)) != NULL) {
         /* Check of errors after reading a message. */
-        if (err != CODES_SUCCESS) CODES_CHECK(err, 0);
-
-        /* Check if a bitmap applies */
-        CODES_CHECK(codes_get_long(h, "bitmapPresent", &bitmapPresent), 0);
-
-        if (bitmapPresent) {
-            /* Set the double representing the missing value in the field. */
-            /* Choose a missingValue that does not correspond to any real value in the data array */
-            CODES_CHECK(codes_set_double(h, "missingValue", missingValue), 0);
+        if (err != CODES_SUCCESS) {
+            eccodes_print_error("line", err);
+            continue;
         }
 
-        // Get Level Type
-        size_t len = 0;
-        CODES_CHECK(codes_get_length(h, "levType", &len), 0);
-        char *levelTypeCArr = new char[len];
-        codes_get_string(h, "levType", levelTypeCArr, &len);
-        string levelType(levelTypeCArr);
-        delete[] levelTypeCArr;
+        /* Check if a bitmap applies */
+            if (codes_get_long(h, "bitmapPresent", &bitmapPresent) == CODES_SUCCESS) {
+                if (bitmapPresent) {
+                    /* Set the double representing the missing value in the field. */
+                    /* Choose a missingValue that does not correspond to any real value in the data array */
+                    codes_set_double(h, "missingValue", missingValue), 0;
+                }
+            }
 
-        // Get Short Name
-        CODES_CHECK(codes_get_length(h, "shortName", &len), 0);
+            // Get Level Type
+            size_t len = 0;
+            err = codes_get_length(h, "typeOfLevel", &len);
+            if (err != CODES_SUCCESS){
+                eccodes_print_error("typeOfLevel", err);
+                continue;
+            }
+            char *levelTypeCArr = new char[len];
+            codes_get_string(h, "typeOfLevel", levelTypeCArr, &len);
+            string levelType(levelTypeCArr);
+            delete[] levelTypeCArr;
+
+            // Get Short Name
+            err = codes_get_length(h, "shortName", &len);
+            if (err != CODES_SUCCESS){
+                eccodes_print_error("shortName", err);
+                continue;
+            }
         char *shortNameCArr = new char[len];
         codes_get_string(h, "shortName", shortNameCArr, &len);
         string shortName(shortNameCArr);
@@ -147,7 +163,11 @@ void GribTile::extractData() {
         if (levelType == "isobaricInhPa") {
             isIsobaricMsg = true;
 
-            CODES_CHECK(codes_get_long(h, "level", &level), 0);
+            err = codes_get_long(h, "level", &level);
+            if (err != CODES_SUCCESS) {
+                eccodes_print_error("level", err);
+                continue;
+            }
         } else if (levelType == "meanSea" && shortName == "prmsl") {
             isSurfaceMsg = true;
         }
@@ -155,7 +175,10 @@ void GribTile::extractData() {
         if (isIsobaricMsg || isSurfaceMsg) {
             // Loop through values
             codes_iterator *iter = codes_grib_iterator_new(h, 0, &err);
-            if (err != CODES_SUCCESS) CODES_CHECK(err, 0);
+            if (err != CODES_SUCCESS) {
+                eccodes_print_error("iterator", err);
+                continue;
+            }
 
             double lat, lon, value;
             while (codes_grib_iterator_next(iter, &lat, &lon, &value)) {
@@ -352,6 +375,10 @@ string GribTile::getGribFileName() const {
 }
 
 std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &acftPos) const {
+    if (!downloaded) {
+        return nullptr;
+    }
+
     double minDist = -1;
     std::shared_ptr<GribDataPoint> pt(nullptr);
 

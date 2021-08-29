@@ -6,21 +6,24 @@
 #define AVIATION_CALC_UTIL_GRIBDATAPOINT_H
 
 #include "GeoTools/GeoPoint.h"
+#include "GeoTools/GeoUtil.h"
 #include <string>
 #include "aviationcalc_exports.h"
+
+using namespace AviationCalcUtil::GeoTools;
 
 namespace AviationCalcUtil::GeoTools::GribTools {
     class GribDataPoint {
     private:
-        double latitude;
-        double longitude;
-        double geoPotHeight_M;
-        int level_hPa;
-        double temp_K;
-        double v_mpers;
-        double u_mpers;
-        double rh;
-        double sfcPress_hPa;
+        double latitude{};
+        double longitude{};
+        double geoPotHeight_M{};
+        int level_hPa{};
+        double temp_K{};
+        double v_mpers{};
+        double u_mpers{};
+        double rh{};
+        double sfcPress_hPa{GeoUtil::STD_PRES_HPA};
 
     public:
         AVIATIONCALC_EXPORT GribDataPoint(double lat, double lon, int level_hPa);

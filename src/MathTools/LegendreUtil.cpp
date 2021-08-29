@@ -40,7 +40,7 @@ double LegendreUtil::legendreFunction(int n, int m, double x) {
         p = legendreCache.at(key);
     } catch (const std::out_of_range&){
         p = legendrePolynomial(n)->derivative(m);
-        legendreCache.at(key) = p;
+        legendreCache.insert(std::make_pair(key, p));
     }
 
     return pow(1 - pow(x, 2), m / 2.0) * p->evaluate(x);

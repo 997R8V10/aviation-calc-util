@@ -35,8 +35,14 @@ if (NOT eccodes_POPULATED)
     set(ENABLE_INSTALL_ECCODES_SAMPLES OFF CACHE INTERNAL "")
 
     IF (WIN32)
+        set(ENABLE_ECCODES_THREADS OFF CACHE INTERNAL "")
+        set(ENABLE_ECCODES_OMP_THREADS ON CACHE INTERNAL "")
+
         # Copy an additional/replacement file into the populated source
         file(COPY ecbuild-replace/ecbuild_check_os.cmake DESTINATION ${eccodes_SOURCE_DIR}/cmake)
+    ELSE ()
+        set(ENABLE_ECCODES_THREADS ON CACHE INTERNAL "")
+        set(ENABLE_ECCODES_OMP_THREADS OFF CACHE INTERNAL "")
     ENDIF ()
 
     add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})

@@ -110,7 +110,7 @@ double GribTools::GribDataPoint::getWindDirRads() const {
 }
 
 double GribTools::GribDataPoint::getWindDirDegs() const {
-    return MathUtil::convertRadiansToDegrees(getWindDirRads());
+    return GeoUtil::normalizeHeading(MathUtil::convertRadiansToDegrees(getWindDirRads()));
 }
 
 double GribTools::GribDataPoint::getRelHumidity() const {

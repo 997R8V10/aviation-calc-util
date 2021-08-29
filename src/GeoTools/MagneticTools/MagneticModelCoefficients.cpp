@@ -3,6 +3,7 @@
 //
 
 #include "GeoTools/MagneticTools/MagneticModelCoefficients.h"
+#include "GeoTools/MagneticTools/MagneticUtil.h"
 
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 
@@ -46,5 +47,9 @@ MagneticModelCoefficients::MagneticModelCoefficients(const MagneticModelCoeffici
 
 std::unique_ptr<MagneticModelCoefficients>
 MagneticModelCoefficients::getPointOnDate(double modelEpoch, const boost::gregorian::date &date) const {
-    return std::unique_ptr<MagneticModelCoefficients>();
+    double dateModelEpoch = MagneticUtil::getEpochYear(date);
+    double g_nm_t = g_nm + (dateModelEpoch - modelEpoch) * g_dot_nm;
+    double h_nm_t = h_nm + (dateModelEpoch - modelEpoch) * h_dot_nm;
+
+    return std::make_unique<MagneticModelCoefficients>(n, m, g_nm_t, h_nm_t, g_dot_nm, h_dot_nm);
 }
