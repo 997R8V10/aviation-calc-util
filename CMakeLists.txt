@@ -20,6 +20,76 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
+conan_cmake_configure(
+        REQUIRES
+        boost/1.76.0
+        poco/1.10.1
+
+        GENERATORS
+        cmake_find_package
+        cmake_paths
+
+        OPTIONS
+        boost:shared=True
+        boost:multithreading=True
+        boost:without_atomic=True
+        boost:without_chrono=True
+        boost:without_container=True
+        boost:without_context=True
+        boost:without_contract=True
+        boost:without_coroutine=True
+        boost:without_date_time=True
+        boost:without_exception=True
+        boost:without_fiber=True
+        boost:without_filesystem=False
+        boost:without_graph=True
+        boost:without_graph_parallel=True
+        boost:without_iostreams=True
+        boost:without_json=True
+        boost:without_locale=True
+        boost:without_log=True
+        boost:without_math=True
+        boost:without_mpi=True
+        boost:without_nowide=True
+        boost:without_program_options=True
+        boost:without_python=True
+        boost:without_random=True
+        boost:without_regex=True
+        boost:without_serialization=True
+        boost:without_stacktrace=True
+        boost:without_system=False
+        boost:without_test=True
+        boost:without_thread=True
+        boost:without_timer=True
+        boost:without_type_erasure=True
+        boost:without_wave=True
+        poco:shared=True
+        poco:enable_apacheconnector=False
+        poco:enable_crypto=False
+        poco:enable_data=False
+        poco:enable_data_mysql=False
+        poco:enable_data_odbc=False
+        poco:enable_data_postgresql=False
+        poco:enable_data_sqlite=False
+        poco:enable_encodings=False
+        poco:enable_json=False
+        poco:enable_jwt=False
+        poco:enable_mongodb=False
+        poco:enable_net=True
+        poco:enable_pagecompiler=False
+        poco:enable_pagecompiler_file2page=False
+        poco:enable_pdf=False
+        poco:enable_pocodoc=False
+        poco:enable_redis=False
+        poco:enable_sevenzip=False
+        poco:enable_xml=False
+        poco:enable_zip=False
+
+        IMPORTS
+        "bin, *.dll -> ${CMAKE_BINARY_DIR}/bin"
+        "lib, *.dylib -> ${CMAKE_BINARY_DIR}/bin"
+)
+
 conan_cmake_autodetect(settings)
 
 conan_cmake_install(PATH_OR_REFERENCE .
@@ -36,6 +106,10 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.76.0 REQUIRED COMPONENTS filesystem)
 # End Boost
+
+# Poco
+find_package(Poco 1.10.1 REQUIRED)
+# End Poco
 
 # ecCodes
 FetchContent_Declare(

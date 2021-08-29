@@ -3,18 +3,6 @@
 //
 #define _LIBRARY
 
-#ifdef _WIN32
-
-#include <windows.h>
-#include <urlmon.h>
-#include <fileapi.h>
-
-#endif
-
-#ifdef __unix__
-#include <curl/curl.h>
-#endif
-
 #include "GeoTools/GribTools/GribTile.h"
 #include <sstream>
 #include <iomanip>
@@ -22,11 +10,15 @@
 #include <cstdio>
 #include <thread>
 #include <stdexcept>
+#include <Poco/URIStreamOpener.h>
+#include <Poco/StreamCopier.h>
+#include <Poco/Exception.h>
+#include <Poco/URI.h>
+#include <Poco/Net/HTTPStreamFactory.h>
 #include "eccodes.h"
 
-#define MAX_VAL_LEN 1024
-
 using namespace AviationCalcUtil::GeoTools::GribTools;
+using namespace Poco;
 
 std::vector<std::shared_ptr<GribTile>> GribTile::gribTileList{};
 mutex GribTile::gribTileListLock;
@@ -262,8 +254,8 @@ void GribTile::extractData() {
 
 }
 
-std::filesystem::path GribTile::getGribPath() const {
-    return std::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+boost::filesystem::path GribTile::getGribPath() const {
+    return boost::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
 }
 
 void GribTile::downloadTile() {
@@ -274,33 +266,31 @@ void GribTile::downloadTile() {
         // Generate URL
         string url = getDownloadUrl();
 
-        // Download file (Windows & Unix)
-#ifdef _WIN32
         // Create folder if doesn't exist
-        CreateDirectory(getGribPath().string().c_str(), NULL);
-        HRESULT hr = URLDownloadToFile(NULL, url.c_str(), gribFileName.c_str(), 0, NULL);
+        boost::filesystem::create_directories(getGribPath());
 
-        if (!SUCCEEDED(hr)) {
+        // Download file (Windows & Unix)
+        Net::HTTPStreamFactory::registerFactory();
+
+        // Open file
+        std::ofstream fileStream;
+        fileStream.open(gribFileName, ios::out | ios::trunc | ios::binary);
+
+        try {
+            // Create URI
+            URI downloadUri(url);
+
+            // Open stream and download
+            std::unique_ptr<std::istream> pStr(URIStreamOpener::defaultOpener().open(downloadUri));
+            Poco::StreamCopier::copyStream(*pStr, fileStream);
+
+            fileStream.close();
+        } catch (const Poco::Exception& ex){
             downloaded = false;
+            fileStream.close();
+            std::cerr << ex.displayText() << std::endl;
             return;
         }
-#endif
-
-#ifdef __unix__
-        CURL *curl;
-        FILE *file;
-        CURLcode res;
-        curl = curl_easy_init();
-        if (curl){
-            file = fopen(gribFileName.c_str(), "wb");
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
-            res = curl_easy_perform(curl);
-            /* always cleanup */
-            curl_easy_cleanup(curl);
-            fclose(file);
-        }
-#endif
 
         // Extract Data
         try {
