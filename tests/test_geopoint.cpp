@@ -6,10 +6,15 @@
 #include <memory>
 #include <GeoTools/GeoPoint.h>
 #include <GeoTools/MagneticTools/MagneticUtil.h>
+#include <GeoTools/GribTools/GribTile.h>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 
 using namespace std;
 using namespace AviationCalcUtil::GeoTools;
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
+using namespace boost::posix_time;
+using namespace boost::gregorian;
 
 void test_distanceM_1(){
     cout << "Test Distance(M) 001:" << endl;
@@ -63,6 +68,21 @@ void test_loadData(){
     cout <<  endl;
 }
 
+void test_fetchGrib(){
+    cout << "Test Grib Data:" << endl;
+    cout << "\t{54, -6, 30000} Grib Tile" << endl;
+    GeoPoint pt1(54, -6, 30000);
+    ptime dt(date(2021, 8, 29), time_duration(0, 0, 0));
+    auto gribTile = GribTools::GribTile::findOrCreateGribTile(pt1, dt);
+
+    if (gribTile == nullptr){
+        cout << "\tFailed to get grib tile!";
+    } else {
+        cout << "\tFilename:\t" << gribTile->getGribFileName();
+    }
+    cout <<  endl;
+}
+
 int main(){
     cout << "GeoPoint Tests" << endl;
     test_distanceM_1();
@@ -71,6 +91,9 @@ int main(){
 
     cout << "Magnetic Tests" << endl;
     test_loadData();
+
+    cout << "Grib Tests" << endl;
+    test_fetchGrib();
 
     return 0;
 }

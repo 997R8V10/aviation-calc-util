@@ -30,7 +30,7 @@ std::vector<std::shared_ptr<GribTile>> GribTile::gribTileList{};
 mutex GribTile::gribTileListLock;
 
 std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &pos, const ptime &dateTime) {
-    if (std::isnan(pos.getLat()) || std::isnan(pos.getLon())){
+    if (std::isnan(pos.getLat()) || std::isnan(pos.getLon())) {
         return nullptr;
     }
 
@@ -65,11 +65,10 @@ short GribTile::getForecastHour() const {
 }
 
 string GribTile::getGribDateString() const {
-    static std::locale loc(std::cout.getloc(),
-                           new wtime_facet(L"%Y%m%d"));
+    static std::locale loc(std::locale::classic(), new date_facet("%Y%m%d"));
     stringstream ss;
     ss.imbue(loc);
-    ss << getOffsetDateUtc();
+    ss << getOffsetDateUtc().date();
     return ss.str();
 }
 
@@ -86,7 +85,7 @@ string GribTile::getForecastHourString() const {
 }
 
 void GribTile::extractData() {
-    std::vector<std::shared_ptr<GribDataPoint>> sfcValues {};
+    std::vector<std::shared_ptr<GribDataPoint>> sfcValues{};
 
     // Extract Data from Grib File
     int err = 0;
@@ -281,6 +280,22 @@ GribTile::GribTile(double lat, double lon, ptime dateTime) {
     bottomLat = max((short) floor(lat), (short) -90);
     topLat = min((short) ceil(lat), (short) 90);
 
+    if (leftLon == rightLon){
+        if (rightLon == 180){
+            leftLon--;
+        } else {
+            rightLon++;
+        }
+    }
+
+    if (topLat == bottomLat){
+        if (topLat == 90){
+            bottomLat--;
+        } else {
+            topLat++;
+        }
+    }
+
     // Set date
     forecastDateUtc = dateTime;
 
@@ -290,7 +305,7 @@ GribTile::GribTile(double lat, double lon, ptime dateTime) {
     }).detach();
 }
 
-short GribTile::getTopLat() const{
+short GribTile::getTopLat() const {
     return topLat;
 }
 
@@ -322,7 +337,7 @@ string GribTile::getGribFileName() const {
     return ss.str();
 }
 
-std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &acftPos) const{
+std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &acftPos) const {
     double minDist = -1;
     std::shared_ptr<GribDataPoint> pt(nullptr);
 
@@ -339,13 +354,13 @@ std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &a
     return pt;
 }
 
-bool GribTile::isValid(const ptime &dateTime) const{
+bool GribTile::isValid(const ptime &dateTime) const {
     time_duration td = getForecastDateUtc() - dateTime;
     time_duration tdC = hours(1);
     return td.abs().hours() < tdC.hours();
 }
 
-bool GribTile::isAcftInside(const GeoPoint &pos) const{
+bool GribTile::isAcftInside(const GeoPoint &pos) const {
     return pos.getLat() >= bottomLat && pos.getLat() <= topLat
            && pos.getLon() >= leftLon && pos.getLon() <= rightLon;
 }
@@ -363,7 +378,7 @@ GribTile::~GribTile() {
     }
 }
 
-string GribTile::getDownloadUrl() const{
+string GribTile::getDownloadUrl() const {
     // Generate URL
     stringstream ss;
     string cycleStr = getCycleString();
