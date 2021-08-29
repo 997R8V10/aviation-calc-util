@@ -85,6 +85,9 @@ string GribTile::getForecastHourString() const {
 }
 
 void GribTile::extractData() {
+    // Set GRIB Context Definitions Path
+    grib_context_set_definitions_path(grib_context_get_default(), "eccodes/definitions");
+
     std::vector<std::shared_ptr<GribDataPoint>> sfcValues{};
 
     // Extract Data from Grib File
@@ -300,9 +303,9 @@ GribTile::GribTile(double lat, double lon, ptime dateTime) {
     forecastDateUtc = dateTime;
 
     // Download asynchronously
-    thread([this]() {
+    //thread([this]() {
         downloadTile();
-    }).detach();
+    //}).detach();
 }
 
 short GribTile::getTopLat() const {

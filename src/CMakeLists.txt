@@ -22,7 +22,7 @@ FetchContent_Declare(
 
 FetchContent_GetProperties(ecCodes)
 if (NOT eccodes_POPULATED)
-    FetchContent_Populate(ecCodes)    
+    FetchContent_Populate(ecCodes)
 
     set(ENABLE_NETCDF OFF CACHE INTERNAL "")
     set(ENABLE_JPG OFF CACHE INTERNAL "")
@@ -31,7 +31,7 @@ if (NOT eccodes_POPULATED)
     set(ENABLE_BUILD_TOOLS OFF CACHE INTERNAL "")
     set(ENABLE_EXAMPLES OFF CACHE INTERNAL "")
     set(ENABLE_TESTS OFF CACHE INTERNAL "")
-    set(ENABLE_INSTALL_ECCODES_DEFINITIONS OFF CACHE INTERNAL "")
+    set(ENABLE_INSTALL_ECCODES_DEFINITIONS ON CACHE INTERNAL "")
     set(ENABLE_INSTALL_ECCODES_SAMPLES OFF CACHE INTERNAL "")
 
     IF (WIN32)
@@ -93,3 +93,12 @@ GENERATE_EXPORT_HEADER(aviationcalc
         BASE_NAME AVIATIONCALC
         EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/aviationcalc_exports.h
         STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
+
+# ECCodes Definitions Files
+add_custom_command(TARGET aviationcalc
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -Dsrc_dir="${eccodes_SOURCE_DIR}/definitions"
+        -Ddst_dir="${CMAKE_BINARY_DIR}/bin/eccodes/definitions"
+        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/update_eccodes_definitions.cmake"
+        )
