@@ -366,7 +366,8 @@ ptime GribTile::getForecastDateUtc() const {
 
 string GribTile::getGribFileName() const {
     stringstream ss;
-    ss << std::filesystem::temp_directory_path() << "aviationcalc/gribtiles/";
+    auto path = std::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+    
     ss << "GribTile_" << getGribDateString()
        << "_t" << getCycleString() << "z"
        << "_f" << getForecastHourString()
@@ -374,7 +375,9 @@ string GribTile::getGribFileName() const {
        << "_r" << rightLon << "_b" << bottomLat
        << ".grb";
 
-    return ss.str();
+    path /= ss.str();
+
+    return path.string();
 }
 
 std::shared_ptr<const GribDataPoint> GribTile::getClosestPoint(const GeoPoint &acftPos) const {
