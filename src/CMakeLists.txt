@@ -1,10 +1,25 @@
 ### Aviation Calc Util CMake File
 
 # Get Headers
-file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/*.h")
+set(HEADER_FILES
+        ${PROJECT_SOURCE_DIR}/include/AviationCalc.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoPoint.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoUtil.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools/GribDataPoint.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools/GribTile.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools/MagneticFieldElements.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools/MagneticModelCoefficients.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools/MagneticModel.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools/MagneticResult.h
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/MagneticTools/MagneticUtil.h
+        ${PROJECT_SOURCE_DIR}/include/MathTools/Polynomial.h
+        ${PROJECT_SOURCE_DIR}/include/MathTools/LegendreUtil.h
+        ${PROJECT_SOURCE_DIR}/include/MathTools/MathUtil.h
+        )
 
 # Add Source Files
 add_library(aviationcalc SHARED
+        ${HEADER_FILES}
         GeoTools/GeoUtil.cpp
         GeoTools/GeoPoint.cpp
         GeoTools/GribTools/GribDataPoint.cpp

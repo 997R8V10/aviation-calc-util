@@ -57,7 +57,7 @@ void MagneticUtil::loadData() {
                 ss >> epochDate >> modelName >> strDate;
 
                 // Get Release Date
-                const std::locale loc = std::locale(std::locale::classic(), new boost::gregorian::date_input_facet("%m/%d/%Y"));
+                std::locale loc(std::locale::classic(), new boost::gregorian::date_input_facet("%m/%d/%Y"));
                 std::istringstream is(strDate);
                 is.imbue(loc);
 

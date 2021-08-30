@@ -64,7 +64,7 @@ short GribTile::getForecastHour() const {
 }
 
 string GribTile::getGribDateString() const {
-    static std::locale loc(std::locale::classic(), new date_facet("%Y%m%d"));
+    std::locale loc(std::locale::classic(), new date_facet("%Y%m%d"));
     stringstream ss;
     ss.imbue(loc);
     ss << getOffsetDateUtc().date();
