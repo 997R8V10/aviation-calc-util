@@ -77,3 +77,83 @@ add_custom_command(TARGET aviationcalc
         -Ddst_dir="${CMAKE_BINARY_DIR}/bin/eccodes/definitions"
         -P "${PROJECT_SOURCE_DIR}/cmakescripts/update_eccodes_definitions.cmake"
         )
+
+# NuGet Package
+if (WIN32)
+    # Install Settings
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        # 64 bits
+        set(NUGET_ARCH x64)
+    else()
+        # 32 bits
+        set(NUGET_ARCH x86)
+    endif()
+
+    set(NUGET_PACKAGE_NAME "PShivaraman.AviationCalcUtil")
+
+    # Generate .nuspec file
+    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.nuspec
+            ${CMAKE_BINARY_DIR}/nuget/${NUGET_PACKAGE_NAME}.nuspec
+            )
+
+    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.props
+            ${CMAKE_BINARY_DIR}/nuget/build/native/${NUGET_PACKAGE_NAME}.props
+            )
+
+    add_custom_command(TARGET aviationcalc
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            -Dsrc_dir="${CMAKE_BINARY_DIR}/nuget"
+            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget"
+            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+            )
+
+    # Runtimes
+    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
+    add_custom_command(TARGET aviationcalc
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            -Dsrc_dir="${CMAKE_BINARY_DIR}/bin"
+            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
+            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_bins.cmake"
+            )
+
+    # Libraries
+    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
+    add_custom_command(TARGET aviationcalc
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            -Dsrc_dir="${CMAKE_BINARY_DIR}/lib"
+            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
+            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+            )
+
+    # Includes
+    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/build/native/include)
+    add_custom_command(TARGET aviationcalc
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            -Dsrc_dir="${CMAKE_SOURCE_DIR}/include"
+            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/build/native/include"
+            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+            )
+
+    add_custom_command(TARGET aviationcalc
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            -Dsrc_dir="${CMAKE_BINARY_DIR}/exports"
+            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/build/native/include"
+            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+            )
+
+
+    # ECCodes Definitions
+    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/build/native/eccodes)
+    add_custom_command(TARGET aviationcalc
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            -Dsrc_dir="${CMAKE_BINARY_DIR}/bin/eccodes/definitions"
+            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/build/native/eccodes/definitions"
+            -P "${PROJECT_SOURCE_DIR}/cmakescripts/update_eccodes_definitions.cmake"
+            )
+endif ()

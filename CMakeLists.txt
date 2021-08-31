@@ -1,5 +1,9 @@
-cmake_minimum_required(VERSION 3.5)
-project(aviation_calc_util)
+cmake_minimum_required(VERSION 3.14)
+project(aviation-calc-util
+        VERSION 0.0.1
+        DESCRIPTION "A library to assist with aviation related calculations."
+        LANGUAGES CXX
+        )
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -10,71 +14,8 @@ include(FetchContent)
 include(GenerateExportHeader)
 
 # Conan
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.16.1/conan.cmake"
-            "${CMAKE_BINARY_DIR}/conan.cmake"
-            EXPECTED_HASH SHA256=396e16d0f5eabdc6a14afddbcfff62a54a7ee75c6da23f32f7a31bc85db23484
-            TLS_VERIFY ON)
-endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-conan_cmake_configure(
-        REQUIRES
-        boost/1.76.0
-
-        GENERATORS
-        cmake_find_package
-        cmake_paths
-
-        OPTIONS
-        boost:shared=True
-        boost:multithreading=True
-        boost:without_atomic=True
-        boost:without_chrono=True
-        boost:without_container=True
-        boost:without_context=True
-        boost:without_contract=True
-        boost:without_coroutine=True
-        boost:without_date_time=True
-        boost:without_exception=True
-        boost:without_fiber=True
-        boost:without_filesystem=False
-        boost:without_graph=True
-        boost:without_graph_parallel=True
-        boost:without_iostreams=True
-        boost:without_json=True
-        boost:without_locale=True
-        boost:without_log=True
-        boost:without_math=True
-        boost:without_mpi=True
-        boost:without_nowide=True
-        boost:without_program_options=True
-        boost:without_python=True
-        boost:without_random=True
-        boost:without_regex=True
-        boost:without_serialization=True
-        boost:without_stacktrace=True
-        boost:without_system=False
-        boost:without_test=True
-        boost:without_thread=True
-        boost:without_timer=True
-        boost:without_type_erasure=True
-        boost:without_wave=True
-
-        IMPORTS
-        "bin, *.dll -> ${CMAKE_BINARY_DIR}/bin"
-        "lib, *.dylib -> ${CMAKE_BINARY_DIR}/bin"
-)
-
-conan_cmake_autodetect(settings)
-
-conan_cmake_install(PATH_OR_REFERENCE .
-        BUILD missing
-        REMOTE conan-center
-        SETTINGS ${settings})
-
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 # End Conan
 
@@ -104,6 +45,7 @@ if (NOT eccodes_POPULATED)
     set(ENABLE_TESTS OFF CACHE INTERNAL "")
     set(ENABLE_INSTALL_ECCODES_DEFINITIONS ON CACHE INTERNAL "")
     set(ENABLE_INSTALL_ECCODES_SAMPLES OFF CACHE INTERNAL "")
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/eccodes)
 
     IF (WIN32)
         set(ENABLE_ECCODES_THREADS OFF CACHE INTERNAL "")
@@ -128,4 +70,27 @@ endif ()
 # End ecCodes
 
 add_subdirectory(src)
-add_subdirectory(tests)
+
+# Install
+set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)
+install(TARGETS aviationcalc
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(DIRECTORY "${CMAKE_BINARY_DIR}/exports/"
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(DIRECTORY "${CMAKE_BINARY_DIR}/bin/"
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+        FILES_MATCHING
+        PATTERN "*.dll"
+        PATTERN "*.pdb"
+        PATTERN "*.ilk"
+        )
