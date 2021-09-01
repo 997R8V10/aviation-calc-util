@@ -5,7 +5,7 @@ class EccodesConan(ConanFile):
 	name = "eccodes"
 	version = "2.22.1"
 	license = "Apache Licence Version 2.0"
-	author = "ecwmf <And your email here>"
+	author = "ecwmf"
 	url = "https://github.com/ecmwf/eccodes"
 	description = """ 	ecCodes is a package developed by ECMWF which provides an application programming interface and a set of tools for decoding and encoding messages in the following formats:
 
@@ -48,7 +48,7 @@ class EccodesConan(ConanFile):
 		"enable_install_eccodes_definitions": True,
 		"enable_install_eccodes_samples": False
 	}
-	requires = ["strawberryperl/5.28.1.1@conan/stable"]
+	build_requires = ["strawberryperl/5.28.1.1@conan/stable"]
 	generators = ["cmake", "txt"]
 	build_policy = "missing"
 
