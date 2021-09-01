@@ -48,4 +48,4 @@ nuget.exe init . %nugetfeedpath%
 
 cd ..\..
 
-ECHO Add "%nugetfeedpath%" to your Visual Studio NuGet Package Feed.
+ECHO Add %nugetfeedpath% to your Visual Studio NuGet Package Feed.

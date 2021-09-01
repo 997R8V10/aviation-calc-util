@@ -47,8 +47,8 @@ class AviationcalcConan(ConanFile):
         "boost:without_type_erasure": True,
         "boost:without_wave": True
     }
-    requires = ["boost/1.76.0"]
-    generators = ["cmake", "cmake_find_package", "cmake_paths"]
+    requires = ["boost/1.76.0", "strawberryperl/5.28.1.1@conan/stable"]
+    generators = ["cmake", "cmake_find_package", "cmake_paths", "txt"]
     no_copy_source = True
     exports_sources = ["src/*", "include/*", "cmakescripts/*", "CMakeLists.txt"]
     build_policy = "missing"
