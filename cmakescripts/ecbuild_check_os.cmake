@@ -426,26 +426,26 @@ if( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" OR WIN32 ) # its weird, but WIN32 als
 
   set( EC_OS_NAME "windows" )
 
-  find_program( BASH_EXE NAMES bash
-                         DOC "Used under Windows for fixing symlinks and running unit tests" )
-
-  if( NOT BASH_EXE )
-      ecbuild_critical("Could not find program 'bash'. Specify the location with -DBASH_EXE=C:/...")
-  endif()
-
-  ecbuild_warn( "CMake doesn't support symlinks on Windows. "
-                "Replacing all symlinks with copies." )
-  execute_process( COMMAND ${BASH_EXE} -c "cmake/ecbuild_windows_replace_symlinks.sh"
-                   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                   RESULT_VARIABLE CMD_RESULT
-                   OUTPUT_VARIABLE CMD_OUTPUT
-                   ERROR_VARIABLE  CMD_ERROR )
-  ecbuild_debug( "Windows Replace Symlinks res=[${CMD_RESULT}] "
-                 "output=[${CMD_OUTPUT}] error=[${CMD_ERROR}]" )
-  if( CMD_RESULT )
-    ecbuild_critical( "Failed to replace windows symlinks. "
-                      "output=[${CMD_OUTPUT}] error=[${CMD_ERROR}]" )
-  endif()
+  #find_program( BASH_EXE NAMES bash
+  #                       DOC "Used under Windows for fixing symlinks and running unit tests" )
+  #
+  #if( NOT BASH_EXE )
+  #    ecbuild_critical("Could not find program 'bash'. Specify the location with -DBASH_EXE=C:/...")
+  #endif()
+  #
+  #ecbuild_warn( "CMake doesn't support symlinks on Windows. "
+  #              "Replacing all symlinks with copies." )
+  #execute_process( COMMAND ${BASH_EXE} -c "cmake/ecbuild_windows_replace_symlinks.sh"
+  #                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  #                 RESULT_VARIABLE CMD_RESULT
+  #                 OUTPUT_VARIABLE CMD_OUTPUT
+  #                 ERROR_VARIABLE  CMD_ERROR )
+  #ecbuild_debug( "Windows Replace Symlinks res=[${CMD_RESULT}] "
+  #               "output=[${CMD_OUTPUT}] error=[${CMD_ERROR}]" )
+  #if( CMD_RESULT )
+  #  ecbuild_critical( "Failed to replace windows symlinks. "
+  #                    "output=[${CMD_OUTPUT}] error=[${CMD_ERROR}]" )
+  #endif()
 
 endif()
 
