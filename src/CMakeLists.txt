@@ -57,10 +57,10 @@ if (WIN32)
             Boost::filesystem
             Boost::disable_autolinking
             Boost::dynamic_linking
-            eccodes)
+            eccodes::eccodes)
 else ()
     find_package(CURL REQUIRED)
-    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes CURL::CURL)
+    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes::eccodes CURL::CURL)
 endif ()
 
 # DLL Export Headers
@@ -68,15 +68,6 @@ GENERATE_EXPORT_HEADER(aviationcalc
         BASE_NAME AVIATIONCALC
         EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/aviationcalc_exports.h
         STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
-
-# ECCodes Definitions Files
-add_custom_command(TARGET aviationcalc
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND}
-        -Dsrc_dir="${eccodes_SOURCE_DIR}/definitions"
-        -Ddst_dir="${CMAKE_BINARY_DIR}/bin/eccodes/definitions"
-        -P "${PROJECT_SOURCE_DIR}/cmakescripts/update_eccodes_definitions.cmake"
-        )
 
 # NuGet Package
 if (WIN32)
@@ -90,21 +81,29 @@ if (WIN32)
     endif()
 
     set(NUGET_PACKAGE_NAME "PShivaraman.AviationCalcUtil")
+	set(NUGET_BUILD_FOLDER "${CMAKE_SOURCE_DIR}/out/nuget")
 
     # Generate .nuspec file
     configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.nuspec
             ${CMAKE_BINARY_DIR}/nuget/${NUGET_PACKAGE_NAME}.nuspec
             )
 
+	# Generate .props file
     configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.props
             ${CMAKE_BINARY_DIR}/nuget/build/native/${NUGET_PACKAGE_NAME}.props
             )
+			
+	# Generate .props file
+    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/pack-nuget.bat
+            ${CMAKE_BINARY_DIR}/nuget/pack-nuget.bat
+            )
 
+	# Copy nuget files to output folder
     add_custom_command(TARGET aviationcalc
             POST_BUILD
             COMMAND ${CMAKE_COMMAND}
             -Dsrc_dir="${CMAKE_BINARY_DIR}/nuget"
-            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget"
+            -Ddst_dir="${NUGET_BUILD_FOLDER}"
             -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
             )
 
@@ -114,7 +113,7 @@ if (WIN32)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND}
             -Dsrc_dir="${CMAKE_BINARY_DIR}/bin"
-            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
+            -Ddst_dir="${NUGET_BUILD_FOLDER}/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
             -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_bins.cmake"
             )
 
@@ -124,7 +123,7 @@ if (WIN32)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND}
             -Dsrc_dir="${CMAKE_BINARY_DIR}/lib"
-            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
+            -Ddst_dir="${NUGET_BUILD_FOLDER}/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
             -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
             )
 
@@ -134,7 +133,7 @@ if (WIN32)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND}
             -Dsrc_dir="${CMAKE_SOURCE_DIR}/include"
-            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/build/native/include"
+            -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/include"
             -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
             )
 
@@ -142,7 +141,7 @@ if (WIN32)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND}
             -Dsrc_dir="${CMAKE_BINARY_DIR}/exports"
-            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/build/native/include"
+            -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/include"
             -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
             )
 
@@ -153,7 +152,7 @@ if (WIN32)
             POST_BUILD
             COMMAND ${CMAKE_COMMAND}
             -Dsrc_dir="${CMAKE_BINARY_DIR}/bin/eccodes/definitions"
-            -Ddst_dir="${CMAKE_SOURCE_DIR}/out/nuget/build/native/eccodes/definitions"
+            -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/eccodes/definitions"
             -P "${PROJECT_SOURCE_DIR}/cmakescripts/update_eccodes_definitions.cmake"
             )
 endif ()

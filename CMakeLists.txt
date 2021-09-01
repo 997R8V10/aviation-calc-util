@@ -27,46 +27,7 @@ find_package(Boost 1.76.0 REQUIRED COMPONENTS filesystem)
 # End Boost
 
 # ecCodes
-FetchContent_Declare(
-        ecCodes
-        URL https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz
-)
-
-FetchContent_GetProperties(ecCodes)
-if (NOT eccodes_POPULATED)
-    FetchContent_Populate(ecCodes)
-
-    set(ENABLE_NETCDF OFF CACHE INTERNAL "")
-    set(ENABLE_JPG OFF CACHE INTERNAL "")
-    set(ENABLE_FORTRAN OFF CACHE INTERNAL "")
-    set(ENABLE_PRODUCT_BUFR OFF CACHE INTERNAL "")
-    set(ENABLE_BUILD_TOOLS OFF CACHE INTERNAL "")
-    set(ENABLE_EXAMPLES OFF CACHE INTERNAL "")
-    set(ENABLE_TESTS OFF CACHE INTERNAL "")
-    set(ENABLE_INSTALL_ECCODES_DEFINITIONS ON CACHE INTERNAL "")
-    set(ENABLE_INSTALL_ECCODES_SAMPLES OFF CACHE INTERNAL "")
-    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/eccodes)
-
-    IF (WIN32)
-        set(ENABLE_ECCODES_THREADS OFF CACHE INTERNAL "")
-        set(ENABLE_ECCODES_OMP_THREADS ON CACHE INTERNAL "")
-
-        # Copy an additional/replacement file into the populated source
-        file(COPY ${PROJECT_SOURCE_DIR}/cmakescripts/ecbuild_check_os.cmake DESTINATION ${eccodes_SOURCE_DIR}/cmake)
-    ELSE ()
-        set(ENABLE_ECCODES_THREADS ON CACHE INTERNAL "")
-        set(ENABLE_ECCODES_OMP_THREADS OFF CACHE INTERNAL "")
-    ENDIF ()
-
-    add_subdirectory(${eccodes_SOURCE_DIR} ${eccodes_BINARY_DIR})
-
-    include_directories(
-            ${eccodes_SOURCE_DIR}
-            ${eccodes_BINARY_DIR}
-            ${eccodes_SOURCE_DIR}/src
-            ${eccodes_BINARY_DIR}/src
-    )
-endif ()
+find_package(eccodes 2.22.1 REQUIRED)
 # End ecCodes
 
 add_subdirectory(src)

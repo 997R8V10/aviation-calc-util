@@ -45,9 +45,19 @@ class AviationcalcConan(ConanFile):
         "boost:without_thread": True,
         "boost:without_timer": True,
         "boost:without_type_erasure": True,
-        "boost:without_wave": True
+        "boost:without_wave": True,
+        "eccodes:multithreading": True,
+        "eccodes:enable_netcdf": False,
+        "eccodes:enable_jpg": False,
+        "eccodes:enable_fortran": False,
+        "eccodes:enable_product_bufr": False,
+        "eccodes:enable_build_tools": False,
+        "eccodes:enable_examples": False,
+        "eccodes:enable_tests": False,
+        "eccodes:enable_install_eccodes_definitions": True,
+        "eccodes:enable_install_eccodes_samples": False
     }
-    requires = ["boost/1.76.0", "strawberryperl/5.28.1.1@conan/stable"]
+    requires = ["boost/1.76.0", "eccodes/2.22.1"]
     generators = ["cmake", "cmake_find_package", "cmake_paths", "txt"]
     no_copy_source = True
     exports_sources = ["src/*", "include/*", "cmakescripts/*", "CMakeLists.txt"]
@@ -58,11 +68,13 @@ class AviationcalcConan(ConanFile):
             del self.options.fPIC
 
         self.options["boost"].shared = self.options.shared
+        self.options["eccodes"].shared = self.options.shared
 
     def imports(self):
         self.copy("*.dll", dst="bin", src="bin")
         self.copy("*.dylib*", dst="bin", src="lib")
         self.copy("*.lib", dst="lib", src="lib")
+        self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
 
     def build(self):
         cmake = CMake(self)
