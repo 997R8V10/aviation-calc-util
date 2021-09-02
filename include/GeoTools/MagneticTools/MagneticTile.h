@@ -20,7 +20,7 @@ using namespace AviationCalcUtil::GeoTools;
 using namespace std;
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
-    class MagneticTile : GeoTile {
+    class MagneticTile : public GeoTile {
 #ifdef _LIBRARY
     private:
         static vector<shared_ptr<MagneticTile>> magTileList;
@@ -37,7 +37,7 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
 
         AVIATIONCALC_EXPORT MagneticTile(const GeoPoint &point, const boost::gregorian::date &date);
 
-        AVIATIONCALC_EXPORT bool isValid(const boost::gregorian::date &date);
+        AVIATIONCALC_EXPORT bool isValid(const boost::gregorian::date &date) const;
 
         AVIATIONCALC_EXPORT shared_ptr<const MagneticResult> getData() const;
     };

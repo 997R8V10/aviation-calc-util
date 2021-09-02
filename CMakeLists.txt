@@ -5,8 +5,6 @@ project(aviation-calc-util
         LANGUAGES CXX
         )
 
-set(PROJECT_VERSION 0.1.0-rc1)
-
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)

@@ -30,7 +30,7 @@ namespace AviationCalcUtil::GeoTools {
 
         bool operator==(const GeoPoint &point) const;
 
-        shared_ptr<const GeoPoint> getCenterPoint() const;
+        unique_ptr<GeoPoint> getCenterPoint() const;
 
         double getBottomLat() const;
 

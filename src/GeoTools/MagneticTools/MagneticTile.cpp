@@ -10,6 +10,9 @@ using namespace AviationCalcUtil::GeoTools;
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 using namespace std;
 
+std::vector<std::shared_ptr<MagneticTile>> MagneticTile::magTileList{};
+mutex MagneticTile::magTileListLock;
+
 shared_ptr<const MagneticResult> MagneticTile::getData() const {
     return data;
 }
@@ -37,9 +40,9 @@ shared_ptr<const MagneticTile> MagneticTile::findOrCreateTile(const GeoPoint &po
 
 MagneticTile::MagneticTile(const GeoPoint &point, const boost::gregorian::date &date) : GeoTile(point, RESOLUTION) {
     this->date = date;
-    data = MagneticUtil::getMagneticField(point, date);
+    data = MagneticUtil::getMagneticField(*getCenterPoint(), date);
 }
 
-bool MagneticTile::isValid(const boost::gregorian::date &date) {
+bool MagneticTile::isValid(const boost::gregorian::date &date) const{
     return this->date == date;
 }

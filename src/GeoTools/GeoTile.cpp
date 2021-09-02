@@ -79,8 +79,8 @@ double GeoTile::getRightLon() const {
     return rightLon;
 }
 
-shared_ptr<const GeoPoint> GeoTile::getCenterPoint() const {
+unique_ptr<GeoPoint> GeoTile::getCenterPoint() const {
     double centerLat = (botLat + topLat) / 2;
     double centerLon = (leftLon + rightLon) / 2;
-    return make_shared<const GeoPoint>(centerLat, centerLon);
+    return make_unique<GeoPoint>(centerLat, centerLon);
 }
