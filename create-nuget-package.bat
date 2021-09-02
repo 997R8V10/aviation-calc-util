@@ -93,7 +93,7 @@ ECHO \                   Installing NuGet Package                   \
 ECHO \--------------------------------------------------------------\
 ECHO
 
-CALL pack-nuget.bat
+CALL pack-nuget.bat %nugetfeedpath%
 
 cd ..\..
 ECHO

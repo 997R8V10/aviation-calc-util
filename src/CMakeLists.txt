@@ -144,15 +144,4 @@ if (WIN32)
             -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/include"
             -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
             )
-
-
-    # ECCodes Definitions
-    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/build/native/eccodes)
-    add_custom_command(TARGET aviationcalc
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND}
-            -Dsrc_dir="${CMAKE_BINARY_DIR}/bin/eccodes/definitions"
-            -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/eccodes/definitions"
-            -P "${PROJECT_SOURCE_DIR}/cmakescripts/update_eccodes_definitions.cmake"
-            )
 endif ()

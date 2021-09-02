@@ -55,13 +55,6 @@
                 Condition="('$(Platform)' == 'Win32' Or '$(Platform)' == 'x86') And $(Configuration.ToLower().IndexOf('debug')) == -1">
             <_Dlls Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\x86\Release\**\*.*"/>
         </ItemGroup>
-        <ItemGroup>
-            <_Definitions Include="$(MSBuildThisFileDirectory)eccodes\**\*.*"/>
-        </ItemGroup>
-        <Copy SourceFiles="@(_Definitions)"
-              DestinationFiles="@(_Definitions->'$(TargetDir)eccodes\%(RecursiveDir)%(Filename)%(Extension)')"
-              UseHardlinksIfPossible="true"
-              SkipUnchangedFiles="true"/>
         <Copy SourceFiles="@(_Dlls)"
               DestinationFiles="@(_Dlls->'$(TargetDir)%(RecursiveDir)%(Filename)%(Extension)')"
               UseHardlinksIfPossible="true"
