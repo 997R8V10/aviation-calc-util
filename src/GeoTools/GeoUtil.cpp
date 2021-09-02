@@ -150,14 +150,32 @@ double GeoUtil::convertPressureToDensityAlt(double alt_pres_ft, double sat) {
     return alt_pres_ft + (118.8 * isaDev);
 }
 
-double GeoUtil::calculateTAS(double ias, double pres_set_hpa, double alt_ind_ft, double sat) {
+double GeoUtil::convertIasToTas(double ias, double alt_dens_ft) {
     double daStdTemp = MathUtil::CONV_FACTOR_KELVIN_C + STD_TEMP_C -
-                       (convertPressureToDensityAlt(convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa), sat) * STD_LAPSE_RATE);
+            (alt_dens_ft * STD_LAPSE_RATE);
     double tempRatio = daStdTemp / (STD_TEMP_C + MathUtil::CONV_FACTOR_KELVIN_C);
     double densityRatio = std::pow(tempRatio, 1 / 0.234969);
     double tasCoeff = 1 / (std::sqrt(densityRatio));
 
     return tasCoeff * ias;
+}
+
+double GeoUtil::convertTasToIas(double tas, double alt_dens_ft) {
+    double daStdTemp = MathUtil::CONV_FACTOR_KELVIN_C + STD_TEMP_C -
+            (alt_dens_ft * STD_LAPSE_RATE);
+    double tempRatio = daStdTemp / (STD_TEMP_C + MathUtil::CONV_FACTOR_KELVIN_C);
+    double densityRatio = std::pow(tempRatio, 1 / 0.234969);
+    double tasCoeff = 1 / (std::sqrt(densityRatio));
+
+    return tas / tasCoeff;
+}
+
+double GeoUtil::convertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat) {
+    return convertIasToTas(ias, convertPressureToDensityAlt(convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa), sat));
+}
+
+double GeoUtil::convertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat) {
+    return convertTasToIas(tas, convertPressureToDensityAlt(convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa), sat));
 }
 
 double GeoUtil::calculateTurnAmount(double currentHeading, double desiredHeading) {

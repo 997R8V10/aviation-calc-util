@@ -11,14 +11,19 @@ ECHO \--------------------------------------------------------------\
 ECHO
 
 ECHO Cleaning NuGet folder
-rmdir /S/Q out\nuget
+rmdir /S /Q out\nuget
+ECHO Cleaning Build folders
+rmdir /S /Q build\x86\debug
+rmdir /S /Q build\x86\release
+rmdir /S /Q build\x64\debug
+rmdir /S /Q build\x64\release
 ECHO
 
 ECHO \--------------------------------------------------------------\
 ECHO \                      Installing ecCodes                      \
 ECHO \--------------------------------------------------------------\
 ECHO
-conan export cmakescripts\eccodes
+conan export eccodes
 
 ECHO \--------------------------------------------------------------\
 ECHO \                     Building x86 (Debug)                     \
@@ -93,7 +98,7 @@ ECHO \                   Installing NuGet Package                   \
 ECHO \--------------------------------------------------------------\
 ECHO
 
-CALL pack-nuget.bat
+CALL pack-nuget.bat %nugetfeedpath%
 
 cd ..\..
 ECHO
