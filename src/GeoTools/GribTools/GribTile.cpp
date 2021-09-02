@@ -338,8 +338,8 @@ string GribTile::getGribFileName() const {
     ss << "GribTile_" << getGribDateString()
        << "_t" << getCycleString() << "z"
        << "_f" << getForecastHourString()
-       << "_l" << static_cast<short>(leftLon) << "_t" << static_cast<short>(topLat)
-       << "_r" << static_cast<short>(rightLon) << "_b" << static_cast<short>(bottomLat)
+       << "_l" << static_cast<short>(getLeftLon()) << "_t" << static_cast<short>(getTopLat())
+       << "_r" << static_cast<short>(getRightLon()) << "_b" << static_cast<short>(getBottomLat())
        << ".grb";
 
     path /= ss.str();
@@ -374,10 +374,10 @@ bool GribTile::isValid(const ptime &dateTime) const {
 }
 
 bool GribTile::equals(const GribTile &o) const {
-    return static_cast<short>(leftLon) == static_cast<short>(o.getLeftLon()) &&
-           static_cast<short>(rightLon) == static_cast<short>(o.getRightLon()) &&
-           static_cast<short>(bottomLat) == static_cast<short>(o.getBottomLat()) &&
-           static_cast<short>(topLat) == static_cast<short>(o.getTopLat()) &&
+    return static_cast<short>(getLeftLon()) == static_cast<short>(o.getLeftLon()) &&
+           static_cast<short>(getRightLon()) == static_cast<short>(o.getRightLon()) &&
+           static_cast<short>(getBottomLat()) == static_cast<short>(o.getBottomLat()) &&
+           static_cast<short>(getTopLat()) == static_cast<short>(o.getTopLat()) &&
            isValid(o.getForecastDateUtc());
 }
 
@@ -399,8 +399,8 @@ string GribTile::getDownloadUrl() const {
        << "&lev_650_mb=on&lev_700_mb=on&lev_750_mb=on&lev_800_mb=on&lev_850_mb=on&lev_900_mb=on"
        << "&lev_925_mb=on&lev_950_mb=on&lev_975_mb=on&lev_mean_sea_level=on&lev_surface=on&var_HGT=on"
        << "&var_PRES=on&var_TMP=on&var_UGRD=on&var_VGRD=on&var_PRMSL=on&subregion="
-       << "&leftlon=" << static_cast<short>(leftLon) << "&rightlon=" << static_cast<short>(rightLon)
-       << "&toplat=" << static_cast<short>(topLat) << "&bottomlat=" << static_cast<short>(bottomLat)
+       << "&leftlon=" << static_cast<short>(getLeftLon()) << "&rightlon=" << static_cast<short>(getRightLon())
+       << "&toplat=" << static_cast<short>(getTopLat()) << "&bottomlat=" << static_cast<short>(getBottomLat())
        << "&dir=%2Fgfs." << getGribDateString() << "%2F" << cycleStr << "%2Fatmos";
 
     return ss.str();

@@ -30,10 +30,6 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     private:
         static vector<shared_ptr<GribTile>> gribTileList;
         static mutex gribTileListLock;
-        short topLat;
-        short bottomLat;
-        short leftLon;
-        short rightLon;
         ptime forecastDateUtc;
         vector<shared_ptr<GribDataPoint>> dataPoints;
         mutable mutex gribDataListLock;

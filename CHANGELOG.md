@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changelog
 
 ### Changed
+- Geo Tools
+  - Grib Tools
+    - GribTile
+      - Now uses GeoPoint to consolidate tile code. Does not affect usage.
 - Magnetic Tools
   - MagneticUtil
     - **BREAKING**: `getMagneticField()` now returns a `shared_ptr` instead of a `unique_ptr`!
