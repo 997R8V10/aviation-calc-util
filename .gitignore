@@ -1,2 +1,7 @@
 .idea/
+.vs/
+
+# CMake Build Outputs
 out/
+build/
+cmake-build-*/
