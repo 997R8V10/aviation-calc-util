@@ -116,7 +116,13 @@ namespace AviationCalcUtil::GeoTools {
 
         static double convertPressureToDensityAlt(double alt_pres_ft, double sat);
 
-        static double calculateTAS(double ias, double pres_set_hpa, double alt_ind_ft, double sat);
+        static double convertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat);
+
+        static double convertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat);
+
+        static double convertIasToTas(double ias, double alt_dens_ft);
+
+        static double convertTasToIas(double tas, double alt_dens_ft);
 
         static double calculateTurnAmount(double currentHeading, double desiredHeading);
     };

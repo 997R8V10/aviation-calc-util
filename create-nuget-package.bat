@@ -11,7 +11,12 @@ ECHO \--------------------------------------------------------------\
 ECHO
 
 ECHO Cleaning NuGet folder
-rmdir /S/Q out\nuget
+rmdir /S /Q out\nuget
+ECHO Cleaning Build folders
+rmdir /S /Q build\x86\debug
+rmdir /S /Q build\x86\release
+rmdir /S /Q build\x64\debug
+rmdir /S /Q build\x64\release
 ECHO
 
 ECHO \--------------------------------------------------------------\

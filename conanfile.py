@@ -3,7 +3,7 @@ from conans import ConanFile, CMake
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "0.0.3"
+    version = "0.0.7"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"

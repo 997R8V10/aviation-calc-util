@@ -39,8 +39,8 @@
             </AdditionalDependencies>
         </Link>
     </ItemDefinitionGroup>
-    <Target Name="AfterBuild">
-        <Message Text="Copying AviationCalcUtil dependencies to the target directory..." Importance="high"/>
+    <Target Name="Copy${PROJECT_NAME}Files" AfterTargets="AfterBuild">
+        <Message Text="Copying ${PROJECT_NAME} dependencies to the target directory..." Importance="high"/>
         <ItemGroup Condition="'$(Platform)' == 'x64' And $(Configuration.ToLower().IndexOf('debug')) &gt; -1">
             <_Dlls Include="$(MSBuildThisFileDirectory)..\..\runtimes\native\x64\Debug\**\*.*"/>
         </ItemGroup>

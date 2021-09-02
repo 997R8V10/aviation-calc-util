@@ -93,7 +93,7 @@ static void eccodes_print_error(const string& key, int error) {
 
 void GribTile::extractData() {
     // Set GRIB Context Definitions Path
-    grib_context_set_definitions_path(grib_context_get_default(), "eccodes/definitions");
+    //grib_context_set_definitions_path(grib_context_get_default(), "eccodes/definitions");
 
     // Override asserts
     codes_set_codes_assertion_failed_proc(&eccodes_assertion_proc);
