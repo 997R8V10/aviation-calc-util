@@ -18,7 +18,7 @@ ECHO \--------------------------------------------------------------\
 ECHO \                      Installing ecCodes                      \
 ECHO \--------------------------------------------------------------\
 ECHO
-conan export cmakescripts\eccodes
+conan export eccodes
 
 ECHO \--------------------------------------------------------------\
 ECHO \                     Building x86 (Debug)                     \

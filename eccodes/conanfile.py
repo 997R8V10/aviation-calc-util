@@ -24,6 +24,7 @@ class EccodesConan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "multithreading": [True, False],
+		"enable_memfs": [True, False],
 		"enable_netcdf": [True, False],
 		"enable_jpg": [True, False],
 		"enable_fortran": [True, False],
@@ -33,11 +34,15 @@ class EccodesConan(ConanFile):
 		"enable_tests": [True, False],
 		"enable_install_eccodes_definitions": [True, False],
 		"enable_install_eccodes_samples": [True, False],
+		"enable_aec": [True, False],
+		"enable_python2": [True, False],
+		"enable_extra_tests": [True, False]
     }
 	default_options = {
 		"shared": False,
 		"fPIC": True,
 		"multithreading": False,
+		"enable_memfs": False,
 		"enable_netcdf": False,
 		"enable_jpg": False,
 		"enable_fortran": False,
@@ -46,7 +51,10 @@ class EccodesConan(ConanFile):
 		"enable_examples": False,
 		"enable_tests": False,
 		"enable_install_eccodes_definitions": True,
-		"enable_install_eccodes_samples": False
+		"enable_install_eccodes_samples": False,
+		"enable_aec": False,
+		"enable_python2": False,
+		"enable_extra_tests": False
 	}
 	build_requires = ["strawberryperl/5.28.1.1@conan/stable"]
 	generators = ["cmake", "txt"]
@@ -192,14 +200,17 @@ conan_basic_setup()''')
 		cmake.definitions["ENABLE_TESTS"] = "ON" if self.options.enable_tests else "OFF"
 		cmake.definitions["ENABLE_INSTALL_ECCODES_DEFINITIONS"] = "ON" if self.options.enable_install_eccodes_definitions else "OFF"
 		cmake.definitions["ENABLE_INSTALL_ECCODES_SAMPLES"] = "ON" if self.options.enable_install_eccodes_samples else "OFF"
+		cmake.definitions["ENABLE_MEMFS"] = "ON" if self.options.enable_memfs else "OFF"
+		cmake.definitions["ENABLE_AEC"] = "ON" if self.options.enable_aec else "OFF"
+		cmake.definitions["ENABLE_PYTHON2"] = "ON" if self.options.enable_python2 else "OFF"
+		cmake.definitions["ENABLE_EXTRA_TESTS"] = "ON" if self.options.enable_extra_tests else "OFF"
 
 		cmake.configure(source_folder="eccodes")
-		cmake.build(target="eccodes")
 
-		# Explicit way:
-		# self.run('cmake %s/hello %s'
-		#          % (self.source_folder, cmake.command_line))
-		# self.run("cmake --build . %s" % cmake.build_config)
+		if cmake.is_multi_configuration:
+			cmake.build(target="eccodes", args=["--config %s" % self.settings.build_type])
+		else:
+			cmake.build(target="eccodes")
 
 	def package(self):
 		self.copy("*.h", dst="include", keep_path=False)
@@ -211,11 +222,15 @@ conan_basic_setup()''')
 		self.copy("*.dylib*", dst="lib", keep_path=False)
 		self.copy("*.so", dst="lib", keep_path=False)
 		self.copy("*.a", dst="lib", keep_path=False)
-		self.copy("*.def", dst="data/eccodes/definitions", src="eccodes/definitions")
-		self.copy("*.table", dst="data/eccodes/definitions", src="eccodes/definitions")
-		self.copy("*.pl", dst="data/eccodes/ifs_samples", src="eccodes/ifs_samples")
-		self.copy("*.tmpl", dst="data/eccodes/ifs_samples", src="eccodes/ifs_samples")
-		self.copy("*.sh", dst="data/eccodes/examples", src="eccodes/examples")
+
+		if not self.options.enable_memfs:
+			self.copy("*.def", dst="data/eccodes/definitions", src="eccodes/definitions")
+			self.copy("*.table", dst="data/eccodes/definitions", src="eccodes/definitions")
+			self.copy("*.pl", dst="data/eccodes/ifs_samples", src="eccodes/ifs_samples")
+			self.copy("*.tmpl", dst="data/eccodes/ifs_samples", src="eccodes/ifs_samples")
+
+		if self.options.enable_examples:
+			self.copy("*.sh", dst="data/eccodes/examples", src="eccodes/examples")
 
 	def package_info(self):
 		self.cpp_info.libs = ["eccodes"]

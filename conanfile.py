@@ -3,10 +3,10 @@ from conans import ConanFile, CMake
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "0.1"
-    license = "<Put the package license here>"
+    version = "0.0.2"
+    license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
-    url = "<Package recipe repository url here, for issues about the package>"
+    url = "https://gitlab.com/vatsim-tools/aviation-calc-util"
     description = "Utilities to perform aviation related calculations"
     topics = ("aviation", "calculator", "calculations")
     settings = "os", "compiler", "build_type", "arch"
@@ -55,7 +55,8 @@ class AviationcalcConan(ConanFile):
         "eccodes:enable_examples": False,
         "eccodes:enable_tests": False,
         "eccodes:enable_install_eccodes_definitions": True,
-        "eccodes:enable_install_eccodes_samples": False
+        "eccodes:enable_install_eccodes_samples": False,
+        "eccodes:enable_memfs": True
     }
     requires = ["boost/1.76.0", "eccodes/2.22.1"]
     generators = ["cmake", "cmake_find_package", "cmake_paths", "txt"]
@@ -74,17 +75,20 @@ class AviationcalcConan(ConanFile):
         self.copy("*.dll", dst="bin", src="bin")
         self.copy("*.dylib*", dst="bin", src="lib")
         self.copy("*.lib", dst="lib", src="lib")
-        self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
+        # self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
-        cmake.build(target="aviationcalc")
 
-        # Explicit way:
-        #self.run('cmake %s/hello %s'
-        #         % (self.source_folder, cmake.command_line))
-        #self.run("cmake --build . %s" % cmake.build_config)
+        if cmake.is_multi_configuration:
+            cmake.definitions["CMAKE_BUILD_TYPE"] = self.settings.build_type
+
+        cmake.configure()
+
+        if cmake.is_multi_configuration:
+            cmake.build(target="aviationcalc", args=["--config %s" % self.settings.build_type])
+        else:
+            cmake.build(target="aviationcalc")
 
     def package(self):
         self.copy("*.h", dst="include", src="include")
@@ -97,7 +101,7 @@ class AviationcalcConan(ConanFile):
         self.copy("*.dylib*", dst="lib", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
-        self.copy("*", dst="bin/eccodes", src="bin/eccodes")
+        # self.copy("*", dst="bin/eccodes", src="bin/eccodes")
 
     def package_info(self):
         self.cpp_info.libs = ["aviationcalc"]
