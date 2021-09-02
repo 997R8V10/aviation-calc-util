@@ -21,8 +21,8 @@ GeoPoint::GeoPoint(const GeoPoint &point) {
 }
 
 GeoPoint::GeoPoint(double lat, double lon, double alt) {
-    this->lat = lat;
-    this->lon = lon;
+    this->lat = std::fmin(std::fmax(lat, -90), 90);
+    this->lon = GeoUtil::normalizeLongitude(lon);
     this->alt = alt;
 }
 

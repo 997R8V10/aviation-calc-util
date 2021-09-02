@@ -34,7 +34,7 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
 
         AVIATIONCALC_EXPORT static void loadData();
 
-        AVIATIONCALC_EXPORT static std::unique_ptr<MagneticResult>
+        AVIATIONCALC_EXPORT static std::shared_ptr<MagneticResult>
         getMagneticField(const GeoPoint &point, const boost::gregorian::date &date);
 
         AVIATIONCALC_EXPORT static double getEpochYear(const boost::gregorian::date &date);
@@ -64,6 +64,20 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         /// \param position Position
         /// \return Magnetic Bearing (degrees)
         AVIATIONCALC_EXPORT static double convertTrueToMagnetic(double trueBearing, const GeoPoint &position);
+
+        /// Converts Magnetic Bearings to True Bearings at a position using cached tiles for improved performance.
+        /// Use this if you need to perform multiple magnetic calculations
+        /// \param magneticBearing Magnetic Bearing (degrees)
+        /// \param position Position
+        /// \return True Bearing (degrees)
+        AVIATIONCALC_EXPORT static double convertMagneticToTrueTile(double magneticBearing, const GeoPoint &position);
+
+        /// Converts True Bearings to Magnetic Bearings at a position using cached tiles for improved performance.
+        /// Use this if you need to perform multiple magnetic calculations
+        /// \param trueBearing True Bearing (degrees)
+        /// \param position Position
+        /// \return Magnetic Bearing (degrees)
+        AVIATIONCALC_EXPORT static double convertTrueToMagneticTile(double trueBearing, const GeoPoint &position);
     };
 }
 

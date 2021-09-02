@@ -5,9 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.0] - 2021-09-02
 ### Added
+- Geo Tools
+  - GeoTile
+    - To consolidate shared tile code
 - Magnetic Tools
-  - MagneticTile to reduce frequency of magnetic calculations by storing the variation in 1 degree tiles.
+  - MagneticTile
+    - To reduce frequency of magnetic calculations by storing the variation in 0.1 degree tiles.
+- Changelog
+
+### Changed
+- Magnetic Tools
+  - MagneticUtil
+    - **BREAKING**: `getMagneticField()` now returns a `shared_ptr` instead of a `unique_ptr`!
+    - Added 2 functions to convert from True <=> Magnetic that now use `MagneticTile` for improved performance.
 
 ## [0.0.7] - 2021-09-02
 ### Added
@@ -38,7 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
-[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.0.7...HEAD
+[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.1.0...HEAD
+[0.1.0]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.0.7...v0.1.0
 [0.0.7]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.0.1...v0.0.7
 [0.0.1]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/releases/v0.0.1
 

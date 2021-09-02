@@ -5,6 +5,7 @@
 #include "GeoTools/MagneticTools/MagneticUtil.h"
 #include "MathTools/MathUtil.h"
 #include "GeoTools/GeoUtil.h"
+#include "GeoTools/MagneticTools/MagneticTile.h"
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -92,7 +93,7 @@ void MagneticUtil::loadData() {
     model = std::make_shared<MagneticModel>(epochDate, modelName, releaseDate, coefficients);
 }
 
-std::unique_ptr<MagneticResult> MagneticUtil::getMagneticField(const GeoPoint &point, const boost::gregorian::date &date) {
+std::shared_ptr<MagneticResult> MagneticUtil::getMagneticField(const GeoPoint &point, const boost::gregorian::date &date) {
     const std::lock_guard<std::mutex> gd_lock(modelLock);
     if (model == nullptr){
         try {
@@ -100,7 +101,7 @@ std::unique_ptr<MagneticResult> MagneticUtil::getMagneticField(const GeoPoint &p
         } catch (const std::exception&){}
     }
 
-    return std::make_unique<MagneticResult>(model, point, date);
+    return std::make_shared<MagneticResult>(model, point, date);
 }
 
 double MagneticUtil::getEpochYear(const boost::gregorian::date &date) {
@@ -136,7 +137,7 @@ double MagneticUtil::convertMagneticToTrue(double magneticBearing, double declin
 
 double MagneticUtil::convertMagneticToTrue(double magneticBearing, const GeoPoint &position) {
     boost::posix_time::ptime timeUTC = boost::posix_time::second_clock::universal_time();
-    std::unique_ptr<MagneticResult> m = getMagneticField(position, timeUTC.date());
+    std::shared_ptr<MagneticResult> m = getMagneticField(position, timeUTC.date());
     double declin = m->getMainFieldElements().getDecl();
     declin = static_cast<double>(static_cast<int>(declin * 10)) / 10.0;
 
@@ -149,7 +150,45 @@ double MagneticUtil::convertTrueToMagnetic(double trueBearing, double declinatio
 
 double MagneticUtil::convertTrueToMagnetic(double trueBearing, const GeoPoint &position) {
     boost::posix_time::ptime timeUTC = boost::posix_time::second_clock::universal_time();
-    std::unique_ptr<MagneticResult> m = getMagneticField(position, timeUTC.date());
+    std::shared_ptr<MagneticResult> m = getMagneticField(position, timeUTC.date());
+    double declin = m->getMainFieldElements().getDecl();
+    declin = static_cast<double>(static_cast<int>(declin * 10)) / 10.0;
+
+    return convertTrueToMagnetic(trueBearing, declin);
+}
+
+double MagneticUtil::convertMagneticToTrueTile(double magneticBearing, const GeoPoint &position) {
+    boost::posix_time::ptime timeUTC = boost::posix_time::second_clock::universal_time();
+
+    // Get tile
+    std::shared_ptr<const MagneticTile> mTile = MagneticTile::findOrCreateTile(position, timeUTC.date());
+
+    // If tile is null, return the input bearing
+    if (mTile == nullptr){
+        return magneticBearing;
+    }
+
+    // Get Magnetic Field
+    std::shared_ptr<const MagneticResult> m = mTile->getData();
+    double declin = m->getMainFieldElements().getDecl();
+    declin = static_cast<double>(static_cast<int>(declin * 10)) / 10.0;
+
+    return convertMagneticToTrue(magneticBearing, declin);
+}
+
+double MagneticUtil::convertTrueToMagneticTile(double trueBearing, const GeoPoint &position) {
+    boost::posix_time::ptime timeUTC = boost::posix_time::second_clock::universal_time();
+
+    // Get tile
+    std::shared_ptr<const MagneticTile> mTile = MagneticTile::findOrCreateTile(position, timeUTC.date());
+
+    // If tile is null, return the input bearing
+    if (mTile == nullptr){
+        return trueBearing;
+    }
+
+    // Get Magnetic Field
+    std::shared_ptr<const MagneticResult> m = mTile->getData();
     double declin = m->getMainFieldElements().getDecl();
     declin = static_cast<double>(static_cast<int>(declin * 10)) / 10.0;
 
