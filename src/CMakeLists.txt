@@ -88,12 +88,12 @@ if (WIN32)
             ${CMAKE_BINARY_DIR}/nuget/${NUGET_PACKAGE_NAME}.nuspec
             )
 
-	# Generate .props file
-    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.props
-            ${CMAKE_BINARY_DIR}/nuget/build/native/${NUGET_PACKAGE_NAME}.props
+    # Generate .targets file
+    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.targets.xml
+            ${CMAKE_BINARY_DIR}/nuget/build/native/${NUGET_PACKAGE_NAME}.targets
             )
 			
-	# Generate .props file
+	# Generate pack-nuget.bat
     configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/pack-nuget.bat
             ${CMAKE_BINARY_DIR}/nuget/pack-nuget.bat
             )

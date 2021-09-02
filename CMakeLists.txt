@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 0.0.1
+        VERSION 0.0.2
         DESCRIPTION "A library to assist with aviation related calculations."
         LANGUAGES CXX
         )
@@ -34,24 +34,3 @@ add_subdirectory(src)
 
 # Install
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)
-#install(TARGETS aviationcalc
-#        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-#        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-#        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-#        )
-#
-#install(DIRECTORY "${CMAKE_SOURCE_DIR}/include/"
-#        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-#
-#install(DIRECTORY "${CMAKE_BINARY_DIR}/exports/"
-#        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-#
-#install(DIRECTORY "${CMAKE_BINARY_DIR}/bin/"
-#        DESTINATION ${CMAKE_INSTALL_BINDIR}
-#        FILES_MATCHING
-#        PATTERN "*.dll"
-#        PATTERN "*.pdb"
-#        PATTERN "*.ilk"
-#        )
