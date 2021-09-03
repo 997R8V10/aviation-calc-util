@@ -38,13 +38,13 @@ std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &p
 
     // Look for tile
     for (const shared_ptr<GribTile> &tile : gribTileList) {
-        if (tile->isAcftInside(pos) && tile->isValid(dateTime)) {
+        if ((*tile) == pos && tile->isValid(dateTime)) {
             return tile;
         }
     }
 
     // Create if not found
-    auto newTile = std::make_shared<GribTile>(pos.getLat(), pos.getLon(), dateTime);
+    auto newTile = std::make_shared<GribTile>(pos, dateTime);
     gribTileList.push_back(newTile);
 
     return newTile;
@@ -87,7 +87,7 @@ static void eccodes_assertion_proc(const char *message) {
     throw std::runtime_error(message);
 }
 
-static void eccodes_print_error(const string& key, int error) {
+static void eccodes_print_error(const string &key, int error) {
     cerr << "ECCodes Error: " << key << ": " << codes_get_error_message(error) << endl;
 }
 
@@ -124,32 +124,32 @@ void GribTile::extractData() {
         }
 
         /* Check if a bitmap applies */
-            if (codes_get_long(h, "bitmapPresent", &bitmapPresent) == CODES_SUCCESS) {
-                if (bitmapPresent) {
-                    /* Set the double representing the missing value in the field. */
-                    /* Choose a missingValue that does not correspond to any real value in the data array */
-                    codes_set_double(h, "missingValue", missingValue), 0;
-                }
+        if (codes_get_long(h, "bitmapPresent", &bitmapPresent) == CODES_SUCCESS) {
+            if (bitmapPresent) {
+                /* Set the double representing the missing value in the field. */
+                /* Choose a missingValue that does not correspond to any real value in the data array */
+                codes_set_double(h, "missingValue", missingValue), 0;
             }
+        }
 
-            // Get Level Type
-            size_t len = 0;
-            err = codes_get_length(h, "typeOfLevel", &len);
-            if (err != CODES_SUCCESS){
-                eccodes_print_error("typeOfLevel", err);
-                continue;
-            }
-            char *levelTypeCArr = new char[len];
-            codes_get_string(h, "typeOfLevel", levelTypeCArr, &len);
-            string levelType(levelTypeCArr);
-            delete[] levelTypeCArr;
+        // Get Level Type
+        size_t len = 0;
+        err = codes_get_length(h, "typeOfLevel", &len);
+        if (err != CODES_SUCCESS) {
+            eccodes_print_error("typeOfLevel", err);
+            continue;
+        }
+        char *levelTypeCArr = new char[len];
+        codes_get_string(h, "typeOfLevel", levelTypeCArr, &len);
+        string levelType(levelTypeCArr);
+        delete[] levelTypeCArr;
 
-            // Get Short Name
-            err = codes_get_length(h, "shortName", &len);
-            if (err != CODES_SUCCESS){
-                eccodes_print_error("shortName", err);
-                continue;
-            }
+        // Get Short Name
+        err = codes_get_length(h, "shortName", &len);
+        if (err != CODES_SUCCESS) {
+            eccodes_print_error("shortName", err);
+            continue;
+        }
         char *shortNameCArr = new char[len];
         codes_get_string(h, "shortName", shortNameCArr, &len);
         string shortName(shortNameCArr);
@@ -279,7 +279,7 @@ void GribTile::downloadTile() {
 #ifdef _WIN32
         HRESULT hr = URLDownloadToFile(NULL, url.c_str(), gribFileName.c_str(), 0, NULL);
 
-        if (!SUCCEEDED(hr)){
+        if (!SUCCEEDED(hr)) {
             downloaded = false;
             return;
         }
@@ -315,30 +315,8 @@ void GribTile::downloadTile() {
     }
 }
 
-GribTile::GribTile(double lat, double lon, ptime dateTime) {
+GribTile::GribTile(const GeoPoint &pos, ptime dateTime) : GeoTile(pos, 1) {
     downloaded = false;
-
-    // Create tile bounds
-    leftLon = max((short) floor(lon), (short) -180);
-    rightLon = min((short) ceil(lon), (short) 180);
-    bottomLat = max((short) floor(lat), (short) -90);
-    topLat = min((short) ceil(lat), (short) 90);
-
-    if (leftLon == rightLon) {
-        if (rightLon == 180) {
-            leftLon--;
-        } else {
-            rightLon++;
-        }
-    }
-
-    if (topLat == bottomLat) {
-        if (topLat == 90) {
-            bottomLat--;
-        } else {
-            topLat++;
-        }
-    }
 
     // Set date
     forecastDateUtc = dateTime;
@@ -347,22 +325,6 @@ GribTile::GribTile(double lat, double lon, ptime dateTime) {
     thread([this]() {
         downloadTile();
     }).detach();
-}
-
-short GribTile::getTopLat() const {
-    return topLat;
-}
-
-short GribTile::getBottomLat() const {
-    return bottomLat;
-}
-
-short GribTile::getLeftLon() const {
-    return leftLon;
-}
-
-short GribTile::getRightLon() const {
-    return rightLon;
 }
 
 ptime GribTile::getForecastDateUtc() const {
@@ -376,8 +338,8 @@ string GribTile::getGribFileName() const {
     ss << "GribTile_" << getGribDateString()
        << "_t" << getCycleString() << "z"
        << "_f" << getForecastHourString()
-       << "_l" << leftLon << "_t" << topLat
-       << "_r" << rightLon << "_b" << bottomLat
+       << "_l" << static_cast<short>(getLeftLon()) << "_t" << static_cast<short>(getTopLat())
+       << "_r" << static_cast<short>(getRightLon()) << "_b" << static_cast<short>(getBottomLat())
        << ".grb";
 
     path /= ss.str();
@@ -411,15 +373,12 @@ bool GribTile::isValid(const ptime &dateTime) const {
     return td.abs().hours() < tdC.hours();
 }
 
-bool GribTile::isAcftInside(const GeoPoint &pos) const {
-    return pos.getLat() >= bottomLat && pos.getLat() <= topLat
-           && pos.getLon() >= leftLon && pos.getLon() <= rightLon;
-}
-
 bool GribTile::equals(const GribTile &o) const {
-    return leftLon == o.getLeftLon() && rightLon == o.getRightLon()
-           && bottomLat == o.getBottomLat() && topLat == o.getTopLat()
-           && isValid(o.getForecastDateUtc());
+    return static_cast<short>(getLeftLon()) == static_cast<short>(o.getLeftLon()) &&
+           static_cast<short>(getRightLon()) == static_cast<short>(o.getRightLon()) &&
+           static_cast<short>(getBottomLat()) == static_cast<short>(o.getBottomLat()) &&
+           static_cast<short>(getTopLat()) == static_cast<short>(o.getTopLat()) &&
+           isValid(o.getForecastDateUtc());
 }
 
 GribTile::~GribTile() {
@@ -440,8 +399,8 @@ string GribTile::getDownloadUrl() const {
        << "&lev_650_mb=on&lev_700_mb=on&lev_750_mb=on&lev_800_mb=on&lev_850_mb=on&lev_900_mb=on"
        << "&lev_925_mb=on&lev_950_mb=on&lev_975_mb=on&lev_mean_sea_level=on&lev_surface=on&var_HGT=on"
        << "&var_PRES=on&var_TMP=on&var_UGRD=on&var_VGRD=on&var_PRMSL=on&subregion="
-       << "&leftlon=" << leftLon << "&rightlon=" << rightLon
-       << "&toplat=" << topLat << "&bottomlat=" << bottomLat
+       << "&leftlon=" << static_cast<short>(getLeftLon()) << "&rightlon=" << static_cast<short>(getRightLon())
+       << "&toplat=" << static_cast<short>(getTopLat()) << "&bottomlat=" << static_cast<short>(getBottomLat())
        << "&dir=%2Fgfs." << getGribDateString() << "%2F" << cycleStr << "%2Fatmos";
 
     return ss.str();

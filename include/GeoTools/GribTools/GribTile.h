@@ -11,6 +11,7 @@
 #include <boost/filesystem.hpp>
 #endif
 #include "GeoTools/GeoPoint.h"
+#include "GeoTools/GeoTile.h"
 #include <string>
 #include <memory>
 #include "GeoTools/GribTools/GribDataPoint.h"
@@ -24,15 +25,11 @@ using namespace boost::gregorian;
 using namespace boost::posix_time;
 
 namespace AviationCalcUtil::GeoTools::GribTools {
-    class GribTile {
+    class GribTile : public GeoTile {
 #ifdef _LIBRARY
     private:
         static vector<shared_ptr<GribTile>> gribTileList;
         static mutex gribTileListLock;
-        short topLat;
-        short bottomLat;
-        short leftLon;
-        short rightLon;
         ptime forecastDateUtc;
         vector<shared_ptr<GribDataPoint>> dataPoints;
         mutable mutex gribDataListLock;
@@ -52,17 +49,12 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     public:
         AVIATIONCALC_EXPORT static shared_ptr<const GribTile> findOrCreateGribTile(const GeoPoint &pos, const ptime &dateTime);
 
-        AVIATIONCALC_EXPORT GribTile(double lat, double lon, ptime dateTime);
+        AVIATIONCALC_EXPORT GribTile(const GeoPoint &pos, ptime dateTime);
 
-        AVIATIONCALC_EXPORT short getTopLat() const;
-        AVIATIONCALC_EXPORT short getBottomLat() const;
-        AVIATIONCALC_EXPORT short getLeftLon() const;
-        AVIATIONCALC_EXPORT short getRightLon() const;
         AVIATIONCALC_EXPORT ptime getForecastDateUtc() const;
         AVIATIONCALC_EXPORT string getGribFileName() const;
         AVIATIONCALC_EXPORT shared_ptr<const GribDataPoint> getClosestPoint(const GeoPoint &acftPos) const;
         AVIATIONCALC_EXPORT bool isValid(const ptime &dateTime) const;
-        AVIATIONCALC_EXPORT bool isAcftInside(const GeoPoint &pos) const;
         AVIATIONCALC_EXPORT bool equals(const GribTile &o) const;
 
         AVIATIONCALC_EXPORT ~GribTile();
