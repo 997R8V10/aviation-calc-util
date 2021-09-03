@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.1] - 2021-09-03
+## [0.2.0] - 2021-09-03
 ### Added
 - Geo Tools
   - Atmospheric Utilities (AtmosUtil)
@@ -77,7 +77,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
-[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.1.0...HEAD
+[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.2.0...HEAD
+[0.2.0]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.1.0...v0.2.0
 [0.1.0]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.0.7...v0.1.0
 [0.0.7]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.0.1...v0.0.7
 [0.0.1]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/releases/v0.0.1
