@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 0.1.0
+        VERSION 0.2.0
         DESCRIPTION "A library to assist with aviation related calculations."
         LANGUAGES CXX
         )
@@ -31,6 +31,9 @@ find_package(eccodes 2.22.1 REQUIRED)
 # End ecCodes
 
 add_subdirectory(src)
+
+add_executable(test_atmos test_package/test_atmos.cpp)
+target_link_libraries(test_atmos aviationcalc)
 
 # Install
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)

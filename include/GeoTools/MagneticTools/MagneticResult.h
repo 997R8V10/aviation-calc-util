@@ -23,8 +23,8 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         double t0;
         boost::gregorian::date t;
         std::shared_ptr<const MagneticModel> model;
-        MagneticFieldElements fieldElements;
-        MagneticFieldElements secElements;
+        MagneticFieldElements fieldElements{};
+        MagneticFieldElements secElements{};
 
         void calculateMagneticField();
 
