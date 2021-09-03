@@ -9,6 +9,7 @@
 #include "MathTools/LegendreUtil.h"
 #include "MathTools/MathUtil.h"
 #include "GeoTools/GeoPoint.h"
+#include "GeoTools/GeoTile.h"
 #include "GeoTools/GribTools/GribDataPoint.h"
 #include "GeoTools/GribTools/GribTile.h"
 #include "GeoTools/GeoUtil.h"
@@ -17,5 +18,6 @@
 #include "GeoTools/MagneticTools/MagneticModel.h"
 #include "GeoTools/MagneticTools/MagneticResult.h"
 #include "GeoTools/MagneticTools/MagneticUtil.h"
+#include "GeoTools/MagneticTools/MagneticTile.h"
 
 #endif //AVIATION_CALC_UTIL_AVIATIONCALC_H
