@@ -54,3 +54,19 @@ long MathUtil::factorial(int n) {
 
     return result;
 }
+
+double MathUtil::convertKelvinToCelsius(double kelvin) {
+    return kelvin - CONV_FACTOR_KELVIN_C;
+}
+
+double MathUtil::convertCelsiusToKelvin(double celsius) {
+    return celsius + CONV_FACTOR_KELVIN_C;
+}
+
+double MathUtil::convertMpersToKts(double mpers) {
+    return mpers * CONV_FACTOR_MPERS_KTS;
+}
+
+double MathUtil::convertKtsToMpers(double kts) {
+    return kts / CONV_FACTOR_MPERS_KTS;
+}
