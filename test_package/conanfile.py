@@ -5,7 +5,8 @@ from conans import ConanFile, CMake, tools
 
 class AviationcalcTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake"
+    requires = ["aviationcalc/0.1.1"]
+    generators = ["cmake", "cmake_find_package", "cmake_paths", "txt"]
 
     def build(self):
         cmake = CMake(self)
@@ -22,4 +23,4 @@ class AviationcalcTestConan(ConanFile):
     def test(self):
         if not tools.cross_building(self):
             os.chdir("bin")
-            self.run(".%stest-geopoint" % os.sep)
+            self.run(".%stest-atmos" % os.sep)

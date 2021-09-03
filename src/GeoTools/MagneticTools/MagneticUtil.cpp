@@ -98,7 +98,9 @@ std::shared_ptr<MagneticResult> MagneticUtil::getMagneticField(const GeoPoint &p
     if (model == nullptr){
         try {
             loadData();
-        } catch (const std::exception&){}
+        } catch (const std::exception& ex){
+            std::cout << "Error while attempting to load magnetic data: " << ex.what() << std::endl;
+        }
     }
 
     return std::make_shared<MagneticResult>(model, point, date);
