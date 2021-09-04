@@ -53,8 +53,11 @@ double AtmosUtil::calculateImpactPressure(double cas) {
 double AtmosUtil::calculateCalibratedAirspeed(double qc) {
     double a0 = calculateSpeedOfSoundDryAir(ISA_STD_TEMP_K);
 
-    double x1 = pow((qc / ISA_STD_PRES_Pa) + 1, (SPEC_HEAT_RATIO_AIR - 1) / SPEC_HEAT_RATIO_AIR);
-    double x2 = sqrt(((SPEC_HEAT_RATIO_AIR - 1) / 2) * x1 - 1);
+    double coeff1 = 2 / (SPEC_HEAT_RATIO_AIR - 1);
+    double coeff2 = (SPEC_HEAT_RATIO_AIR - 1) / SPEC_HEAT_RATIO_AIR;
+
+    double x1 = pow((qc / ISA_STD_PRES_Pa) + 1, coeff2);
+    double x2 = sqrt(coeff1 * (x1 - 1));
 
     return a0 * x2;
 }
@@ -147,7 +150,7 @@ double AtmosUtil::convertTasToIas(double tas_kts, double refPress_hPa, double al
     double p = calculatePressureAtAlt(h, h0, p0, T);
 
     // Calculate mach number
-    mach = AtmosUtil::convertTasToMach(tas, p);
+    mach = AtmosUtil::convertTasToMach(tas, T);
 
     // Calculate impact (dynamic) pressure
     double qc = AtmosUtil::calculateImpactPressure(mach, p);
