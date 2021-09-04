@@ -37,6 +37,16 @@ void testTrueAirspeed1(double ias, double altFt, double satC){
     cout << "\tGeo. TAS: \t" << geoTas << "kts" << endl;
 }
 
+void testConvertTasToIas(){
+    cout << "Test TAS 2:" << endl;
+    double mach{};
+    double ias = AtmosUtil::convertTasToIas(421, 250, 35269, 34873, 221, mach);
+
+    cout << "\tShould be 250" << endl;
+    cout << "\tActually: " << ias << endl;
+}
+
 int main(){
     testTrueAirspeed1(260, 35000, -39);
+    testConvertTasToIas();
 }
