@@ -85,6 +85,11 @@ namespace AviationCalcUtil::GeoTools {
         /// <returns>Normalized Heading (degrees)</returns>
         static double normalizeHeading(double hdg);
 
+        /// Calculates maximum bank angle
+        /// \param groundSpeed
+        /// \param bankLimit
+        /// \param turnRate
+        /// \return
         static double calculateMaxBankAngle(double groundSpeed, double bankLimit, double turnRate);
 
         static double calculateRadiusOfTurn(double bankAngle, double groundSpeed);
