@@ -131,4 +131,21 @@ namespace AviationCalcUtil::GeoTools {
     };
 }
 
+extern "C"{
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateDryAirDensity(double p, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure1(double cas);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure2(double M, double p);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateCalibratedAirspeed(double qc);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateMachNumber(double qc, double p);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateEas(double M, double p);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertMachToTas(double M, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertTasToMach(double tas, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculatePressureAtAlt(double h, double h0, double p0, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateTempAtAlt(double h, double h0, double T0);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateDensityAltitude(double p, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateSpeedOfSoundDryAir(double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertIasToTas(double ias_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertTasToIas(double tas_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
+}
+
 #endif //AVIATION_CALC_UTIL_ATMOSUTIL_H

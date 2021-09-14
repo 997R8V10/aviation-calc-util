@@ -160,3 +160,62 @@ double AtmosUtil::convertTasToIas(double tas_kts, double refPress_hPa, double al
 
     return MathUtil::convertMpersToKts(cas);
 }
+
+double AtmosUtilCalculateDryAirDensity(double p, double T) {
+    return AtmosUtil::calculateDryAirDensity(p, T);
+}
+
+double AtmosUtilCalculateImpactPressure1(double cas) {
+    return AtmosUtil::calculateImpactPressure(cas);
+}
+
+double AtmosUtilCalculateImpactPressure2(double M, double p) {
+    return AtmosUtil::calculateImpactPressure(M, p);
+}
+
+double AtmosUtilCalculateCalibratedAirspeed(double qc) {
+    return AtmosUtil::calculateCalibratedAirspeed(qc);
+}
+
+double AtmosUtilCalculateMachNumber(double qc, double p) {
+    return AtmosUtil::calculateMachNumber(qc, p);
+}
+
+double AtmosUtilCalculateEas(double M, double p) {
+    return AtmosUtil::calculateEas(M, p);
+}
+
+double AtmosUtilConvertMachToTas(double M, double T) {
+    return AtmosUtil::convertMachToTas(M, T);
+
+}
+
+double AtmosUtilConvertTasToMach(double tas, double T) {
+    return AtmosUtil::convertTasToMach(tas, T);
+}
+
+double AtmosUtilCalculatePressureAtAlt(double h, double h0, double p0, double T) {
+    return AtmosUtil::calculatePressureAtAlt(h, h0, p0, T);
+}
+
+double AtmosUtilCalculateTempAtAlt(double h, double h0, double T0) {
+    return AtmosUtil::calculateTempAtAlt(h, h0, T0);
+}
+
+double AtmosUtilCalculateDensityAltitude(double p, double T) {
+    return AtmosUtil::calculateDensityAltitude(p, T);
+}
+
+double AtmosUtilCalculateSpeedOfSoundDryAir(double T) {
+    return AtmosUtil::calculateSpeedOfSoundDryAir(T);
+}
+
+double AtmosUtilConvertIasToTas(double ias_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K,
+                                double &mach) {
+    return AtmosUtil::convertIasToTas(ias_kts, refPress_hPa, alt_ft, refAlt_ft, refTemp_K, mach);
+}
+
+double AtmosUtilConvertTasToIas(double tas_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K,
+                                double &mach) {
+    return AtmosUtil::convertTasToIas(tas_kts, refPress_hPa, alt_ft, refAlt_ft, refTemp_K, mach);
+}
