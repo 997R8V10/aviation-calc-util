@@ -16,7 +16,8 @@ set(HEADER_FILES
         ${PROJECT_SOURCE_DIR}/include/MathTools/LegendreUtil.h
         ${PROJECT_SOURCE_DIR}/include/MathTools/MathUtil.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoTile.h
-        ${PROJECT_SOURCE_DIR}/include/GeoTools/AtmosUtil.h)
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/AtmosUtil.h
+        ${PROJECT_SOURCE_DIR}/include/InteropTools/InteropUtil.h)
 
 # Add Source Files
 add_library(aviationcalc SHARED
@@ -35,7 +36,8 @@ add_library(aviationcalc SHARED
         MathTools/Polynomial.cpp
         GeoTools/GeoTile.cpp
         GeoTools/MagneticTools/MagneticTile.cpp
-        GeoTools/AtmosUtil.cpp)
+        GeoTools/AtmosUtil.cpp
+        InteropTools/InteropUtil.cpp)
 
 # Set Include Folders
 target_include_directories(aviationcalc PUBLIC
