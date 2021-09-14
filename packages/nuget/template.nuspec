@@ -21,6 +21,8 @@
   <files>
     <file src="build\**" target="build" />
     <file src="runtimes\**" target="runtimes" />
-    <file src="lib\**" target="lib" />
+    <file src="runtimes\native\**" target="lib/netcoreapp3.1" />
+    <file src="lib\native\**" target="lib/native" />
+    <file src="lib\native\**" target="lib/netcoreapp3.1" />
   </files>
 </package>
