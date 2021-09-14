@@ -3,6 +3,7 @@
 //
 
 #define _USE_MATH_DEFINES
+
 #include <cmath>
 
 #include "GeoTools/GeoPoint.h"
@@ -33,7 +34,7 @@ void GeoPoint::moveByM(double bearing, double distance) {
     double lon1 = MathUtil::convertDegreesToRadians(lon);
 
     double lat2 = std::asin((std::sin(lat1) * std::cos(distance / R) +
-            std::cos(lat1) * std::sin(distance / R) * std::cos(bearingRads)));
+                             std::cos(lat1) * std::sin(distance / R) * std::cos(bearingRads)));
     double lon2 = lon1 + std::atan2(std::sin(bearingRads) * std::sin(distance / R) * std::cos(lat1),
                                     std::cos(distance / R) - std::sin(lat1) * std::sin(lat2));
 
@@ -52,8 +53,8 @@ double GeoPoint::flatDistanceM(const GeoPoint &point1, const GeoPoint &point2) {
     double deltaLambda = MathUtil::convertDegreesToRadians(point2.getLon() - point1.getLon());
 
     double a = std::pow(std::sin(deltaPhi / 2), 2) +
-            std::cos(phi1) * std::cos(phi2) *
-            std::pow(std::sin(deltaLambda / 2), 2);
+               std::cos(phi1) * std::cos(phi2) *
+               std::pow(std::sin(deltaLambda / 2), 2);
 
     double c = 2 * std::atan2(std::sqrt(a), std::sqrt(1 - a));
 
@@ -77,7 +78,8 @@ double GeoPoint::distanceNMi(const GeoPoint &point1, const GeoPoint &point2) {
     return MathUtil::convertMetersToNauticalMiles(distanceM(point1, point2));
 }
 
-std::unique_ptr<GeoPoint> GeoPoint::intersection(const GeoPoint &point1, double bearing1, const GeoPoint &point2, double bearing2) {
+std::unique_ptr<GeoPoint>
+GeoPoint::intersection(const GeoPoint &point1, double bearing1, const GeoPoint &point2, double bearing2) {
     // Conversions to radians
     double phi1 = MathUtil::convertDegreesToRadians(point1.getLat());
     double phi2 = MathUtil::convertDegreesToRadians(point2.getLat());
@@ -90,11 +92,11 @@ std::unique_ptr<GeoPoint> GeoPoint::intersection(const GeoPoint &point1, double 
 
     // Angular distance (lat1, lon1) - (lat2, lon2)
     double sigma12 = 2 * std::asin(std::sqrt(std::pow(std::sin(deltaPhi / 2), 2)
-            + std::cos(phi1) * std::cos(phi2) * std::pow(std::sin(deltaLambda / 2), 2)));
+                                             +
+                                             std::cos(phi1) * std::cos(phi2) * std::pow(std::sin(deltaLambda / 2), 2)));
 
     // Coincident points
-    if (sigma12 < std::numeric_limits<double>::epsilon())
-    {
+    if (sigma12 < std::numeric_limits<double>::epsilon()) {
         return std::make_unique<GeoPoint>(point1);
     }
 
@@ -111,28 +113,31 @@ std::unique_ptr<GeoPoint> GeoPoint::intersection(const GeoPoint &point1, double 
     double alpha2 = theta21 - theta23;// Angle 1-2-3
 
     // Infinite intersections
-    if (std::sin(alpha1) == 0 && std::sin(alpha2) == 0)
-    {
+    if (std::sin(alpha1) == 0 && std::sin(alpha2) == 0) {
         return nullptr;
     }
 
     // Ambiguous Intersection (antipodal?)
-    if (std::sin(alpha1) * std::sin(alpha2) < 0)
-    {
+    if (std::sin(alpha1) * std::sin(alpha2) < 0) {
         return nullptr;
     }
 
     double cosAlpha3 = -std::cos(alpha1) * std::cos(alpha2) + std::sin(alpha1) * std::sin(alpha2) * std::cos(sigma12);
 
-    double sigma13 = std::atan2(std::sin(sigma12) * std::sin(alpha1) * std::sin(alpha2), std::cos(alpha2) + std::cos(alpha1) * cosAlpha3);
+    double sigma13 = std::atan2(std::sin(sigma12) * std::sin(alpha1) * std::sin(alpha2),
+                                std::cos(alpha2) + std::cos(alpha1) * cosAlpha3);
 
-    double phi3 = std::asin(std::fmin(std::fmax(std::sin(phi1) * std::cos(sigma13) + std::cos(phi1) * std::sin(sigma13) * std::cos(theta13), -1), 1));
+    double phi3 = std::asin(std::fmin(
+            std::fmax(std::sin(phi1) * std::cos(sigma13) + std::cos(phi1) * std::sin(sigma13) * std::cos(theta13), -1),
+            1));
 
-    double deltaLambda13 = std::atan2(std::sin(theta13) * std::sin(sigma13) * std::cos(phi1), std::cos(sigma13) - std::sin(phi1) * std::sin(phi3));
+    double deltaLambda13 = std::atan2(std::sin(theta13) * std::sin(sigma13) * std::cos(phi1),
+                                      std::cos(sigma13) - std::sin(phi1) * std::sin(phi3));
 
     double lambda3 = lambda1 + deltaLambda13;
 
-    return std::make_unique<GeoPoint>(MathUtil::convertRadiansToDegrees(phi3), MathUtil::convertRadiansToDegrees(lambda3));
+    return std::make_unique<GeoPoint>(MathUtil::convertRadiansToDegrees(phi3),
+                                      MathUtil::convertRadiansToDegrees(lambda3));
 }
 
 double GeoPoint::initialBearing(const GeoPoint &point1, const GeoPoint &point2) {
@@ -187,4 +192,139 @@ void GeoPoint::setAlt(double newAlt) {
 
 double GeoPoint::operator-(const GeoPoint &point) const {
     return distanceM(*this, point);
+}
+
+AviationCalcUtil::GeoTools::GeoPoint *CreateGeoPoint(double lat, double lon, double alt) {
+    return new GeoPoint(lat, lon, alt);
+}
+
+void DisposeGeoPoint(AviationCalcUtil::GeoTools::GeoPoint *ptr) {
+    if (ptr != NULL) {
+        delete ptr;
+        ptr = NULL;
+    }
+}
+
+void GeoPointMoveByM(AviationCalcUtil::GeoTools::GeoPoint *ptr, double bearing, double distance) {
+    if (ptr != NULL) {
+        ptr->moveByM(bearing, distance);
+    }
+}
+
+void GeoPointMoveByNMi(AviationCalcUtil::GeoTools::GeoPoint *ptr, double bearing, double distance)
+{
+    if (ptr != NULL) {
+        ptr->moveByNMi(bearing, distance);
+    }
+}
+
+double GeoPointFlatDistanceM(AviationCalcUtil::GeoTools::GeoPoint *ptr1, AviationCalcUtil::GeoTools::GeoPoint *ptr2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return GeoPoint::flatDistanceM(*ptr1, *ptr2);
+    }
+    return -1;
+}
+
+double GeoPointFlatDistanceNMi(AviationCalcUtil::GeoTools::GeoPoint *ptr1, AviationCalcUtil::GeoTools::GeoPoint *ptr2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return GeoPoint::flatDistanceNMi(*ptr1, *ptr2);
+    }
+    return -1;
+}
+
+double GeoPointDistanceM(AviationCalcUtil::GeoTools::GeoPoint *ptr1, AviationCalcUtil::GeoTools::GeoPoint *ptr2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return GeoPoint::distanceM(*ptr1, *ptr2);
+    }
+    return -1;
+}
+
+double GeoPointDistanceNMi(AviationCalcUtil::GeoTools::GeoPoint *ptr1, AviationCalcUtil::GeoTools::GeoPoint *ptr2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return GeoPoint::distanceNMi(*ptr1, *ptr2);
+    }
+    return -1;
+}
+
+AviationCalcUtil::GeoTools::GeoPoint*
+GeoPointIntersection(AviationCalcUtil::GeoTools::GeoPoint *ptr1, double bearing1, AviationCalcUtil::GeoTools::GeoPoint *ptr2,
+             double bearing2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return GeoPoint::intersection(*ptr1, bearing1, *ptr2, bearing2).release();
+    }
+    return NULL;
+}
+
+double GeoPointInitialBearing(AviationCalcUtil::GeoTools::GeoPoint *ptr1, AviationCalcUtil::GeoTools::GeoPoint *ptr2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return GeoPoint::initialBearing(*ptr1, *ptr2);
+    }
+    return -1;
+}
+
+double GeoPointFinalBearing(AviationCalcUtil::GeoTools::GeoPoint *ptr1, AviationCalcUtil::GeoTools::GeoPoint *ptr2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return GeoPoint::finalBearing(*ptr1, *ptr2);
+    }
+    return -1;
+}
+
+bool GeoPointEquals(AviationCalcUtil::GeoTools::GeoPoint *ptr1, AviationCalcUtil::GeoTools::GeoPoint *ptr2) {
+    if (ptr1 != NULL && ptr2 != NULL)
+    {
+        return ptr1->equals(*ptr2);
+    }
+    return false;
+}
+
+double GeoPointGetLat(AviationCalcUtil::GeoTools::GeoPoint *ptr) {
+    if (ptr != NULL)
+    {
+        return ptr->getLat();
+    }
+    return -1;
+}
+
+void GeoPointSetLat(AviationCalcUtil::GeoTools::GeoPoint *ptr, double newLat) {
+    if (ptr != NULL)
+    {
+        ptr->setLat(newLat);
+    }
+}
+
+double GeoPointGetLon(AviationCalcUtil::GeoTools::GeoPoint *ptr) {
+    if (ptr != NULL)
+    {
+        return ptr->getLon();
+    }
+    return -1;
+}
+
+void GeoPointSetLon(AviationCalcUtil::GeoTools::GeoPoint *ptr, double newLon) {
+    if (ptr != NULL)
+    {
+        ptr->setLat(newLon);
+    }
+}
+
+double GeoPointGetAlt(AviationCalcUtil::GeoTools::GeoPoint *ptr) {
+    if (ptr != NULL)
+    {
+        return ptr->getAlt();
+    }
+    return -1;
+}
+
+void GeoPointSetAlt(AviationCalcUtil::GeoTools::GeoPoint *ptr, double newAlt) {
+    if (ptr != NULL)
+    {
+        ptr->setLat(newAlt);
+    }
 }
