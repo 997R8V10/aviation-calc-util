@@ -198,6 +198,10 @@ AviationCalcUtil::GeoTools::GeoPoint *CreateGeoPoint(double lat, double lon, dou
     return new GeoPoint(lat, lon, alt);
 }
 
+AviationCalcUtil::GeoTools::GeoPoint *CopyGeoPoint(AviationCalcUtil::GeoTools::GeoPoint* ptr) {
+    return new AviationCalcUtil::GeoTools::GeoPoint(*ptr);
+}
+
 void DisposeGeoPoint(AviationCalcUtil::GeoTools::GeoPoint *ptr) {
     if (ptr != NULL) {
         delete ptr;
@@ -328,3 +332,5 @@ void GeoPointSetAlt(AviationCalcUtil::GeoTools::GeoPoint *ptr, double newAlt) {
         ptr->setLat(newAlt);
     }
 }
+
+

@@ -323,3 +323,138 @@ std::unique_ptr<GeoPoint> GeoUtil::findIntersection(const GeoPoint &position, co
 
     return intersection2;
 }
+
+double GeoUtilCalculateDirectBearingAfterTurn(AviationCalcUtil::GeoTools::GeoPoint *aircraft,
+                                              AviationCalcUtil::GeoTools::GeoPoint *waypoint, double r,
+                                              double curBearing) {
+    if (aircraft != NULL && waypoint != NULL)
+    {
+        return GeoUtil::calculateDirectBearingAfterTurn(*aircraft, *waypoint, r, curBearing);
+    }
+    return -1;
+}
+
+double GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, double course, double &requiredCourse,
+                                        double &alongTrackDistanceM) {
+    if (aircraft != NULL && waypoint != NULL)
+    {
+        return GeoUtil::calculateCrossTrackErrorM(*aircraft, *waypoint, course, requiredCourse, alongTrackDistanceM);
+    }
+    return -1;
+}
+
+double GeoUtilCalculateTurnLeadInDistance(GeoPoint *ptr, double theta, double r) {
+    if (ptr != NULL) {
+        return GeoUtil::calculateTurnLeadDistance(*ptr, theta, r);
+   }
+    return -1;
+}
+
+double GeoUtilCalculateTurnLeadDistance(GeoPoint *pos, GeoPoint *wp, double trueTrack, double tas, double course,
+                                        double trueWindDir, double windSpd, double &radiusOfTurn,
+                                        GeoPoint *&intersection) {
+    if (pos != NULL && wp != NULL)
+    {
+        auto nat_int = std::make_unique<GeoPoint>();
+        double toReturn = GeoUtil::calculateTurnLeadDistance(*pos, *wp, trueTrack, tas, course, trueWindDir, windSpd, radiusOfTurn, nat_int);
+        intersection = nat_int.release();
+        return toReturn;
+    }
+    return -1;
+}
+
+GeoPoint *GeoUtilFindIntersection(GeoPoint *position, GeoPoint *wp, double trueTrack, double course) {
+    if (position != NULL && wp != NULL)
+    {
+        return GeoUtil::findIntersection(*position, *wp, trueTrack, course).release();
+    }
+    return NULL;
+}
+
+double GeoUtilNormalizeLongitude(double lon) {
+    return GeoUtil::normalizeLongitude(lon);
+}
+
+double GeoUtilCalculateBankAngle(double radiusOfTurn, double groundSpeed) {
+    return GeoUtil::calculateBankAngle(radiusOfTurn, groundSpeed);
+}
+
+double GeoUtilNormalizeHeading(double hdg) {
+    return GeoUtil::normalizeHeading(hdg);
+}
+
+double GeoUtilCalculateMaxBankAngle(double groundSpeed, double bankLimit, double turnRate) {
+    return GeoUtil::calculateMaxBankAngle(groundSpeed, bankLimit, turnRate);
+}
+
+double GeoUtilCalculateRadiusOfTurn(double bankAngle, double groundSpeed) {
+    return GeoUtil::calculateRadiusOfTurn(bankAngle, groundSpeed);
+}
+
+double GeoUtilCalculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing, double windSpeed,
+                                          double tas) {
+    return GeoUtil::calculateConstantRadiusTurn(startBearing, turnAmount, windBearing, windSpeed, tas);
+}
+
+double GeoUtilGetHeadwindComponent(double windSpeed, double windBearing, double bearing) {
+    return GeoUtil::getHeadwindComponent(windSpeed, windBearing, bearing);
+}
+
+double GeoUtilCalculateDistanceTravelledNMi(double groundSpeedKts, double timeMs) {
+    return GeoUtil::calculateDistanceTravelledNMi(groundSpeedKts, timeMs);
+}
+
+double GeoUtilCalculateDegreesTurned(double distTravelledNMi, double radiusOfTurnNMi) {
+    return GeoUtil::calculateDegreesTurned(distTravelledNMi, radiusOfTurnNMi);
+}
+
+double GeoUtilCalculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn) {
+    return GeoUtil::calculateEndHeading(startHeading, degreesTurned, isRightTurn);
+}
+
+void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi,
+                                             bool isRightTurn, double &chordHeading, double &chordDistance) {
+    tuple<double, double> answer = GeoUtil::calculateChordHeadingAndDistance(startHeading, degreesTurned, radiusOfTurnNMi, isRightTurn);
+    chordHeading = std::get<0>(answer);
+    chordDistance = std::get<1>(answer);
+}
+
+double GeoUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    return GeoUtil::convertIndicatedToAbsoluteAlt(alt_ind_ft, pres_set_hpa, sfc_pres_hpa);
+}
+
+double GeoUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    return GeoUtil::convertAbsoluteToIndicatedAlt(alt_abs_ft, pres_set_hpa, sfc_pres_hpa);
+}
+
+double GeoUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
+    return GeoUtil::convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa);
+}
+
+double GeoUtilCalculateIsaTemp(double alt_pres_ft) {
+    return GeoUtil::calculateIsaTemp(alt_pres_ft);
+}
+
+double GeoUtilConvertPressureToDensityAlt(double alt_pres_ft, double sat) {
+    return GeoUtil::convertPressureToDensityAlt(alt_pres_ft, sat);
+}
+
+double GeoUtilConvertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat) {
+    return GeoUtil::convertIasToTas(ias, pres_set_hpa, alt_ind_ft, sat);
+}
+
+double GeoUtilConvertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat) {
+    return GeoUtil::convertTasToIas(tas, pres_set_hpa, alt_ind_ft, sat);
+}
+
+double GeoUtilConvertIasToTasFromDensityAltitude(double ias, double alt_dens_ft) {
+    return GeoUtil::convertIasToTas(ias, alt_dens_ft);
+}
+
+double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft) {
+    return GeoUtil::convertTasToIas(tas, alt_dens_ft);
+}
+
+double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading) {
+    return GeoUtil::calculateTurnAmount(currentHeading, desiredHeading);
+}
