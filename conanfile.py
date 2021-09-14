@@ -75,6 +75,7 @@ class AviationcalcConan(ConanFile):
         self.copy("*.dll", dst="bin", src="bin")
         self.copy("*.dylib*", dst="bin", src="lib")
         self.copy("*.lib", dst="lib", src="lib")
+        self.copy("*.so", dst="lib", src="lib")
         # self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
 
     def build(self):

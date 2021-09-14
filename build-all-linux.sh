@@ -15,9 +15,6 @@ echo "\\--------------------------------------------------------------\\"
 echo "\\                      Installing ecCodes                      \\"
 echo "\\--------------------------------------------------------------\\"
 echo ""
-echo "Running sudo apt install -y libc6-dev-i386 gcc-multilib g++-multilib libcurl4-openssl-dev"
-echo "Please type your password when prompted, or install manually"
-sudo apt install -y "libc6-dev-i386" "gcc-multilib" "g++-multilib" "libcurl4-openssl-dev"
 conan export eccodes
 
 echo "\\--------------------------------------------------------------\\"
