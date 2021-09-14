@@ -6,8 +6,6 @@ if %1.==. (
 	set nugetfeedpath="%1"
 )
 
-CALL build-all-windows.bat
-
 ECHO \--------------------------------------------------------------\
 ECHO \                       Cleaning Folders                       \
 ECHO \--------------------------------------------------------------\
@@ -16,6 +14,8 @@ ECHO
 ECHO Cleaning NuGet folder
 rmdir /S /Q out\nuget\windows
 ECHO
+
+CALL build-all-windows.bat
 
 ECHO \--------------------------------------------------------------\
 ECHO \                    Packing NuGet Package                     \

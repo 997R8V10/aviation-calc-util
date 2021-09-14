@@ -6,7 +6,9 @@ else
 	nugetfeedpath=$1
 fi
 
+mkdir -p $nugetfeedpath
+
 echo "Deleting existing package"
-dotnet nuget delete ${NUGET_PACKAGE_NAME} ${CMAKE_PROJECT_VERSION} -s $nugetfeedpath --non-interactive
+mono nuget.exe delete ${NUGET_PACKAGE_NAME} ${CMAKE_PROJECT_VERSION} -Source $nugetfeedpath -NonInteractive
 echo "Installing new package"
-dotnet nuget push "*.nupkg" -s $nugetfeedpath
+mono nuget.exe init . $nugetfeedpath

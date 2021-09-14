@@ -125,7 +125,7 @@ add_custom_command(TARGET aviationcalc
         )
 
 # Runtimes
-file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
+file(MAKE_DIRECTORY ${NUGET_BUILD_FOLDER}/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
 add_custom_command(TARGET aviationcalc
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}
@@ -135,7 +135,7 @@ add_custom_command(TARGET aviationcalc
         )
 
 # Libraries
-file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
+file(MAKE_DIRECTORY ${NUGET_BUILD_FOLDER}/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
 add_custom_command(TARGET aviationcalc
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}
@@ -145,7 +145,7 @@ add_custom_command(TARGET aviationcalc
         )
 
 # Includes
-file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/build/native/include)
+file(MAKE_DIRECTORY ${NUGET_BUILD_FOLDER}/build/native/include)
 add_custom_command(TARGET aviationcalc
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}

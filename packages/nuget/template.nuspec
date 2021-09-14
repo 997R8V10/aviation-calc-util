@@ -11,7 +11,7 @@
     <iconUrl></iconUrl>
     -->
     <description>${CMAKE_PROJECT_DESCRIPTION}</description>
-    <copyright>$copyright$</copyright>
+    <copyright>None</copyright>
     <tags>Native native</tags>
     <dependencies>
         <group targetFramework="native"></group>
