@@ -12,9 +12,10 @@
     -->
     <description>${CMAKE_PROJECT_DESCRIPTION}</description>
     <copyright>None</copyright>
-    <tags>Native native</tags>
+    <tags>aviationcalc netcoreapp3 Native native</tags>
     <dependencies>
-        <group targetFramework="native"></group>
+      <group targetFramework="native" />
+      <group targetFramework=".NETCoreApp3.1" />
     </dependencies>
   </metadata>
   <files>
