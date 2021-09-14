@@ -135,7 +135,53 @@ namespace AviationCalcUtil::GeoTools {
         static double convertTasToIas(double tas, double alt_dens_ft);
 
         static double calculateTurnAmount(double currentHeading, double desiredHeading);
+
+
     };
 }
+
+using namespace AviationCalcUtil::GeoTools;
+
+extern "C"
+{
+extern AVIATIONCALC_EXPORT double
+GeoUtilCalculateDirectBearingAfterTurn(GeoPoint *aircraft, GeoPoint *waypoint, double r, double curBearing);
+extern AVIATIONCALC_EXPORT double
+GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, double course,
+                                 double &requiredCourse, double &alongTrackDistanceM);
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnLeadInDistance(GeoPoint *ptr, double theta, double r);
+extern AVIATIONCALC_EXPORT double
+GeoUtilCalculateTurnLeadDistance(GeoPoint *pos, GeoPoint *wp, double trueTrack, double tas,
+                                 double course, double trueWindDir, double windSpd, double &radiusOfTurn,
+                                 GeoPoint *&intersection);
+extern AVIATIONCALC_EXPORT GeoPoint *GeoUtilFindIntersection(GeoPoint *position, GeoPoint *wp,
+                                                             double trueTrack, double course);
+extern AVIATIONCALC_EXPORT double GeoUtilNormalizeLongitude(double lon);
+extern AVIATIONCALC_EXPORT double GeoUtilNormalizeHeading(double hdg);
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateMaxBankAngle(double groundSpeed, double bankLimit, double turnRate);
+
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateRadiusOfTurn(double bankAngle, double groundSpeed);
+
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateBankAngle(double radiusOfTurn, double groundSpeed);
+
+
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing, double windSpeed, double tas);
+extern AVIATIONCALC_EXPORT double GeoUtilGetHeadwindComponent(double windSpeed, double windBearing, double bearing);
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateDistanceTravelledNMi(double groundSpeedKts, double timeMs);
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateDegreesTurned(double distTravelledNMi, double radiusOfTurnNMi);
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn);
+extern AVIATIONCALC_EXPORT void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi, bool isRightTurn, double &chordHeading, double &chordDistance);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa);
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateIsaTemp(double alt_pres_ft);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertPressureToDensityAlt(double alt_pres_ft, double sat);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertIasToTasFromDensityAltitude(double ias, double alt_dens_ft);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft);
+extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading);
+}
+
 
 #endif //AVIATION_SIM_UTIL_GEOUTIL_H
