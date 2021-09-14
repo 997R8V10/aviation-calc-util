@@ -27,7 +27,7 @@ if (NOT EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" OR NOT EXISTS "${CMAKE
     include (${CMAKE_BINARY_DIR}/conan.cmake)
 
     conan_cmake_autodetect(conan_settings)
-    conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_SOURCE_DIR}/conanfile.py" SETTINGS ${conan_settings})
+    conan_cmake_install(PATH_OR_REFERENCE "${CMAKE_SOURCE_DIR}/conanfile.py" SETTINGS ${conan_settings} BUILD missing)
 endif()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
