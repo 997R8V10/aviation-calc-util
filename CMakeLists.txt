@@ -46,6 +46,12 @@ find_package(Boost 1.76.0 REQUIRED COMPONENTS filesystem)
 find_package(eccodes 2.22.1 REQUIRED)
 # End ecCodes
 
+# Curl
+if (NOT WIN32)
+    find_package(CURL REQUIRED)
+endif()
+# End Curl
+
 add_subdirectory(src)
 
 add_executable(test_atmos test_package/test_atmos.cpp)

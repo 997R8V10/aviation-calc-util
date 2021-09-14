@@ -52,6 +52,11 @@ set_target_properties(aviationcalc
         )
 
 # Link Libraries
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(dir ${dirs})
+  message(STATUS "dir='${dir}'")
+endforeach()
+message("${INCLUDE_DIRECTORIES}")
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     target_link_libraries(aviationcalc
@@ -62,8 +67,7 @@ if (WIN32)
             Boost::dynamic_linking
             eccodes::eccodes)
 else ()
-    find_package(CURL REQUIRED)
-    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes::eccodes CURL::CURL)
+    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes::eccodes CURL::libcurl)
 endif ()
 
 # DLL Export Headers
