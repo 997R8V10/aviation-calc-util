@@ -129,6 +129,15 @@ void GribTools::GribDataPoint::setSfcPressHPa(double newSfcPressHPa) {
     sfcPress_hPa = newSfcPressHPa;
 }
 
+GribTools::GribDataPoint::GribDataPoint(const GribTools::GribDataPoint &point): GribDataPoint(point.getLatitude(), point.getLongitude(), point.getLevelHPa()) {
+    geoPotHeight_M = point.getGeoPotentialHeightM();
+    temp_K = point.getTempK();
+    v_mpers = point.getVMpers();
+    u_mpers = point.getUMpers();
+    rh = point.getRelHumidity();
+    sfcPress_hPa = point.getSfcPressHPa();
+}
+
 GribDataPoint *CreateGribDataPoint(double lat, double lon, int level_hPa) {
     return new GribDataPoint(lat, lon, level_hPa);
 }
