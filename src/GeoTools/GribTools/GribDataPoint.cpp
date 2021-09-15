@@ -6,6 +6,7 @@
 #include "MathTools/MathUtil.h"
 #include "GeoTools/GeoUtil.h"
 #include <sstream>
+#include <cstring>
 
 #define _USE_MATH_DEFINES
 

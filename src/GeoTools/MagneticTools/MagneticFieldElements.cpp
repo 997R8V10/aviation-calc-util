@@ -185,4 +185,5 @@ void DisposeMagneticElements(MagneticFieldElements *ptr) {
     if (ptr != nullptr) {
         delete ptr;
         ptr = nullptr;
+    }
 }
