@@ -20,7 +20,8 @@ namespace AviationCalcUtil::GeoTools {
         AVIATIONCALC_EXPORT static constexpr double ISA_STD_TEMP_K = 288.15;
 
         /// ISA Sea Level Standard Temperature (C)
-        AVIATIONCALC_EXPORT static constexpr double ISA_STD_TEMP_C = ISA_STD_TEMP_K - MathTools::MathUtil::CONV_FACTOR_KELVIN_C;
+        AVIATIONCALC_EXPORT static constexpr double ISA_STD_TEMP_C =
+                ISA_STD_TEMP_K - MathTools::MathUtil::CONV_FACTOR_KELVIN_C;
 
         /// ISA Sea Level Standard Pressure (Pa)
         AVIATIONCALC_EXPORT static constexpr double ISA_STD_PRES_Pa = 101325;
@@ -131,7 +132,16 @@ namespace AviationCalcUtil::GeoTools {
     };
 }
 
-extern "C"{
+extern "C" {
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_R_DRY_AIR();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_SPEC_HEAT_RATIO_AIR();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_TEMP_K();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_TEMP_C();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_PRES_Pa();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_PRES_hPa();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_DENS();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_LAPSE_RATE();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_EARTH_G();
 extern AVIATIONCALC_EXPORT double AtmosUtilCalculateDryAirDensity(double p, double T);
 extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure1(double cas);
 extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure2(double M, double p);

@@ -219,3 +219,39 @@ double AtmosUtilConvertTasToIas(double tas_kts, double refPress_hPa, double alt_
                                 double &mach) {
     return AtmosUtil::convertTasToIas(tas_kts, refPress_hPa, alt_ft, refAlt_ft, refTemp_K, mach);
 }
+
+double AtmosUtilGetConst_R_DRY_AIR() {
+    return AtmosUtil::R_DRY_AIR;
+}
+
+double AtmosUtilGetConst_SPEC_HEAT_RATIO_AIR() {
+    return AtmosUtil::SPEC_HEAT_RATIO_AIR;
+}
+
+double AtmosUtilGetConst_ISA_STD_TEMP_K() {
+    return AtmosUtil::ISA_STD_TEMP_K;
+}
+
+double AtmosUtilGetConst_ISA_STD_TEMP_C() {
+    return AtmosUtil::ISA_STD_TEMP_C;
+}
+
+double AtmosUtilGetConst_ISA_STD_PRES_Pa() {
+    return AtmosUtil::ISA_STD_PRES_Pa;
+}
+
+double AtmosUtilGetConst_ISA_STD_PRES_hPa() {
+    return AtmosUtil::ISA_STD_PRES_hPa;
+}
+
+double AtmosUtilGetConst_ISA_STD_DENS() {
+    return AtmosUtil::ISA_STD_DENS;
+}
+
+double AtmosUtilGetConst_ISA_STD_LAPSE_RATE() {
+    return AtmosUtil::ISA_STD_LAPSE_RATE;
+}
+
+double AtmosUtilGetConst_EARTH_G() {
+    return AtmosUtil::EARTH_G;
+}
