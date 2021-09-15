@@ -15,7 +15,7 @@ namespace AviationCalcUtil::MathTools {
         constexpr static double CONV_FACTOR_M_FT = 3.28084;
         constexpr static double CONV_FACTOR_HPA_INHG = 33.86;
         constexpr static double CONV_FACTOR_NMI_M = 1852;
-        constexpr static double CONV_FACTOR_MPERS_KTS =1.943844;
+        constexpr static double CONV_FACTOR_MPERS_KTS = 1.943844;
 
         // Methods
         static double convertDegreesToRadians(double degrees);
@@ -49,5 +49,26 @@ namespace AviationCalcUtil::MathTools {
     };
 }
 
+extern "C"
+{
+extern AVIATIONCALC_EXPORT double MathUtilGetConvFactorKelvinC();
+extern AVIATIONCALC_EXPORT double MathUtilGetConvFactorMFt();
+extern AVIATIONCALC_EXPORT double MathUtilGetConvFactorHpaInhg();
+extern AVIATIONCALC_EXPORT double MathUtilGetConvFactorNmiM();
+extern AVIATIONCALC_EXPORT double MathUtilGetConvFactorMpersKts();
+extern AVIATIONCALC_EXPORT double MathUtilConvertDegreesToRadians(double degrees);
+extern AVIATIONCALC_EXPORT double MathUtilConvertRadiansToDegrees(double radians);
+extern AVIATIONCALC_EXPORT double MathUtilConvertHpaToInhg(double hPa);
+extern AVIATIONCALC_EXPORT double MathUtilConvertInhgToHpa(double inHg);
+extern AVIATIONCALC_EXPORT double MathUtilConvertMetersToFeet(double meters);
+extern AVIATIONCALC_EXPORT double MathUtilConvertFeetToMeters(double feet);
+extern AVIATIONCALC_EXPORT double MathUtilConvertMetersToNauticalMiles(double meters);
+extern AVIATIONCALC_EXPORT double MathUtilConvertNauticalMilesToMeters(double NMi);
+extern AVIATIONCALC_EXPORT double MathUtilConvertKelvinToCelsius(double kelvin);
+extern AVIATIONCALC_EXPORT double MathUtilConvertCelsiusToKelvin(double celsius);
+extern AVIATIONCALC_EXPORT double MathUtilConvertMpersToKts(double mpers);
+extern AVIATIONCALC_EXPORT double MathUtilConvertKtsToMpers(double kts);
+extern AVIATIONCALC_EXPORT long MathUtilFactorial(int n);
+}
 
 #endif //AVIATION_SIM_UTIL_MATHUTIL_H
