@@ -28,6 +28,8 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     public:
         AVIATIONCALC_EXPORT GribDataPoint(double lat, double lon, int level_hPa);
 
+        AVIATIONCALC_EXPORT GribDataPoint(const GribDataPoint& point);
+
         AVIATIONCALC_EXPORT double getDistanceFrom(const GeoPoint &pos) const;
 
         AVIATIONCALC_EXPORT std::string toString() const;
