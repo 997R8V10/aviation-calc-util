@@ -128,3 +128,200 @@ double GribTools::GribDataPoint::getSfcPressHPa() const {
 void GribTools::GribDataPoint::setSfcPressHPa(double newSfcPressHPa) {
     sfcPress_hPa = newSfcPressHPa;
 }
+
+GribDataPoint *CreateGribDataPoint(double lat, double lon, int level_hPa) {
+    return new GribDataPoint(lat, lon, level_hPa);
+}
+
+void DisposeGribDataPoint(GribDataPoint *point) {
+    if (point != NULL){
+        delete point;
+        point = NULL;
+    }
+}
+
+double GribDataPointGetDistanceFrom(GribDataPoint *point, GeoPoint *pos) {
+    if (point == NULL || pos == NULL){
+        return -1;
+    }
+    return point->getDistanceFrom(*pos);
+}
+
+const char *GribDataPointToString(GribDataPoint *point) {
+    if (point == NULL){
+        return NULL;
+    }
+    string s = point->toString();
+
+    // Create C char array
+    char *char_array = new char[s.length()+1];
+
+    // Copy string
+    strcpy(char_array, s.c_str());
+
+    return char_array;
+}
+
+double GribDataPointGetLatitude(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getLatitude();
+}
+
+double GribDataPointGetLongitude(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getLongitude();
+}
+
+double GribDataPointGetLongitudeNormalized(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getLongitudeNormalized();
+}
+
+double GribDataPointGetGeoPotentialHeightM(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getGeoPotentialHeightM();
+}
+
+void GribDataPointSetGeoPotentialHeightM(GribDataPoint *point, double newGeoPotHtM) {
+    if (point != NULL){
+        point->setGeoPotentialHeightM(newGeoPotHtM);
+    }
+}
+
+double GribDataPointGetGeoPotentialHeightFt(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getGeoPotentialHeightFt();
+}
+
+int GribDataPointGetLevelHPa(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getLevelHPa();
+}
+
+double GribDataPointGetTempK(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getTempK();
+}
+
+void GribDataPointSetTempK(GribDataPoint *point, double newTempK) {
+    if (point != NULL){
+        point->setTempK(newTempK);
+    }
+}
+
+double GribDataPointGetTempC(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getTempC();
+}
+
+double GribDataPointGetVMpers(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getVMpers();
+}
+
+void GribDataPointSetVMpers(GribDataPoint *point, double newVMpers) {
+    if (point != NULL){
+        point->setVMpers(newVMpers);
+    }
+}
+
+double GribDataPointGetUMpers(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getUMpers();
+}
+
+void GribDataPointSetUMpers(GribDataPoint *point, double newUMpers) {
+    if (point != NULL){
+        point->setUMpers(newUMpers);
+    }
+}
+
+double GribDataPointGetWindSpeedMpers(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getWindSpeedMpers();
+}
+
+double GribDataPointGetWindSpeedKts(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getWindSpeedKts();
+}
+
+double GribDataPointGetWindDirRads(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getWindDirRads();
+}
+
+double GribDataPointGetWindDirDegs(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getWindDirDegs();
+}
+
+double GribDataPointGetRelHumidity(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getRelHumidity();
+}
+
+void GribDataPointSetRelHumidity(GribDataPoint *point, double newRelHumidity) {
+    if (point != NULL){
+        point->setRelHumidity(newRelHumidity);
+    }
+}
+
+double GribDataPointGetSfcPressHPa(GribDataPoint *point) {
+    if (point == NULL){
+        return -1;
+    }
+
+    return point->getSfcPressHPa();
+}
+
+void GribDataPointSetSfcPressHPa(GribDataPoint *point, double newSfcPressHPa) {
+    if (point != NULL){
+        point->setSfcPressHPa(newSfcPressHPa);
+    }
+}

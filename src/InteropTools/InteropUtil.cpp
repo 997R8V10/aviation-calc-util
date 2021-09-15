@@ -36,6 +36,6 @@ InteropDateStruct InteropBoostDateToStruct(boost::gregorian::date boost_date) {
 }
 
 boost::gregorian::date InteropStructToBoostDate(InteropDateStruct dStruct) {
-    return date(dStruct.year, dStruct.month, dStruct.day);
+    return {dStruct.year, dStruct.month, dStruct.day};
 }
 
