@@ -11,6 +11,8 @@
 using namespace AviationCalcUtil::GeoTools;
 using namespace AviationCalcUtil::MathTools;
 
+
+
 double GeoUtil::normalizeLongitude(double lon) {
     return std::fmod((lon + 540), 360.0) - 180;
 }
@@ -457,4 +459,24 @@ double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft) {
 
 double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading) {
     return GeoUtil::calculateTurnAmount(currentHeading, desiredHeading);
+}
+
+double GeoUtilGetEarthRadiusM() {
+    return GeoUtil::EARTH_RADIUS_M;
+}
+
+double GeoUtilGetStdPresHpa() {
+    return GeoUtil::STD_PRES_HPA;
+}
+
+double GeoUtilGetStdTempC() {
+    return GeoUtil::STD_TEMP_C;
+}
+
+double GeoUtilGetStdLapseRate() {
+    return GeoUtil::STD_LAPSE_RATE;
+}
+
+double GeoUtilGetStdPresDrop() {
+    return GeoUtil::STD_PRES_DROP;
 }

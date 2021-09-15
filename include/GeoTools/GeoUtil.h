@@ -21,6 +21,7 @@ namespace AviationCalcUtil::GeoTools {
         static constexpr double STD_LAPSE_RATE = 2.0 / 1000.0;
         static constexpr double STD_PRES_DROP = 30.0;
 
+
         /// Calculates the direct course to intercept towards a waypoint.
         /// Returns -1 if direct course is not possible to achieve.
         /// \param aircraft Aircraft Position
@@ -181,6 +182,11 @@ extern AVIATIONCALC_EXPORT double GeoUtilConvertTasToIas(double tas, double pres
 extern AVIATIONCALC_EXPORT double GeoUtilConvertIasToTasFromDensityAltitude(double ias, double alt_dens_ft);
 extern AVIATIONCALC_EXPORT double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading);
+extern AVIATIONCALC_EXPORT double GeoUtilGetEarthRadiusM();
+extern AVIATIONCALC_EXPORT double GeoUtilGetStdPresHpa();
+extern AVIATIONCALC_EXPORT double GeoUtilGetStdTempC();
+extern AVIATIONCALC_EXPORT double GeoUtilGetStdLapseRate();
+extern AVIATIONCALC_EXPORT double GeoUtilGetStdPresDrop();
 }
 
 
