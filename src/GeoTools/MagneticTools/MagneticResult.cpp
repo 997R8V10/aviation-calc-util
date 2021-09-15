@@ -120,16 +120,16 @@ const MagneticFieldElements &MagneticResult::getSecularFieldElements() const {
     return secElements;
 }
 
-std::shared_ptr<MagneticResult> *CreateMagneticResult(std::shared_ptr<const MagneticModel> *model, GeoPoint *point, InteropDateStruct dStruct) {
+std::shared_ptr<const MagneticResult> *CreateMagneticResult(std::shared_ptr<const MagneticModel> *model, GeoPoint *point, InteropDateStruct dStruct) {
     if (model != NULL && point != NULL)
     {
-        auto ptr = std::make_shared<MagneticResult>(*model, *point, InteropStructToBoostDate(dStruct));
-        return new std::shared_ptr<MagneticResult>(ptr);
+        auto ptr = std::make_shared<const MagneticResult>(*model, *point, InteropStructToBoostDate(dStruct));
+        return new std::shared_ptr<const MagneticResult>(ptr);
     }
     return NULL;
 }
 
-void DisposeMagneticResult(std::shared_ptr<MagneticResult> *ptr) {
+void DisposeMagneticResult(std::shared_ptr<const MagneticResult> *ptr) {
     if (ptr != NULL)
     {
         delete ptr;
@@ -137,7 +137,7 @@ void DisposeMagneticResult(std::shared_ptr<MagneticResult> *ptr) {
     }
 }
 
-MagneticFieldElements *MagneticResultGetMainFieldElements(std::shared_ptr<MagneticResult> *ptr) {
+MagneticFieldElements *MagneticResultGetMainFieldElements(std::shared_ptr<const MagneticResult> *ptr) {
     if (ptr != NULL)
     {
         auto elems = ptr->get()->getMainFieldElements();
@@ -146,7 +146,7 @@ MagneticFieldElements *MagneticResultGetMainFieldElements(std::shared_ptr<Magnet
     return NULL;
 }
 
-MagneticFieldElements *MagneticResultGetSecularFieldElements(std::shared_ptr<MagneticResult> *ptr) {
+MagneticFieldElements *MagneticResultGetSecularFieldElements(std::shared_ptr<const MagneticResult> *ptr) {
     if (ptr != NULL)
     {
         auto elems = ptr->get()->getSecularFieldElements();
