@@ -21,6 +21,8 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
     public:
         MagneticFieldElements();
 
+        MagneticFieldElements(const MagneticFieldElements& other);
+
         double getX() const;
 
         void setX(double newX);

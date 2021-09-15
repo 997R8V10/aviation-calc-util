@@ -72,6 +72,16 @@ void MagneticFieldElements::setIncl(double newIncl) {
     incl = newIncl;
 }
 
+MagneticFieldElements::MagneticFieldElements(const MagneticFieldElements &other) {
+    x = other.getX();
+    y = other.getY();
+    z = other.getZ();
+    h = other.getH();
+    f = other.getF();
+    incl = other.getIncl();
+    decl = other.getDecl();
+}
+
 MagneticFieldElements *CreateMagneticFieldElements() {
     return new MagneticFieldElements();
 }

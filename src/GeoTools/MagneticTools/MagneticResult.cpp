@@ -119,3 +119,38 @@ const MagneticFieldElements &MagneticResult::getMainFieldElements() const {
 const MagneticFieldElements &MagneticResult::getSecularFieldElements() const {
     return secElements;
 }
+
+std::shared_ptr<MagneticResult> *CreateMagneticResult(std::shared_ptr<const MagneticModel> *model, GeoPoint *point, InteropDateStruct dStruct) {
+    if (model != NULL && point != NULL)
+    {
+        auto ptr = std::make_shared<MagneticResult>(*model, *point, InteropStructToBoostDate(dStruct));
+        return new std::shared_ptr<MagneticResult>(ptr);
+    }
+    return NULL;
+}
+
+void DisposeMagneticResult(std::shared_ptr<MagneticResult> *ptr) {
+    if (ptr != NULL)
+    {
+        delete ptr;
+        ptr = NULL;
+    }
+}
+
+MagneticFieldElements *MagneticResultGetMainFieldElements(std::shared_ptr<MagneticResult> *ptr) {
+    if (ptr != NULL)
+    {
+        auto elems = ptr->get()->getMainFieldElements();
+        return new MagneticFieldElements(elems);
+    }
+    return NULL;
+}
+
+MagneticFieldElements *MagneticResultGetSecularFieldElements(std::shared_ptr<MagneticResult> *ptr) {
+    if (ptr != NULL)
+    {
+        auto elems = ptr->get()->getSecularFieldElements();
+        return new MagneticFieldElements(elems);
+    }
+    return NULL;
+}

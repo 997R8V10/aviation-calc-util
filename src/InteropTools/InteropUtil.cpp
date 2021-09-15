@@ -45,7 +45,7 @@ const char *InteropCppStrToCStr(const std::string &str) {
     char *char_array = new char[str.length()+1];
 
     // Copy string
-    strcpy_s(char_array, str.length(), str.c_str());
+    strncpy(char_array, str.c_str(), str.length());
 
     return char_array;
 }
