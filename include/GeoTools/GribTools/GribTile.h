@@ -49,7 +49,7 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     public:
         AVIATIONCALC_EXPORT static shared_ptr<const GribTile> findOrCreateGribTile(const GeoPoint &pos, const ptime &dateTime);
 
-            AVIATIONCALC_EXPORT GribTile(const GeoPoint &pos, ptime dateTime);
+        AVIATIONCALC_EXPORT GribTile(const GeoPoint &pos, ptime dateTime);
 
         AVIATIONCALC_EXPORT ptime getForecastDateUtc() const;
         AVIATIONCALC_EXPORT string getGribFileName() const;
