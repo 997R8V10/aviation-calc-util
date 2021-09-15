@@ -3,10 +3,11 @@
 //
 
 #include <InteropTools/InteropUtil.h>
+#include <cstring>
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 
-unsigned long long InteropBoostTimeToNs(boost::posix_time::ptime boost_time) {
+uint64_t InteropBoostTimeToNs(boost::posix_time::ptime boost_time) {
     //C# offset till 1400.01.01 00:00:00
     uint64_t netEpochOffset = 441481536000000000LL;
 
@@ -19,7 +20,7 @@ unsigned long long InteropBoostTimeToNs(boost::posix_time::ptime boost_time) {
     return nano + netEpochOffset;
 }
 
-boost::posix_time::ptime InteropNsToBoostTime(unsigned long long ns) {
+boost::posix_time::ptime InteropNsToBoostTime(uint64_t ns) {
     // Boost 0 time
     ptime ptimeEpoch(date(1400, 1, 1), time_duration(0, 0, 0));
 
@@ -36,6 +37,16 @@ InteropDateStruct InteropBoostDateToStruct(boost::gregorian::date boost_date) {
 }
 
 boost::gregorian::date InteropStructToBoostDate(InteropDateStruct dStruct) {
-    return {dStruct.year, dStruct.month, dStruct.day};
+    return date(dStruct.year, dStruct.month, dStruct.day);
+}
+
+const char *InteropCppStrToCStr(const std::string &str) {
+    // Create C char array
+    char *char_array = new char[str.length()+1];
+
+    // Copy string
+    strcpy_s(char_array, str.length(), str.c_str());
+
+    return char_array;
 }
 

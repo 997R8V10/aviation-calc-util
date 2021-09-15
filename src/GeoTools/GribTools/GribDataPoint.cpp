@@ -6,7 +6,7 @@
 #include "MathTools/MathUtil.h"
 #include "GeoTools/GeoUtil.h"
 #include <sstream>
-#include <cstring>
+#include "InteropTools/InteropUtil.h"
 
 #define _USE_MATH_DEFINES
 
@@ -161,15 +161,7 @@ const char *GribDataPointToString(GribDataPoint *point) {
     if (point == NULL){
         return NULL;
     }
-    string s = point->toString();
-
-    // Create C char array
-    char *char_array = new char[s.length()+1];
-
-    // Copy string
-    strcpy(char_array, s.c_str());
-
-    return char_array;
+    return InteropCppStrToCStr(point->toString());
 }
 
 double GribDataPointGetLatitude(GribDataPoint *point) {

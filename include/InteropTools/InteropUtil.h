@@ -15,12 +15,14 @@ struct InteropDateStruct {
     int day;
 };
 
-unsigned long long InteropBoostTimeToNs(boost::posix_time::ptime boost_time);
+uint64_t InteropBoostTimeToNs(boost::posix_time::ptime boost_time);
 
-boost::posix_time::ptime InteropNsToBoostTime(unsigned long long ns);
+boost::posix_time::ptime InteropNsToBoostTime(uint64_t ns);
 
 InteropDateStruct InteropBoostDateToStruct(boost::gregorian::date boost_date);
 
 boost::gregorian::date InteropStructToBoostDate(InteropDateStruct dStruct);
+
+const char *InteropCppStrToCStr(const std::string &str);
 
 #endif //AVIATION_CALC_UTIL_INTEROPUTIL_H
