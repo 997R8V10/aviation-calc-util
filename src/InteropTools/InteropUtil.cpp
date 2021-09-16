@@ -4,6 +4,7 @@
 
 #include <InteropTools/InteropUtil.h>
 #include <cstring>
+#include <iostream>
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 
@@ -37,6 +38,7 @@ InteropDateStruct InteropBoostDateToStruct(boost::gregorian::date boost_date) {
 }
 
 boost::gregorian::date InteropStructToBoostDate(InteropDateStruct dStruct) {
+    std::cout << dStruct.year << " " << dStruct.month << " " << dStruct.day << std::endl;
     return date(dStruct.year, dStruct.month, dStruct.day);
 }
 

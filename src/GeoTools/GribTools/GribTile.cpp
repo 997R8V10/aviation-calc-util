@@ -11,7 +11,7 @@
 
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <curl/curl.h>
 #endif
 
@@ -261,20 +261,31 @@ void GribTile::extractData() {
 
 }
 
-boost::filesystem::path GribTile::getGribPath() const {
-    return boost::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+std::filesystem::path GribTile::getGribPath() const {
+    try {
+        return std::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+    } catch (const std::filesystem::filesystem_error &ex){
+        std::cout << "Error getting temp path for grib file: " << ex.what() << endl;
+        return  std::filesystem::path("temp") / "gribtiles";
+    }
 }
 
 void GribTile::downloadTile() {
     if (!downloaded) {
         string gribFileName = getGribFileName();
-        remove(gribFileName.c_str());
+        try {
+            remove(gribFileName.c_str());
+        }
+        catch (const std::exception &ex)
+        {
+            std::cout << "Error deleting GRIB file!" << ex.what() << endl;
+        }
 
         // Generate URL
         string url = getDownloadUrl();
 
         // Create folder if doesn't exist
-        boost::filesystem::create_directories(getGribPath());
+        std::filesystem::create_directories(getGribPath());
 
         // Download file (Windows & Unix)
 #ifdef _WIN32
@@ -286,19 +297,30 @@ void GribTile::downloadTile() {
         }
 #endif
 
-#ifdef __unix__
-        CURL *curl;
-        FILE *file;
-        CURLcode res;
-        curl = curl_easy_init();
-        if (curl){
-            file = fopen(gribFileName.c_str(), "wb");
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
-            res = curl_easy_perform(curl);
-            /* always cleanup */
-            curl_easy_cleanup(curl);
-            fclose(file);
+#if defined(__unix__) || defined(__APPLE__)
+        try {
+            CURL *curl;
+            FILE *file;
+            CURLcode res;
+            curl = curl_easy_init();
+
+            if (curl) {
+                file = fopen(gribFileName.c_str(), "wb");
+
+                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
+                res = curl_easy_perform(curl);
+
+                /* always cleanup */
+                curl_easy_cleanup(curl);
+                fclose(file);
+            }
+        }
+        catch (const std::exception &ex)
+        {
+            std::cout << "Error loading GRIB data!" << ex.what() << endl;
+            downloaded = false;
+            return;
         }
 #endif
 
@@ -326,6 +348,7 @@ GribTile::GribTile(const GeoPoint &pos, ptime dateTime) : GeoTile(pos, 1) {
     thread([this]() {
         downloadTile();
     }).detach();
+
 }
 
 ptime GribTile::getForecastDateUtc() const {
@@ -334,6 +357,7 @@ ptime GribTile::getForecastDateUtc() const {
 
 string GribTile::getGribFileName() const {
     stringstream ss;
+
     auto path = getGribPath();
 
     ss << "GribTile_" << getGribDateString()
@@ -344,7 +368,6 @@ string GribTile::getGribFileName() const {
        << ".grb";
 
     path /= ss.str();
-
     return path.string();
 }
 

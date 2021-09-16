@@ -5,11 +5,13 @@
 #include <GeoTools/AtmosUtil.h>
 #include <MathTools/MathUtil.h>
 #include <GeoTools/GeoUtil.h>
+#include <GeoTools/GribTools/GribTile.h>
 #include <iostream>
 #include <string>
 
 using namespace AviationCalcUtil::GeoTools;
 using namespace AviationCalcUtil::MathTools;
+using namespace AviationCalcUtil::GeoTools::GribTools;
 using namespace std;
 
 void testTrueAirspeed1(double ias, double altFt, double satC){

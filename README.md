@@ -1,7 +1,7 @@
 # Aviation Calc Util
 
 A library to assist with complex aviation-related calculations. Primarily used for the VATSIM ATC Training Simulator
-Project. The library is written in C++ 20 standard and requires a compiler that is capable of building to this standard.
+Project. The library is written in C++ 17 standard and requires a compiler that is capable of building to this standard.
 
 ## Overview
 
@@ -11,10 +11,7 @@ The library contains utilities to handle geographical calculations, magnetic cal
 
 The project depends on the following libraries and tools:
 
-### Windows
-
-- **C & C++ 20 Compiler**
-    - Visual Studio with C++ development enabled includes the compilers.
+- **C & C++ 17 Compiler**
 - **[CMake 3.14+](https://cmake.org/download/)**
     - C++ Build Automation Tool
 - **[Conan 1.39+](https://conan.io/downloads.html)**
@@ -27,32 +24,7 @@ The project depends on the following libraries and tools:
 - **[ecCodes 2.22.1](https://confluence.ecmwf.int/display/ECC)**
     - No Download or manual build required.
     - See [below](#eccodes)
-
-### Linux/MacOS
-
-- **C & C++ 20 Compiler**
-    - Should come standard with a C & C++ compiler.
-- **[CMake 3.14+](https://cmake.org/download/)**
-    - C++ Build Automation Tool
-    - Installation:
-      - **Ubuntu**: `sudo apt install cmake`
-      - **MacOS**: `brew install cmake`
-- **[Conan 1.39+](https://conan.io/downloads.html)**
-    - C++ Dependency Manager
-    - Installation:
-      - **PIP**: `sudo pip3 install conan`
-      - **MacOS**: `brew install conan`
-- **[Python 3.0+](https://www.python.org/downloads/)**
-    - Required for ecCodes build.
-    - Installation:
-      - **Ubuntu**: `sudo apt install python3 python3-pip`
-- **[Boost 1.76.0+](https://www.boost.org/)**
-    - No Download Required
-    - Fetched through Conan
-- **[ecCodes 2.22.1](https://confluence.ecmwf.int/display/ECC)**
-    - No Download or manual build required.
-    - See [below](#eccodes)
-- **Curl**
+- **Curl (_Linux/MacOS Only_)**
     - Both the library and dev packages must be installed
     - Installation:
         - **Ubuntu**: `sudo apt install libcurl4-openssl-dev`

@@ -8,7 +8,7 @@
 #ifdef _LIBRARY
 #include <vector>
 #include <mutex>
-#include <boost/filesystem.hpp>
+#include "InteropTools/FileSystem.h"
 #endif
 #include "GeoTools/GeoPoint.h"
 #include "GeoTools/GeoTile.h"
@@ -38,7 +38,7 @@ namespace AviationCalcUtil::GeoTools::GribTools {
         ptime getOffsetDateUtc() const;
         short getCycle() const;
         short getForecastHour() const;
-        boost::filesystem::path getGribPath() const;
+        std::filesystem::path getGribPath() const;
         string getGribDateString() const;
         string getCycleString() const;
         string getForecastHourString() const;
