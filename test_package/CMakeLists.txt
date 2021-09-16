@@ -25,3 +25,8 @@ enable_testing()
 add_test(NAME test_atmos
          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
          COMMAND test_atmos)
+
+
+add_test(NAME test_geopoint
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+        COMMAND test_geopoint)

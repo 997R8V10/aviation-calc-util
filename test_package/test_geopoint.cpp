@@ -72,7 +72,7 @@ void test_fetchGrib(){
     cout << "Test Grib Data:" << endl;
     cout << "\t{54, -6, 30000} Grib Tile" << endl;
     GeoPoint pt1(54, -6, 30000);
-    ptime dt(date(2021, 8, 29), time_duration(0, 0, 0));
+    ptime dt(date(2021, 9, 17), time_duration(0, 0, 0));
     auto gribTile = GribTools::GribTile::findOrCreateGribTile(pt1, dt);
 
     if (gribTile == nullptr){

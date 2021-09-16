@@ -11,7 +11,7 @@
 
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <curl/curl.h>
 #endif
 
@@ -296,7 +296,7 @@ void GribTile::downloadTile() {
         }
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
         try {
             std::cout << "line 291" << endl;
             CURL *curl;
