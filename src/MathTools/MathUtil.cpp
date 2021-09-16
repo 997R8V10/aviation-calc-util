@@ -70,3 +70,75 @@ double MathUtil::convertMpersToKts(double mpers) {
 double MathUtil::convertKtsToMpers(double kts) {
     return kts / CONV_FACTOR_MPERS_KTS;
 }
+
+double MathUtilGetConvFactorKelvinC() {
+    return MathUtil::CONV_FACTOR_KELVIN_C;
+}
+
+double MathUtilGetConvFactorMFt() {
+    return MathUtil::CONV_FACTOR_M_FT;
+}
+
+double MathUtilGetConvFactorHpaInhg() {
+    return MathUtil::CONV_FACTOR_HPA_INHG;
+}
+
+double MathUtilGetConvFactorNmiM() {
+    return MathUtil::CONV_FACTOR_NMI_M;
+}
+
+double MathUtilGetConvFactorMpersKts() {
+    return MathUtil::CONV_FACTOR_MPERS_KTS;
+}
+
+double MathUtilConvertDegreesToRadians(double degrees) {
+    return MathUtil::convertDegreesToRadians(degrees);
+}
+
+double MathUtilConvertRadiansToDegrees(double radians) {
+    return MathUtil::convertRadiansToDegrees(radians);
+}
+
+double MathUtilConvertHpaToInhg(double hPa) {
+    return MathUtil::convertHpaToInhg(hPa);
+}
+
+double MathUtilConvertInhgToHpa(double inHg) {
+    return MathUtil::convertInhgToHpa(inHg);
+}
+
+double MathUtilConvertMetersToFeet(double meters) {
+    return MathUtil::convertMetersToFeet(meters);
+}
+
+double MathUtilConvertFeetToMeters(double feet) {
+    return MathUtil::convertFeetToMeters(feet);
+}
+
+double MathUtilConvertMetersToNauticalMiles(double meters) {
+    return MathUtil::convertMetersToNauticalMiles(meters);
+}
+
+double MathUtilConvertNauticalMilesToMeters(double NMi) {
+    return MathUtil::convertNauticalMilesToMeters(NMi);
+}
+
+double MathUtilConvertKelvinToCelsius(double kelvin) {
+    return MathUtil::convertKelvinToCelsius(kelvin);
+}
+
+double MathUtilConvertCelsiusToKelvin(double celsius) {
+    return MathUtil::convertCelsiusToKelvin(celsius);
+}
+
+double MathUtilConvertMpersToKts(double mpers) {
+    return MathUtil::convertMpersToKts(mpers);
+}
+
+double MathUtilConvertKtsToMpers(double kts) {
+    return MathUtil::convertKtsToMpers(kts);
+}
+
+long MathUtilFactorial(int n) {
+    return MathUtil::factorial(n);
+}

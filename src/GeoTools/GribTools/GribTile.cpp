@@ -16,6 +16,7 @@
 #endif
 
 #include "GeoTools/GribTools/GribTile.h"
+#include "InteropTools/InteropUtil.h"
 #include <sstream>
 #include <iomanip>
 #include <fstream>
@@ -404,4 +405,109 @@ string GribTile::getDownloadUrl() const {
        << "&dir=%2Fgfs." << getGribDateString() << "%2F" << cycleStr << "%2Fatmos";
 
     return ss.str();
+}
+
+shared_ptr<const GribTile> *GribTileFindOrCreateGribTile(GeoPoint *pos, uint64_t dateTime) {
+    if (pos == NULL){
+        return nullptr;
+    }
+    return new std::shared_ptr<const GribTile>(GribTile::findOrCreateGribTile(*pos, InteropNsToBoostTime(dateTime)));
+}
+
+shared_ptr<const GribTile> *CreateGribTile(GeoPoint *pos, uint64_t dateTime) {
+    if (pos == NULL){
+        return nullptr;
+    }
+    return new std::shared_ptr<const GribTile>(std::make_shared<const GribTile>(*pos, InteropNsToBoostTime(dateTime)));
+}
+
+uint64_t GribTileGetForecastDateUtc(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return InteropBoostTimeToNs(tile->get()->getForecastDateUtc());
+}
+
+const char *GribTileGetGribFileName(shared_ptr<const GribTile> *point) {
+    if (point == NULL){
+        return NULL;
+    }
+    return InteropCppStrToCStr(point->get()->getGribFileName());
+}
+
+GribDataPoint *GribTileGetClosestPoint(shared_ptr<const GribTile> *point, GeoPoint *acftPos) {
+    if (point == NULL || acftPos == NULL){
+        return NULL;
+    }
+
+    auto closest = point->get()->getClosestPoint(*acftPos);
+
+    if (closest == nullptr){
+        return nullptr;
+    }
+
+    return new GribDataPoint(*closest);
+}
+
+bool GribTileIsValid(shared_ptr<const GribTile> *point, uint64_t dateTime) {
+    if (point == NULL){
+        return false;
+    }
+    return point->get()->isValid(InteropNsToBoostTime(dateTime));
+}
+
+bool GribTileEquals(shared_ptr<const GribTile> *point, shared_ptr<const GribTile> *o) {
+    if (point == NULL || o == NULL){
+        return false;
+    }
+    return point->get()->equals(**o);
+}
+
+void DisposeGribTile(shared_ptr<const GribTile> *tile) {
+    if (tile != NULL){
+        delete tile;
+        tile = NULL;
+    }
+}
+
+bool GribTileIsPointInTile(shared_ptr<const GribTile> *tile, GeoPoint *point) {
+    if (tile == NULL || point == NULL){
+        return false;
+    }
+    return tile->get()->isPointInTile(*point);
+}
+
+GeoPoint *GribTileGetCenterPoint(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return NULL;
+    }
+    return tile->get()->getCenterPoint().release();
+}
+
+double GribTileGetBottomLat(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getBottomLat();
+}
+
+double GribTileGetTopLat(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getTopLat();
+}
+
+double GribTileGetLeftLon(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getLeftLon();
+}
+
+double GribTileGetRightLon(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getRightLon();
 }

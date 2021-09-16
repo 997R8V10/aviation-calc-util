@@ -61,4 +61,21 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     };
 }
 
+extern "C"{
+    extern AVIATIONCALC_EXPORT shared_ptr<const GribTile> *GribTileFindOrCreateGribTile(GeoPoint *pos, uint64_t dateTime);
+    extern AVIATIONCALC_EXPORT shared_ptr<const GribTile> *CreateGribTile(GeoPoint *pos, uint64_t dateTime);
+    extern AVIATIONCALC_EXPORT void DisposeGribTile(shared_ptr<const GribTile> *tile);
+    extern AVIATIONCALC_EXPORT uint64_t GribTileGetForecastDateUtc(shared_ptr<const GribTile> *tile);
+    extern AVIATIONCALC_EXPORT const char *GribTileGetGribFileName(shared_ptr<const GribTile> *tile);
+    extern AVIATIONCALC_EXPORT GribDataPoint *GribTileGetClosestPoint(shared_ptr<const GribTile> *tile, GeoPoint *acftPos);
+    extern AVIATIONCALC_EXPORT bool GribTileIsValid(shared_ptr<const GribTile> *tile, uint64_t dateTime);
+    extern AVIATIONCALC_EXPORT bool GribTileEquals(shared_ptr<const GribTile> *tile, shared_ptr<const GribTile> *o);
+    extern AVIATIONCALC_EXPORT bool GribTileIsPointInTile(shared_ptr<const GribTile> *tile, GeoPoint *point);
+    extern AVIATIONCALC_EXPORT GeoPoint *GribTileGetCenterPoint(shared_ptr<const GribTile> *tile);
+    extern AVIATIONCALC_EXPORT double GribTileGetBottomLat(shared_ptr<const GribTile> *tile);
+    extern AVIATIONCALC_EXPORT double GribTileGetTopLat(shared_ptr<const GribTile> *tile);
+    extern AVIATIONCALC_EXPORT double GribTileGetLeftLon(shared_ptr<const GribTile> *tile);
+    extern AVIATIONCALC_EXPORT double GribTileGetRightLon(shared_ptr<const GribTile> *tile);
+}
+
 #endif //AVIATION_CALC_UTIL_GRIBTILE_H

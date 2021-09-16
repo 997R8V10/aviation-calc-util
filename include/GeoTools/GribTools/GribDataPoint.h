@@ -28,6 +28,8 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     public:
         AVIATIONCALC_EXPORT GribDataPoint(double lat, double lon, int level_hPa);
 
+        AVIATIONCALC_EXPORT GribDataPoint(const GribDataPoint& point);
+
         AVIATIONCALC_EXPORT double getDistanceFrom(const GeoPoint &pos) const;
 
         AVIATIONCALC_EXPORT std::string toString() const;
@@ -78,4 +80,34 @@ namespace AviationCalcUtil::GeoTools::GribTools {
     };
 }
 
+using namespace GribTools;
+
+extern "C"{
+    extern AVIATIONCALC_EXPORT GribDataPoint *CreateGribDataPoint(double lat, double lon, int level_hPa);
+    extern AVIATIONCALC_EXPORT void DisposeGribDataPoint(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetDistanceFrom(GribDataPoint *point, GeoPoint *pos);
+    extern AVIATIONCALC_EXPORT const char *GribDataPointToString(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetLatitude(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetLongitude(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetLongitudeNormalized(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetGeoPotentialHeightM(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT void GribDataPointSetGeoPotentialHeightM(GribDataPoint *point, double newGeoPotHtM);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetGeoPotentialHeightFt(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT int GribDataPointGetLevelHPa(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetTempK(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT void GribDataPointSetTempK(GribDataPoint *point, double newTempK);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetTempC(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetVMpers(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT void GribDataPointSetVMpers(GribDataPoint *point, double newVMpers);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetUMpers(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT void GribDataPointSetUMpers(GribDataPoint *point, double newUMpers);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetWindSpeedMpers(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetWindSpeedKts(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetWindDirRads(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetWindDirDegs(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetRelHumidity(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT void GribDataPointSetRelHumidity(GribDataPoint *point, double newRelHumidity);
+    extern AVIATIONCALC_EXPORT double GribDataPointGetSfcPressHPa(GribDataPoint *point);
+    extern AVIATIONCALC_EXPORT void GribDataPointSetSfcPressHPa(GribDataPoint *point, double newSfcPressHPa);
+}
 #endif //AVIATION_CALC_UTIL_GRIBDATAPOINT_H

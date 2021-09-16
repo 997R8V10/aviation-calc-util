@@ -196,3 +196,76 @@ double MagneticUtil::convertTrueToMagneticTile(double trueBearing, const GeoPoin
 
     return convertTrueToMagnetic(trueBearing, declin);
 }
+
+double MagneticUtilGetConst_EARTH_WGS84_SEMI_MAJOR_AXIS() {
+    return MagneticUtil::EARTH_WGS84_SEMI_MAJOR_AXIS;
+}
+
+double MagneticUtilGetConst_EARTH_WGS84_RECIPROCAL_FLATTENING() {
+    return MagneticUtil::EARTH_WGS84_RECIPROCAL_FLATTENING;
+}
+
+int MagneticUtilGetConst_WMM_EXPANSION() {
+    return MagneticUtil::WMM_EXPANSION;
+}
+
+double MagneticUtilGetConst_GEOMAGNETIC_REFERENCE_RADIUS() {
+    return MagneticUtil::GEOMAGNETIC_REFERENCE_RADIUS;
+}
+
+void MagneticUtilLoadData() {
+    MagneticUtil::loadData();
+}
+
+std::shared_ptr<const MagneticResult> *MagneticUtilGetMagneticField(GeoPoint *point, InteropDateStruct dStruct) {
+    if (point == NULL){
+        return nullptr;
+    }
+    return new std::shared_ptr<const MagneticResult>(MagneticUtil::getMagneticField(*point, InteropStructToBoostDate(dStruct)));
+}
+
+double MagneticUtilGetEpochYear(InteropDateStruct dStruct) {
+    return MagneticUtil::getEpochYear(InteropStructToBoostDate(dStruct));
+}
+
+void MagneticUtilGetSpherical(GeoPoint *point, double &lambda, double &phiPrime, double &r) {
+    if (point != NULL){
+        return MagneticUtil::getSpherical(*point, lambda, phiPrime, r);
+    }
+}
+
+double MagneticUtilConvertMagneticToTrue1(double magneticBearing, double declination) {
+    return MagneticUtil::convertMagneticToTrue(magneticBearing, declination);
+}
+
+double MagneticUtilConvertMagneticToTrue2(double magneticBearing, GeoPoint *position) {
+    if (position != NULL){
+        return MagneticUtil::convertMagneticToTrue(magneticBearing, *position);
+    }
+    return -1;
+}
+
+double MagneticUtilConvertTrueToMagnetic1(double trueBearing, double declination) {
+    return MagneticUtil::convertTrueToMagnetic(trueBearing, declination);
+}
+
+double MagneticUtilConvertTrueToMagnetic2(double trueBearing, GeoPoint *position) {
+    if (position != NULL){
+        return MagneticUtil::convertTrueToMagnetic(trueBearing, *position);
+    }
+    return -1;
+}
+
+double MagneticUtilConvertMagneticToTrueTile(double magneticBearing, GeoPoint *position) {
+    if (position != NULL){
+        return MagneticUtil::convertMagneticToTrueTile(magneticBearing, *position);
+    }
+    return -1;
+}
+
+double MagneticUtilConvertTrueToMagneticTile(double trueBearing, GeoPoint *position) {
+    if (position != NULL){
+        return MagneticUtil::convertTrueToMagneticTile(trueBearing, *position);
+    }
+    return -1;
+}

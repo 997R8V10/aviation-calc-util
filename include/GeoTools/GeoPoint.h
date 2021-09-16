@@ -34,7 +34,8 @@ namespace AviationCalcUtil::GeoTools {
 
         static double distanceNMi(const GeoPoint &point1, const GeoPoint &point2);
 
-        static std::unique_ptr<GeoPoint> intersection(const GeoPoint &point1, double bearing1, const GeoPoint &point2, double bearing2);
+        static std::unique_ptr<GeoPoint>
+        intersection(const GeoPoint &point1, double bearing1, const GeoPoint &point2, double bearing2);
 
         double operator-(const GeoPoint &point) const;
 
@@ -59,4 +60,28 @@ namespace AviationCalcUtil::GeoTools {
     };
 }
 
+using namespace AviationCalcUtil::GeoTools;
+
+extern "C"
+{
+extern AVIATIONCALC_EXPORT GeoPoint* CreateGeoPoint(double lat, double lon, double alt);
+extern AVIATIONCALC_EXPORT GeoPoint* CopyGeoPoint(GeoPoint* ptr);
+extern AVIATIONCALC_EXPORT void DisposeGeoPoint(GeoPoint* ptr);
+extern AVIATIONCALC_EXPORT void GeoPointMoveByM(GeoPoint* ptr, double bearing, double distance);
+extern AVIATIONCALC_EXPORT void GeoPointMoveByNMi(GeoPoint* ptr, double bearing, double distance);
+extern AVIATIONCALC_EXPORT double GeoPointFlatDistanceM(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT double GeoPointFlatDistanceNMi(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT double GeoPointDistanceM(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT double GeoPointDistanceNMi(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT GeoPoint* GeoPointIntersection(GeoPoint* ptr1, double bearing1, GeoPoint* ptr2, double bearing2);
+extern AVIATIONCALC_EXPORT double GeoPointInitialBearing(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT double GeoPointFinalBearing(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT bool GeoPointEquals(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT double GeoPointGetLat(GeoPoint* ptr);
+extern AVIATIONCALC_EXPORT void GeoPointSetLat(GeoPoint* ptr, double newLat);
+extern AVIATIONCALC_EXPORT double GeoPointGetLon(GeoPoint* ptr);
+extern AVIATIONCALC_EXPORT void GeoPointSetLon(GeoPoint* ptr, double newLon);
+extern AVIATIONCALC_EXPORT double GeoPointGetAlt(GeoPoint* ptr);
+extern AVIATIONCALC_EXPORT void GeoPointSetAlt(GeoPoint* ptr, double newAlt);
+}
 #endif //AVIATION_SIM_UTIL_GEOPOINT_H

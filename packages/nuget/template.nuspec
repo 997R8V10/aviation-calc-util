@@ -11,15 +11,21 @@
     <iconUrl></iconUrl>
     -->
     <description>${CMAKE_PROJECT_DESCRIPTION}</description>
-    <copyright>$copyright$</copyright>
-    <tags>Native native</tags>
+    <copyright>None</copyright>
+    <tags>aviationcalc netcoreapp3 Native native net47</tags>
     <dependencies>
-        <group targetFramework="native"></group>
+      <group targetFramework="native" />
+      <group targetFramework=".NETCoreApp3.1" />
+      <group targetFramework="net47" />
     </dependencies>
   </metadata>
   <files>
     <file src="build\**" target="build" />
     <file src="runtimes\**" target="runtimes" />
-    <file src="lib\**" target="lib" />
+    <file src="runtimes\native\**" target="lib/netcoreapp3.1" />
+    <file src="runtimes\native\**" target="lib/net47" />
+    <file src="lib\native\**" target="lib/native" />
+    <file src="lib\native\**" target="lib/netcoreapp3.1" />
+    <file src="lib\native\**" target="lib/net47" />
   </files>
 </package>

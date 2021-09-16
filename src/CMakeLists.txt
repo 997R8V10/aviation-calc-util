@@ -16,7 +16,8 @@ set(HEADER_FILES
         ${PROJECT_SOURCE_DIR}/include/MathTools/LegendreUtil.h
         ${PROJECT_SOURCE_DIR}/include/MathTools/MathUtil.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoTile.h
-        ${PROJECT_SOURCE_DIR}/include/GeoTools/AtmosUtil.h)
+        ${PROJECT_SOURCE_DIR}/include/GeoTools/AtmosUtil.h
+        ${PROJECT_SOURCE_DIR}/include/InteropTools/InteropUtil.h)
 
 # Add Source Files
 add_library(aviationcalc SHARED
@@ -35,7 +36,8 @@ add_library(aviationcalc SHARED
         MathTools/Polynomial.cpp
         GeoTools/GeoTile.cpp
         GeoTools/MagneticTools/MagneticTile.cpp
-        GeoTools/AtmosUtil.cpp)
+        GeoTools/AtmosUtil.cpp
+        InteropTools/InteropUtil.cpp)
 
 # Set Include Folders
 target_include_directories(aviationcalc PUBLIC
@@ -52,6 +54,11 @@ set_target_properties(aviationcalc
         )
 
 # Link Libraries
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach (dir ${dirs})
+    message(STATUS "dir='${dir}'")
+endforeach ()
+message("${INCLUDE_DIRECTORIES}")
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     target_link_libraries(aviationcalc
@@ -62,8 +69,7 @@ if (WIN32)
             Boost::dynamic_linking
             eccodes::eccodes)
 else ()
-    find_package(CURL REQUIRED)
-    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes::eccodes CURL::CURL)
+    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes::eccodes CURL::libcurl)
 endif ()
 
 # DLL Export Headers
@@ -73,78 +79,95 @@ GENERATE_EXPORT_HEADER(aviationcalc
         STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
 
 # NuGet Package
+# Install Settings
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    # 64 bits
+    set(NUGET_ARCH x64)
+else ()
+    # 32 bits
+    set(NUGET_ARCH x86)
+endif ()
+
+set(NUGET_PACKAGE_NAME "PShivaraman.AviationCalcUtil")
 if (WIN32)
-    # Install Settings
-    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-        # 64 bits
-        set(NUGET_ARCH x64)
-    else()
-        # 32 bits
-        set(NUGET_ARCH x86)
-    endif()
+    set(NUGET_BUILD_FOLDER "${CMAKE_SOURCE_DIR}/out/nuget/windows")
+else ()
+    set(NUGET_BUILD_FOLDER "${CMAKE_SOURCE_DIR}/out/nuget/linux")
+endif ()
 
-    set(NUGET_PACKAGE_NAME "PShivaraman.AviationCalcUtil")
-	set(NUGET_BUILD_FOLDER "${CMAKE_SOURCE_DIR}/out/nuget")
+# Generate .nuspec file
+configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.nuspec
+        ${CMAKE_BINARY_DIR}/nuget/${NUGET_PACKAGE_NAME}.nuspec
+        )
 
-    # Generate .nuspec file
-    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.nuspec
-            ${CMAKE_BINARY_DIR}/nuget/${NUGET_PACKAGE_NAME}.nuspec
-            )
+# Generate .targets file
+configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/native.targets.xml
+        ${CMAKE_BINARY_DIR}/nuget/build/native/${NUGET_PACKAGE_NAME}.targets
+        )
 
-    # Generate .targets file
-    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/template.targets.xml
-            ${CMAKE_BINARY_DIR}/nuget/build/native/${NUGET_PACKAGE_NAME}.targets
-            )
-			
-	# Generate pack-nuget.bat
+configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/netcore.targets.xml
+        ${CMAKE_BINARY_DIR}/nuget/build/netcoreapp3.1/${NUGET_PACKAGE_NAME}.targets
+        )
+
+configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/net.targets.xml
+        ${CMAKE_BINARY_DIR}/nuget/build/net47/${NUGET_PACKAGE_NAME}.targets
+        )
+
+if (WIN32)
+    # Generate pack-nuget.bat
     configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/pack-nuget.bat
             ${CMAKE_BINARY_DIR}/nuget/pack-nuget.bat
             )
-
-	# Copy nuget files to output folder
-    add_custom_command(TARGET aviationcalc
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND}
-            -Dsrc_dir="${CMAKE_BINARY_DIR}/nuget"
-            -Ddst_dir="${NUGET_BUILD_FOLDER}"
-            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
-            )
-
-    # Runtimes
-    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
-    add_custom_command(TARGET aviationcalc
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND}
-            -Dsrc_dir="${CMAKE_BINARY_DIR}/bin"
-            -Ddst_dir="${NUGET_BUILD_FOLDER}/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
-            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_bins.cmake"
-            )
-
-    # Libraries
-    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
-    add_custom_command(TARGET aviationcalc
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND}
-            -Dsrc_dir="${CMAKE_BINARY_DIR}/lib"
-            -Ddst_dir="${NUGET_BUILD_FOLDER}/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
-            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
-            )
-
-    # Includes
-    file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/out/nuget/build/native/include)
-    add_custom_command(TARGET aviationcalc
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND}
-            -Dsrc_dir="${CMAKE_SOURCE_DIR}/include"
-            -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/include"
-            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
-            )
-
-    add_custom_command(TARGET aviationcalc
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND}
-            -Dsrc_dir="${CMAKE_BINARY_DIR}/exports"
-            -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/include"
-            -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+else ()
+    # Generate pack-nuget.sh
+    configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/pack-nuget.sh
+            ${CMAKE_BINARY_DIR}/nuget/pack-nuget.sh
             )
 endif ()
+
+# Copy nuget files to output folder
+add_custom_command(TARGET aviationcalc
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -Dsrc_dir="${CMAKE_BINARY_DIR}/nuget"
+        -Ddst_dir="${NUGET_BUILD_FOLDER}"
+        -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+        )
+
+# Runtimes
+file(MAKE_DIRECTORY ${NUGET_BUILD_FOLDER}/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
+add_custom_command(TARGET aviationcalc
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -Dsrc_dir="${CMAKE_BINARY_DIR}/bin"
+        -Ddst_dir="${NUGET_BUILD_FOLDER}/runtimes/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
+        -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_bins.cmake"
+        )
+
+# Libraries
+file(MAKE_DIRECTORY ${NUGET_BUILD_FOLDER}/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE})
+add_custom_command(TARGET aviationcalc
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -Dsrc_dir="${CMAKE_BINARY_DIR}/lib"
+        -Ddst_dir="${NUGET_BUILD_FOLDER}/lib/native/${NUGET_ARCH}/${CMAKE_BUILD_TYPE}"
+        -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+        )
+
+# Includes
+file(MAKE_DIRECTORY ${NUGET_BUILD_FOLDER}/build/native/include)
+add_custom_command(TARGET aviationcalc
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -Dsrc_dir="${CMAKE_SOURCE_DIR}/include"
+        -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/include"
+        -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+        )
+
+add_custom_command(TARGET aviationcalc
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+        -Dsrc_dir="${CMAKE_BINARY_DIR}/exports"
+        -Ddst_dir="${NUGET_BUILD_FOLDER}/build/native/include"
+        -P "${PROJECT_SOURCE_DIR}/cmakescripts/copy_dir_update.cmake"
+        )

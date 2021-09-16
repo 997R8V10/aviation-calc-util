@@ -1,9 +1,12 @@
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
+import os
+import glob
+from shutil import copyfile
 
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "0.2.1"
+    version = "0.3.0"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"
@@ -73,9 +76,18 @@ class AviationcalcConan(ConanFile):
 
     def imports(self):
         self.copy("*.dll", dst="bin", src="bin")
-        self.copy("*.dylib*", dst="bin", src="lib")
+        self.copy("*.dylib*", dst="lib", src="lib")
         self.copy("*.lib", dst="lib", src="lib")
-        # self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
+        self.copy("*.so*", dst="lib", src="lib")
+
+        with tools.chdir(os.path.join(self.imports_folder, "lib")):
+            for dynamic_lib in glob.iglob("*.so.*", recursive=True):
+                lib_symlink = "{}.so".format(dynamic_lib.split(".so")[0])  # basename
+                if os.path.exists(lib_symlink):
+                    os.remove(lib_symlink)
+                self.output.info("Copying {} --> {}".format(dynamic_lib, lib_symlink))
+                copyfile(dynamic_lib, lib_symlink)
+        #self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
 
     def build(self):
         cmake = CMake(self)

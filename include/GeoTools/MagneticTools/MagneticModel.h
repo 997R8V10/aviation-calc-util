@@ -30,4 +30,13 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
     };
 }
 
+extern "C" {
+    extern AVIATIONCALC_EXPORT std::shared_ptr<const MagneticModel> *CreateMagModel(double modelEpoch, const char *modelName, InteropDateStruct dStruct, MagneticModelCoefficients **coefficients, int coeffsSize);
+    extern AVIATIONCALC_EXPORT void DisposeMagModel(std::shared_ptr<const MagneticModel> *model);
+    extern AVIATIONCALC_EXPORT MagneticModelCoefficients *MagModelGetCoeffs(std::shared_ptr<const MagneticModel> *model, int n, int m);
+    extern AVIATIONCALC_EXPORT double MagModelGetModelEpoch(std::shared_ptr<const MagneticModel> *model);
+    extern AVIATIONCALC_EXPORT const char *MagModelGetModelName(std::shared_ptr<const MagneticModel> *model);
+    extern AVIATIONCALC_EXPORT InteropDateStruct MagModelGetReleaseDate(std::shared_ptr<const MagneticModel> *model);
+}
+
 #endif //AVIATION_CALC_UTIL_MAGNETICMODEL_H
