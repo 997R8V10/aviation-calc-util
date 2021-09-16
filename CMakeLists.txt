@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 0.3.2
+        VERSION 0.3.3
         DESCRIPTION "A library to assist with aviation related calculations."
         LANGUAGES CXX
         )
@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmakescripts)
 
 # Includes
 include(FetchContent)
@@ -49,6 +51,10 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.76.0 REQUIRED)
 # End Boost
+
+# Filesystem
+find_package(Filesystem REQUIRED COMPONENTS Experimental Final)
+# End Filesystem
 
 # ecCodes
 find_package(eccodes 2.22.1 REQUIRED)

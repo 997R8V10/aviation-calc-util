@@ -8,7 +8,7 @@
 #ifdef _LIBRARY
 #include <vector>
 #include <mutex>
-#include "InteropTools/FileSystem.h"
+#include "FileSystem.h"
 #endif
 #include "GeoTools/GeoPoint.h"
 #include "GeoTools/GeoTile.h"
