@@ -48,3 +48,20 @@ double LegendreUtil::legendreFunction(int n, int m, double x) {
 
 	return pow(1 - pow(x, 2), m / 2.0) * p->evaluate(x);
 }
+
+Polynomial *LegendreUtilPolynomial(int n) {
+    auto toReturn = LegendreUtil::legendrePolynomial(n);
+    if (toReturn != NULL)
+    {
+        return new Polynomial(*toReturn);
+    }
+    return new Polynomial(std::vector<double>{});
+}
+
+double LegendreUtilFactorialRatio(int n, int m) {
+    return LegendreUtil::factorialRatio(n, m);
+}
+
+double LegendreUtilLegendreFunction(int n, int m, double x) {
+    return LegendreUtil::legendreFunction(n, m, x);
+}
