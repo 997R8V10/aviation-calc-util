@@ -34,20 +34,20 @@ std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &p
     if (std::isnan(pos.getLat()) || std::isnan(pos.getLon())) {
         return nullptr;
     }
-
+std::cout << "line 37" << endl;
     const std::lock_guard<std::mutex> gt_lock(gribTileListLock);
-
+    std::cout << "line 39" << endl;
     // Look for tile
     for (const shared_ptr<GribTile> &tile : gribTileList) {
         if ((*tile) == pos && tile->isValid(dateTime)) {
             return tile;
         }
     }
-
+    std::cout << "line 46" << endl;
     // Create if not found
     auto newTile = std::make_shared<GribTile>(pos, dateTime);
     gribTileList.push_back(newTile);
-
+    std::cout << "line 50" << endl;
     return newTile;
 }
 
@@ -266,16 +266,26 @@ boost::filesystem::path GribTile::getGribPath() const {
 }
 
 void GribTile::downloadTile() {
+    std::cout << "line 269" << endl;
     if (!downloaded) {
+        std::cout << "line 271" << endl;
         string gribFileName = getGribFileName();
-        remove(gribFileName.c_str());
+        try {
 
+            remove(gribFileName.c_str());
+        }
+        catch (const std::exception &ex)
+        {
+            std::cout << "Error deleting GRIB file!" << ex.what() << endl;
+        }
+
+        std::cout << "line 272" << endl;
         // Generate URL
         string url = getDownloadUrl();
-
+        std::cout << "line 275" << endl;
         // Create folder if doesn't exist
         boost::filesystem::create_directories(getGribPath());
-
+        std::cout << "line 278" << endl;
         // Download file (Windows & Unix)
 #ifdef _WIN32
         HRESULT hr = URLDownloadToFile(NULL, url.c_str(), gribFileName.c_str(), 0, NULL);
@@ -287,18 +297,31 @@ void GribTile::downloadTile() {
 #endif
 
 #ifdef __unix__
-        CURL *curl;
-        FILE *file;
-        CURLcode res;
-        curl = curl_easy_init();
-        if (curl){
-            file = fopen(gribFileName.c_str(), "wb");
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
-            res = curl_easy_perform(curl);
-            /* always cleanup */
-            curl_easy_cleanup(curl);
-            fclose(file);
+        try {
+            std::cout << "line 291" << endl;
+            CURL *curl;
+            FILE *file;
+            CURLcode res;
+            curl = curl_easy_init();
+            std::cout << "line 296" << endl;
+            if (curl) {
+                file = fopen(gribFileName.c_str(), "wb");
+                std::cout << "line 299" << endl;
+                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
+                res = curl_easy_perform(curl);
+                std::cout << "line 303" << endl;
+                /* always cleanup */
+                curl_easy_cleanup(curl);
+                fclose(file);
+                std::cout << "line 307" << endl;
+            }
+        }
+        catch (const std::exception &ex)
+        {
+            std::cout << "Error loading GRIB data!" << ex.what() << endl;
+            downloaded = false;
+            return;
         }
 #endif
 
@@ -323,9 +346,11 @@ GribTile::GribTile(const GeoPoint &pos, ptime dateTime) : GeoTile(pos, 1) {
     forecastDateUtc = dateTime;
 
     // Download asynchronously
-    thread([this]() {
+
+    //thread([this]() {
         downloadTile();
-    }).detach();
+    //}).detach();
+
 }
 
 ptime GribTile::getForecastDateUtc() const {
