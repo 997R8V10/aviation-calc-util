@@ -359,17 +359,18 @@ ptime GribTile::getForecastDateUtc() const {
 
 string GribTile::getGribFileName() const {
     stringstream ss;
+    std::cout << "Line 362" << std::endl;
     auto path = getGribPath();
-
+    std::cout << "Line 364" << std::endl;
     ss << "GribTile_" << getGribDateString()
        << "_t" << getCycleString() << "z"
        << "_f" << getForecastHourString()
        << "_l" << static_cast<short>(getLeftLon()) << "_t" << static_cast<short>(getTopLat())
        << "_r" << static_cast<short>(getRightLon()) << "_b" << static_cast<short>(getBottomLat())
        << ".grb";
-
+    std::cout << "Line 371" << std::endl;
     path /= ss.str();
-
+    std::cout << "Line 373" << std::endl;
     return path.string();
 }
 

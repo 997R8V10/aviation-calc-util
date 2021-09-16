@@ -31,9 +31,16 @@ if (NOT EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" OR NOT EXISTS "${CMAKE
 endif ()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+conan_basic_setup(KEEP_RPATHS)
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 # End Conan
+
+# MacOS RPath
+if (APPLE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH 1)
+    set(CMAKE_INSTALL_RPATH "@loader_path")
+endif()
+# End MacOS RPath
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
