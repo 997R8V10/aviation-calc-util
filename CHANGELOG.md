@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2021-09-16
+### Fixed
+- Errors on Ubuntu with Boost::Filesystem.
+  - Boost Filesystem replaced with std::filesystem
+- Added exception handling to GribTile
+
 ## [0.3.1] - 2021-09-15
 ### Fixed
 - Targeting .NETStandard2.0 for NuGet package.
@@ -94,7 +100,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
-[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.3.1...HEAD
+[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.3.2...HEAD
+[0.3.2]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.1...v0.3.2
 [0.3.1]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.0...v0.3.1
 [0.3.0]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.2.1...v0.3.0
 [0.2.1]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.2.0...v0.2.1

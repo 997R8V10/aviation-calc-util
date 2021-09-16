@@ -6,7 +6,7 @@ from shutil import copyfile
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "0.3.1"
+    version = "0.3.2"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"
@@ -17,6 +17,7 @@ class AviationcalcConan(ConanFile):
     default_options = {
         "shared": True,
         "fPIC": True,
+        "boost:header_only": False,
         "boost:multithreading": True,
         "boost:without_atomic": True,
         "boost:without_chrono": True,
@@ -24,10 +25,10 @@ class AviationcalcConan(ConanFile):
         "boost:without_context": True,
         "boost:without_contract": True,
         "boost:without_coroutine": True,
-        "boost:without_date_time": True,
+        "boost:without_date_time": False,
         "boost:without_exception": True,
         "boost:without_fiber": True,
-        "boost:without_filesystem": False,
+        "boost:without_filesystem": True,
         "boost:without_graph": True,
         "boost:without_graph_parallel": True,
         "boost:without_iostreams": True,
@@ -43,7 +44,7 @@ class AviationcalcConan(ConanFile):
         "boost:without_regex": True,
         "boost:without_serialization": True,
         "boost:without_stacktrace": True,
-        "boost:without_system": False,
+        "boost:without_system": True,
         "boost:without_test": True,
         "boost:without_thread": True,
         "boost:without_timer": True,

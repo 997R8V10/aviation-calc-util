@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 0.3.1
+        VERSION 0.3.2
         DESCRIPTION "A library to assist with aviation related calculations."
         LANGUAGES CXX
         )
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 
@@ -31,15 +32,22 @@ if (NOT EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake" OR NOT EXISTS "${CMAKE
 endif ()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+conan_basic_setup(KEEP_RPATHS)
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 # End Conan
+
+# MacOS RPath
+if (APPLE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH 1)
+    set(CMAKE_INSTALL_RPATH "@loader_path")
+endif()
+# End MacOS RPath
 
 # Boost
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.76.0 REQUIRED COMPONENTS filesystem)
+find_package(Boost 1.76.0 REQUIRED)
 # End Boost
 
 # ecCodes
@@ -56,6 +64,10 @@ add_subdirectory(src)
 
 add_executable(test_atmos test_package/test_atmos.cpp)
 target_link_libraries(test_atmos aviationcalc)
+
+
+add_executable(test_geopoint test_package/test_geopoint.cpp)
+target_link_libraries(test_geopoint aviationcalc)
 
 # Install
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)

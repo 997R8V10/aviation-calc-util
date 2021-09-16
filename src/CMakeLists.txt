@@ -17,7 +17,8 @@ set(HEADER_FILES
         ${PROJECT_SOURCE_DIR}/include/MathTools/MathUtil.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoTile.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/AtmosUtil.h
-        ${PROJECT_SOURCE_DIR}/include/InteropTools/InteropUtil.h)
+        ${PROJECT_SOURCE_DIR}/include/InteropTools/InteropUtil.h
+        ${PROJECT_SOURCE_DIR}/include/InteropTools/FileSystem.h)
 
 # Add Source Files
 add_library(aviationcalc SHARED
@@ -64,12 +65,9 @@ if (WIN32)
     target_link_libraries(aviationcalc
             Urlmon
             Boost::boost
-            Boost::filesystem
-            Boost::disable_autolinking
-            Boost::dynamic_linking
             eccodes::eccodes)
 else ()
-    target_link_libraries(aviationcalc Boost::boost Boost::filesystem eccodes::eccodes CURL::libcurl)
+    target_link_libraries(aviationcalc Boost::boost eccodes::eccodes CURL::libcurl stdc++fs)
 endif ()
 
 # DLL Export Headers

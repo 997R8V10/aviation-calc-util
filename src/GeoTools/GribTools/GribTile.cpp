@@ -11,7 +11,7 @@
 
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <curl/curl.h>
 #endif
 
@@ -34,20 +34,20 @@ std::shared_ptr<const GribTile> GribTile::findOrCreateGribTile(const GeoPoint &p
     if (std::isnan(pos.getLat()) || std::isnan(pos.getLon())) {
         return nullptr;
     }
-std::cout << "line 37" << endl;
+
     const std::lock_guard<std::mutex> gt_lock(gribTileListLock);
-    std::cout << "line 39" << endl;
+
     // Look for tile
     for (const shared_ptr<GribTile> &tile : gribTileList) {
         if ((*tile) == pos && tile->isValid(dateTime)) {
             return tile;
         }
     }
-    std::cout << "line 46" << endl;
+
     // Create if not found
     auto newTile = std::make_shared<GribTile>(pos, dateTime);
     gribTileList.push_back(newTile);
-    std::cout << "line 50" << endl;
+
     return newTile;
 }
 
@@ -261,17 +261,19 @@ void GribTile::extractData() {
 
 }
 
-boost::filesystem::path GribTile::getGribPath() const {
-    return boost::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+std::filesystem::path GribTile::getGribPath() const {
+    try {
+        return std::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+    } catch (const std::filesystem::filesystem_error &ex){
+        std::cout << "Error getting temp path for grib file: " << ex.what() << endl;
+        return  std::filesystem::path("temp") / "gribtiles";
+    }
 }
 
 void GribTile::downloadTile() {
-    std::cout << "line 269" << endl;
     if (!downloaded) {
-        std::cout << "line 271" << endl;
         string gribFileName = getGribFileName();
         try {
-
             remove(gribFileName.c_str());
         }
         catch (const std::exception &ex)
@@ -279,13 +281,12 @@ void GribTile::downloadTile() {
             std::cout << "Error deleting GRIB file!" << ex.what() << endl;
         }
 
-        std::cout << "line 272" << endl;
         // Generate URL
         string url = getDownloadUrl();
-        std::cout << "line 275" << endl;
+
         // Create folder if doesn't exist
-        boost::filesystem::create_directories(getGribPath());
-        std::cout << "line 278" << endl;
+        std::filesystem::create_directories(getGribPath());
+
         // Download file (Windows & Unix)
 #ifdef _WIN32
         HRESULT hr = URLDownloadToFile(NULL, url.c_str(), gribFileName.c_str(), 0, NULL);
@@ -296,25 +297,23 @@ void GribTile::downloadTile() {
         }
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
         try {
-            std::cout << "line 291" << endl;
             CURL *curl;
             FILE *file;
             CURLcode res;
             curl = curl_easy_init();
-            std::cout << "line 296" << endl;
+
             if (curl) {
                 file = fopen(gribFileName.c_str(), "wb");
-                std::cout << "line 299" << endl;
+
                 curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
                 res = curl_easy_perform(curl);
-                std::cout << "line 303" << endl;
+
                 /* always cleanup */
                 curl_easy_cleanup(curl);
                 fclose(file);
-                std::cout << "line 307" << endl;
             }
         }
         catch (const std::exception &ex)
@@ -346,10 +345,9 @@ GribTile::GribTile(const GeoPoint &pos, ptime dateTime) : GeoTile(pos, 1) {
     forecastDateUtc = dateTime;
 
     // Download asynchronously
-
-    //thread([this]() {
+    thread([this]() {
         downloadTile();
-    //}).detach();
+    }).detach();
 
 }
 
@@ -359,6 +357,7 @@ ptime GribTile::getForecastDateUtc() const {
 
 string GribTile::getGribFileName() const {
     stringstream ss;
+
     auto path = getGribPath();
 
     ss << "GribTile_" << getGribDateString()
@@ -369,7 +368,6 @@ string GribTile::getGribFileName() const {
        << ".grb";
 
     path /= ss.str();
-
     return path.string();
 }
 
