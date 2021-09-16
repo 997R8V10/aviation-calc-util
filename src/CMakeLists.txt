@@ -2,7 +2,6 @@
 
 # Get Headers
 set(HEADER_FILES
-        ${PROJECT_SOURCE_DIR}/include/AviationCalc.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoPoint.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoUtil.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GribTools/GribDataPoint.h
@@ -18,7 +17,8 @@ set(HEADER_FILES
         ${PROJECT_SOURCE_DIR}/include/GeoTools/GeoTile.h
         ${PROJECT_SOURCE_DIR}/include/GeoTools/AtmosUtil.h
         ${PROJECT_SOURCE_DIR}/include/InteropTools/InteropUtil.h
-        ${PROJECT_SOURCE_DIR}/include/InteropTools/FileSystem.h)
+        ${CMAKE_BINARY_DIR}/genheaders/aviationcalc_exports.h
+        ${CMAKE_BINARY_DIR}/genheaders/FileSystem.h)
 
 # Add Source Files
 add_library(aviationcalc SHARED
@@ -40,9 +40,14 @@ add_library(aviationcalc SHARED
         GeoTools/AtmosUtil.cpp
         InteropTools/InteropUtil.cpp)
 
+# Generate FileSystem.h file
+configure_file(${PROJECT_SOURCE_DIR}/cmakescripts/FileSystem.h.in
+        ${CMAKE_BINARY_DIR}/genheaders/FileSystem.h
+        )
+
 # Set Include Folders
 target_include_directories(aviationcalc PUBLIC
-        ${CMAKE_BINARY_DIR}/exports
+        ${CMAKE_BINARY_DIR}/genheaders
         ${PROJECT_SOURCE_DIR}/include
         )
 
@@ -55,25 +60,21 @@ set_target_properties(aviationcalc
         )
 
 # Link Libraries
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-foreach (dir ${dirs})
-    message(STATUS "dir='${dir}'")
-endforeach ()
-message("${INCLUDE_DIRECTORIES}")
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     target_link_libraries(aviationcalc
             Urlmon
             Boost::boost
-            eccodes::eccodes)
+            eccodes::eccodes
+            std::filesystem)
 else ()
-    target_link_libraries(aviationcalc Boost::boost eccodes::eccodes CURL::libcurl stdc++fs)
+    target_link_libraries(aviationcalc Boost::boost eccodes::eccodes CURL::libcurl std::filesystem)
 endif ()
 
 # DLL Export Headers
 GENERATE_EXPORT_HEADER(aviationcalc
         BASE_NAME AVIATIONCALC
-        EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/aviationcalc_exports.h
+        EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/genheaders/aviationcalc_exports.h
         STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
 
 # NuGet Package
