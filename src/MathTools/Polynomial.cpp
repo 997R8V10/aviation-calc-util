@@ -6,6 +6,7 @@
 
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <iostream>
 
 using namespace AviationCalcUtil::MathTools;
 
@@ -51,11 +52,14 @@ Polynomial::Polynomial(const Polynomial &other) {
 }
 
 Polynomial *CreatePolynomial(double *coefficients, int coefficientsSize) {
-    vector<double> coefficientsVector(coefficientsSize);
+    vector<double> coefficientsVector{};
     for (int i = 0; i < coefficientsSize; i++)
     {
         coefficientsVector.push_back(coefficients[i]);
+        cout << coefficients[i];
     }
+    cout << endl;
+
     return new Polynomial(coefficientsVector);
 }
 
@@ -70,7 +74,7 @@ void DisposePolynomial(Polynomial *ptr) {
 double PolynomialEvaluate(Polynomial *ptr, double x) {
     if (ptr != NULL)
     {
-        ptr->evaluate(x);
+        return ptr->evaluate(x);
     }
     return -1;
 }
