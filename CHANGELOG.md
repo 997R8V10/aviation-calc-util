@@ -6,12 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.0] - 2021-09-20
+## [0.3.0] - 2021-09-15
 ### Added
 - C api for all functions for .NET and Swift support.
 - NuGet package creation on Linux.
-- GribDataPoint
-  - Copy Constructor
+- Copy Constructors added to several classes.
+- NuGet package now targets Native, .NET Core App 3.1, and .NET Framework 4.7
 
 ## [0.2.1] - 2021-09-03
 ### Fixed

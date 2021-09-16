@@ -8,6 +8,7 @@
 #include "GeoTools/MagneticTools/MagneticResult.h"
 #include "GeoTools/GeoPoint.h"
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include "InteropTools/InteropUtil.h"
 
 #ifdef _LIBRARY
 #include "MagneticModel.h"
@@ -79,6 +80,23 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         /// \return Magnetic Bearing (degrees)
         AVIATIONCALC_EXPORT static double convertTrueToMagneticTile(double trueBearing, const GeoPoint &position);
     };
+}
+
+extern "C"{
+    extern AVIATIONCALC_EXPORT double MagneticUtilGetConst_EARTH_WGS84_SEMI_MAJOR_AXIS();
+    extern AVIATIONCALC_EXPORT double MagneticUtilGetConst_EARTH_WGS84_RECIPROCAL_FLATTENING();
+    extern AVIATIONCALC_EXPORT int MagneticUtilGetConst_WMM_EXPANSION();
+    extern AVIATIONCALC_EXPORT double MagneticUtilGetConst_GEOMAGNETIC_REFERENCE_RADIUS();
+    extern AVIATIONCALC_EXPORT void MagneticUtilLoadData();
+    extern AVIATIONCALC_EXPORT std::shared_ptr<const MagneticResult> *MagneticUtilGetMagneticField(GeoPoint *point, InteropDateStruct dStruct);
+    extern AVIATIONCALC_EXPORT double MagneticUtilGetEpochYear(InteropDateStruct dStruct);
+    extern AVIATIONCALC_EXPORT void MagneticUtilGetSpherical(GeoPoint *point, double &lambda, double &phiPrime, double &r);
+    extern AVIATIONCALC_EXPORT double MagneticUtilConvertMagneticToTrue1(double magneticBearing, double declination);
+    extern AVIATIONCALC_EXPORT double MagneticUtilConvertMagneticToTrue2(double magneticBearing, GeoPoint *position);
+    extern AVIATIONCALC_EXPORT double MagneticUtilConvertTrueToMagnetic1(double trueBearing, double declination);
+    extern AVIATIONCALC_EXPORT double MagneticUtilConvertTrueToMagnetic2(double trueBearing, GeoPoint *position);
+    extern AVIATIONCALC_EXPORT double MagneticUtilConvertMagneticToTrueTile(double magneticBearing, GeoPoint *position);
+    extern AVIATIONCALC_EXPORT double MagneticUtilConvertTrueToMagneticTile(double trueBearing, GeoPoint *position);
 }
 
 #endif //AVIATION_CALC_UTIL_MAGNETICUTIL_H

@@ -109,6 +109,10 @@ configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/netcore.targets.xml
         ${CMAKE_BINARY_DIR}/nuget/build/netcoreapp3.1/${NUGET_PACKAGE_NAME}.targets
         )
 
+configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/net.targets.xml
+        ${CMAKE_BINARY_DIR}/nuget/build/net47/${NUGET_PACKAGE_NAME}.targets
+        )
+
 if (WIN32)
     # Generate pack-nuget.bat
     configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/pack-nuget.bat
