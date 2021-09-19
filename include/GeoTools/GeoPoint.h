@@ -59,7 +59,7 @@ namespace AviationCalcUtil::GeoTools {
         void setAlt(double newAlt);
     };
 }
-
+/**
 using namespace AviationCalcUtil::GeoTools;
 
 extern "C"
@@ -84,4 +84,5 @@ extern AVIATIONCALC_EXPORT void GeoPointSetLon(GeoPoint* ptr, double newLon);
 extern AVIATIONCALC_EXPORT double GeoPointGetAlt(GeoPoint* ptr);
 extern AVIATIONCALC_EXPORT void GeoPointSetAlt(GeoPoint* ptr, double newAlt);
 }
+ **/
 #endif //AVIATION_SIM_UTIL_GEOPOINT_H

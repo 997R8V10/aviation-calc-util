@@ -120,28 +120,13 @@ namespace AviationCalcUtil::GeoTools {
 
         static double calculateIsaTemp(double alt_pres_ft);
 
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertPressureToDensityAlt(double alt_pres_ft, double sat);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertIasToTas(double ias, double alt_dens_ft);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertTasToIas(double tas, double alt_dens_ft);
-
         static double calculateTurnAmount(double currentHeading, double desiredHeading);
 
 
     };
 }
 
-using namespace AviationCalcUtil::GeoTools;
+/**using namespace AviationCalcUtil::GeoTools;
 
 extern "C"
 {
@@ -187,7 +172,7 @@ extern AVIATIONCALC_EXPORT double GeoUtilGetStdPresHpa();
 extern AVIATIONCALC_EXPORT double GeoUtilGetStdTempC();
 extern AVIATIONCALC_EXPORT double GeoUtilGetStdLapseRate();
 extern AVIATIONCALC_EXPORT double GeoUtilGetStdPresDrop();
-}
+}**/
 
 
 #endif //AVIATION_SIM_UTIL_GEOUTIL_H
