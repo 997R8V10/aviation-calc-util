@@ -16,6 +16,7 @@ echo "\\                      Installing ecCodes                      \\"
 echo "\\--------------------------------------------------------------\\"
 echo ""
 conan export eccodes
+conan export .
 
 echo "\\--------------------------------------------------------------\\"
 echo "\\                     Building x86 (Debug)                     \\"

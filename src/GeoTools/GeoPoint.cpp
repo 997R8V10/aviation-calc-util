@@ -314,7 +314,7 @@ double GeoPointGetLon(AviationCalcUtil::GeoTools::GeoPoint *ptr) {
 void GeoPointSetLon(AviationCalcUtil::GeoTools::GeoPoint *ptr, double newLon) {
     if (ptr != NULL)
     {
-        ptr->setLat(newLon);
+        ptr->setLon(newLon);
     }
 }
 
@@ -329,7 +329,7 @@ double GeoPointGetAlt(AviationCalcUtil::GeoTools::GeoPoint *ptr) {
 void GeoPointSetAlt(AviationCalcUtil::GeoTools::GeoPoint *ptr, double newAlt) {
     if (ptr != NULL)
     {
-        ptr->setLat(newAlt);
+        ptr->setAlt(newAlt);
     }
 }
 
