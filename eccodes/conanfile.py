@@ -63,7 +63,7 @@ class EccodesConan(ConanFile):
 	def config_options(self):
 		if self.settings.os == "Windows":
 			del self.options.fPIC
-			self.build_requires.append("strawberryperl/5.28.1.1@conan/stable")
+			self.build_requires.append("strawberryperl/5.28.1.1")
 
 	def source(self):
 		url = "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz"
