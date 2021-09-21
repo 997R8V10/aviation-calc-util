@@ -32,11 +32,11 @@ void testTrueAirspeed1(double ias, double altFt, double satC){
     cout << "\tMach: \t\t" << M << endl;
     cout << "\tEAS: \t\t" << MathUtil::convertMpersToKts(eas) << "kts" << endl;
 
-    double geoTas = GeoUtil::convertIasToTas(ias, GeoUtil::STD_PRES_HPA, altFt, MathUtil::convertKelvinToCelsius(T));
+    //double geoTas = GeoUtil::convertIasToTas(ias, GeoUtil::STD_PRES_HPA, altFt, MathUtil::convertKelvinToCelsius(T));
 
     cout << "\tOnline TAS: \t" << onlineTas << "kts" << endl;
     cout << "\tAtmos. TAS: \t" << MathUtil::convertMpersToKts(atmosTas) << "kts" << endl;
-    cout << "\tGeo. TAS: \t" << geoTas << "kts" << endl;
+    //cout << "\tGeo. TAS: \t" << geoTas << "kts" << endl;
 }
 
 void testConvertTasToIas(){
