@@ -160,7 +160,7 @@ double AtmosUtil::convertTasToIas(double tas_kts, double refPress_hPa, double al
 
     return MathUtil::convertMpersToKts(cas);
 }
-
+/*
 double AtmosUtilCalculateDryAirDensity(double p, double T) {
     return AtmosUtil::calculateDryAirDensity(p, T);
 }
@@ -255,3 +255,4 @@ double AtmosUtilGetConst_ISA_STD_LAPSE_RATE() {
 double AtmosUtilGetConst_EARTH_G() {
     return AtmosUtil::EARTH_G;
 }
+*/

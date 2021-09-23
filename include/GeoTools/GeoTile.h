@@ -41,7 +41,7 @@ namespace AviationCalcUtil::GeoTools {
         double getRightLon() const;
     };
 }
-
+/*
 using namespace AviationCalcUtil::GeoTools;
 
 extern "C" {
@@ -56,5 +56,5 @@ extern AVIATIONCALC_EXPORT double GeoTileGetTopLat(GeoTile *tile);
 extern AVIATIONCALC_EXPORT double GeoTileGetLeftLon(GeoTile *tile);
 extern AVIATIONCALC_EXPORT double GeoTileGetRightLon(GeoTile *tile);
 }
-
+*/
 #endif //AVIATION_CALC_UTIL_GEOTILE_H

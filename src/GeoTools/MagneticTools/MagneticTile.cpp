@@ -46,7 +46,7 @@ MagneticTile::MagneticTile(const GeoPoint &point, const boost::gregorian::date &
 bool MagneticTile::isValid(const boost::gregorian::date &date) const{
     return this->date == date;
 }
-
+/*
 double MagnetiTileGetResolution() {
     return MagneticTile::RESOLUTION;
 }
@@ -148,3 +148,4 @@ double MagneticTileGetRightLon(shared_ptr<const MagneticTile> *tile) {
     }
     return (*tile)->getRightLon();
 }
+*/

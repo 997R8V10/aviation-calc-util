@@ -194,6 +194,7 @@ double GeoPoint::operator-(const GeoPoint &point) const {
     return distanceM(*this, point);
 }
 
+/*
 AviationCalcUtil::GeoTools::GeoPoint *CreateGeoPoint(double lat, double lon, double alt) {
     return new GeoPoint(lat, lon, alt);
 }
@@ -331,6 +332,6 @@ void GeoPointSetAlt(AviationCalcUtil::GeoTools::GeoPoint *ptr, double newAlt) {
     {
         ptr->setAlt(newAlt);
     }
-}
+}*/
 
 

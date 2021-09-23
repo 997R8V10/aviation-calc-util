@@ -42,7 +42,7 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         AVIATIONCALC_EXPORT shared_ptr<const MagneticResult> getData() const;
     };
 }
-
+/*
 extern "C"{
     extern AVIATIONCALC_EXPORT double MagnetiTileGetResolution();
     extern AVIATIONCALC_EXPORT shared_ptr<const MagneticTile> *MagneticTileFindOrCreateTile(GeoPoint *pos, InteropDateStruct dStruct);
@@ -57,5 +57,5 @@ extern "C"{
     extern AVIATIONCALC_EXPORT double MagneticTileGetLeftLon(shared_ptr<const MagneticTile> *tile);
     extern AVIATIONCALC_EXPORT double MagneticTileGetRightLon(shared_ptr<const MagneticTile> *tile);
 }
-
+*/
 #endif //AVIATION_CALC_UTIL_MAGNETICTILE_H

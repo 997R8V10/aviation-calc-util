@@ -6,7 +6,6 @@
 #define AVIATION_SIM_UTIL_GEOUTIL_H
 
 #include "GeoTools/GeoPoint.h"
-#include <tuple>
 #include <memory>
 #include "aviationcalc_exports.h"
 
@@ -108,8 +107,9 @@ namespace AviationCalcUtil::GeoTools {
 
         static double calculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn);
 
-        static tuple<double, double> calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
-                                                                      double radiusOfTurnNMi, bool isRightTurn);
+        static void calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
+                                                                      double radiusOfTurnNMi, bool isRightTurn,
+                                                                      double &chordHeading, double &chordDistance);
 
 
         static double convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);

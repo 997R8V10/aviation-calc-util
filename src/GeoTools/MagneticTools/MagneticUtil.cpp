@@ -196,7 +196,7 @@ double MagneticUtil::convertTrueToMagneticTile(double trueBearing, const GeoPoin
 
     return convertTrueToMagnetic(trueBearing, declin);
 }
-
+/*
 double MagneticUtilGetConst_EARTH_WGS84_SEMI_MAJOR_AXIS() {
     return MagneticUtil::EARTH_WGS84_SEMI_MAJOR_AXIS;
 }
@@ -269,3 +269,4 @@ double MagneticUtilConvertTrueToMagneticTile(double trueBearing, GeoPoint *posit
     }
     return -1;
 }
+*/

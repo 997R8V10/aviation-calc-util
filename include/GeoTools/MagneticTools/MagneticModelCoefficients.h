@@ -8,7 +8,7 @@
 #include <boost/date_time/gregorian/greg_date.hpp>
 #include <memory>
 #include "aviationcalc_exports.h"
-#include "InteropTools/InteropUtil.h"
+//#include "InteropTools/InteropUtil.h"
 
 namespace AviationCalcUtil::GeoTools::MagneticTools {
     class AVIATIONCALC_EXPORT MagneticModelCoefficients {
@@ -40,7 +40,7 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         std::unique_ptr<MagneticModelCoefficients> getPointOnDate(double modelEpoch, const boost::gregorian::date &date) const;
     };
 }
-
+/*
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 
 extern "C"{
@@ -55,5 +55,5 @@ extern "C"{
     extern AVIATIONCALC_EXPORT double MagModelCoeffsGetHDot(MagneticModelCoefficients *coeffs);
     extern AVIATIONCALC_EXPORT MagneticModelCoefficients *MagModelCoeffsGetPointOnDate(MagneticModelCoefficients *coeffs, double modelEpoch, InteropDateStruct dateStruct);
 }
-
+*/
 #endif //AVIATION_CALC_UTIL_MAGNETICMODELCOEFFICIENTS_H

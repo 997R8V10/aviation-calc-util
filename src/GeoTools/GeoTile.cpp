@@ -84,7 +84,7 @@ unique_ptr<GeoPoint> GeoTile::getCenterPoint() const {
     double centerLon = (leftLon + rightLon) / 2;
     return make_unique<GeoPoint>(centerLat, centerLon);
 }
-
+/*
 GeoTile *CreateGeoTile(double botLat, double topLat, double leftLon, double rightLon) {
     return new GeoTile(botLat, topLat, leftLon, rightLon);
 }
@@ -153,3 +153,4 @@ GeoTile *CopyGeoTile(GeoTile *tile) {
     }
     return new GeoTile(*tile);
 }
+*/

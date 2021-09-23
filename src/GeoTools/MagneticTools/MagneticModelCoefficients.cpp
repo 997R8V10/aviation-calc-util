@@ -54,7 +54,7 @@ MagneticModelCoefficients::getPointOnDate(double modelEpoch, const boost::gregor
 
     return std::make_unique<MagneticModelCoefficients>(n, m, g_nm_t, h_nm_t, g_dot_nm, h_dot_nm);
 }
-
+/*
 MagneticModelCoefficients *CopyMagModelCoeffs(MagneticModelCoefficients *o) {
     if (o == NULL){
         return NULL;
@@ -124,3 +124,4 @@ MagModelCoeffsGetPointOnDate(MagneticModelCoefficients *coeffs, double modelEpoc
 
     return coeffs->getPointOnDate(modelEpoch, InteropStructToBoostDate(dateStruct)).release();
 }
+*/

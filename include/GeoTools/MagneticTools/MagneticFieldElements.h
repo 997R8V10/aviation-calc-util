@@ -52,7 +52,7 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         void setIncl(double newIncl);
     };
 }
-
+/*
 using namespace AviationCalcUtil::GeoTools::MagneticTools;
 
 extern "C"
@@ -73,6 +73,6 @@ extern AVIATIONCALC_EXPORT double MagneticFieldElementsGetDecl(MagneticFieldElem
 extern AVIATIONCALC_EXPORT void MagneticFieldElementsSetDecl(MagneticFieldElements* ptr, double newDecl);
 extern AVIATIONCALC_EXPORT double MagneticFieldElementsGetIncl(MagneticFieldElements* ptr);
 extern AVIATIONCALC_EXPORT void MagneticFieldElementsSetIncl(MagneticFieldElements* ptr, double newIncl);
-}
+}*/
 
 #endif //AVIATION_CALC_UTIL_MAGNETICFIELDELEMENTS_H

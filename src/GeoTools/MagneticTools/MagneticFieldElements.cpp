@@ -81,7 +81,7 @@ MagneticFieldElements::MagneticFieldElements(const MagneticFieldElements &other)
     incl = other.getIncl();
     decl = other.getDecl();
 }
-
+/*
 MagneticFieldElements *CreateMagneticFieldElements() {
     return new MagneticFieldElements();
 }
@@ -196,4 +196,4 @@ void DisposeMagneticElements(MagneticFieldElements *ptr) {
         delete ptr;
         ptr = nullptr;
     }
-}
+}*/

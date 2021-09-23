@@ -119,7 +119,7 @@ const MagneticFieldElements &MagneticResult::getMainFieldElements() const {
 const MagneticFieldElements &MagneticResult::getSecularFieldElements() const {
     return secElements;
 }
-
+/*
 std::shared_ptr<const MagneticResult> *CreateMagneticResult(std::shared_ptr<const MagneticModel> *model, GeoPoint *point, InteropDateStruct dStruct) {
     if (model != NULL && point != NULL)
     {
@@ -153,4 +153,4 @@ MagneticFieldElements *MagneticResultGetSecularFieldElements(std::shared_ptr<con
         return new MagneticFieldElements(elems);
     }
     return NULL;
-}
+}*/

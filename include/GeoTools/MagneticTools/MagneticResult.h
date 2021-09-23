@@ -42,12 +42,12 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         AVIATIONCALC_EXPORT const MagneticFieldElements &getSecularFieldElements() const;
     };
 }
-
+/*
 extern "C"
 {
 extern AVIATIONCALC_EXPORT std::shared_ptr<const MagneticResult> *CreateMagneticResult(std::shared_ptr<const MagneticModel> *model, GeoPoint *point, InteropDateStruct dStruct);
 extern AVIATIONCALC_EXPORT void DisposeMagneticResult(std::shared_ptr<const MagneticResult> *ptr);
 extern AVIATIONCALC_EXPORT MagneticFieldElements *MagneticResultGetMainFieldElements(std::shared_ptr<const MagneticResult> *ptr);
 extern AVIATIONCALC_EXPORT MagneticFieldElements *MagneticResultGetSecularFieldElements(std::shared_ptr<const MagneticResult> *ptr);
-}
+}*/
 #endif //AVIATION_CALC_UTIL_MAGNETICRESULT_H

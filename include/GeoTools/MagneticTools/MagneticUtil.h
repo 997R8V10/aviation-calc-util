@@ -8,7 +8,7 @@
 #include "GeoTools/MagneticTools/MagneticResult.h"
 #include "GeoTools/GeoPoint.h"
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include "InteropTools/InteropUtil.h"
+//#include "InteropTools/InteropUtil.h"
 
 #ifdef _LIBRARY
 #include "MagneticModel.h"
@@ -81,7 +81,7 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
         AVIATIONCALC_EXPORT static double convertTrueToMagneticTile(double trueBearing, const GeoPoint &position);
     };
 }
-
+/*
 extern "C"{
     extern AVIATIONCALC_EXPORT double MagneticUtilGetConst_EARTH_WGS84_SEMI_MAJOR_AXIS();
     extern AVIATIONCALC_EXPORT double MagneticUtilGetConst_EARTH_WGS84_RECIPROCAL_FLATTENING();
@@ -98,5 +98,5 @@ extern "C"{
     extern AVIATIONCALC_EXPORT double MagneticUtilConvertMagneticToTrueTile(double magneticBearing, GeoPoint *position);
     extern AVIATIONCALC_EXPORT double MagneticUtilConvertTrueToMagneticTile(double trueBearing, GeoPoint *position);
 }
-
+*/
 #endif //AVIATION_CALC_UTIL_MAGNETICUTIL_H

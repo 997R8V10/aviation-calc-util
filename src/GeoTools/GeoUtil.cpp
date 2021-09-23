@@ -107,22 +107,6 @@ double GeoUtil::calculateEndHeading(double startHeading, double degreesTurned, b
     return normalizeHeading(newHeading);
 }
 
-tuple<double, double> GeoUtil::calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
-                                                                double radiusOfTurnNMi, bool isRightTurn) {
-    double chordLengthNMi = 2 * radiusOfTurnNMi * std::sin(degreesTurned * M_PI / (180.0 * 2));
-    double chordHeading = startHeading;
-
-    if (isRightTurn) {
-        chordHeading += (degreesTurned / 2);
-    } else {
-        chordHeading -= (degreesTurned / 2);
-    }
-
-    chordHeading = normalizeHeading(chordHeading);
-
-    return {chordHeading, chordLengthNMi};
-}
-
 double GeoUtil::convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
     double pressDiff = pres_set_hpa - sfc_pres_hpa;
     return alt_ind_ft - (STD_PRES_DROP * pressDiff);
@@ -292,6 +276,21 @@ std::unique_ptr<GeoPoint> GeoUtil::findIntersection(const GeoPoint &position, co
     return intersection2;
 }
 
+void GeoUtil::calculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi,
+                                               bool isRightTurn, double &chordHeading, double &chordDistance) {
+    chordDistance = 2 * radiusOfTurnNMi * std::sin(degreesTurned * M_PI / (180.0 * 2));
+    chordHeading = startHeading;
+
+    if (isRightTurn) {
+        chordHeading += (degreesTurned / 2);
+    } else {
+        chordHeading -= (degreesTurned / 2);
+    }
+
+    chordHeading = normalizeHeading(chordHeading);
+}
+
+/*
 double GeoUtilCalculateDirectBearingAfterTurn(AviationCalcUtil::GeoTools::GeoPoint *aircraft,
                                               AviationCalcUtil::GeoTools::GeoPoint *waypoint, double r,
                                               double curBearing) {
@@ -402,7 +401,7 @@ double GeoUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_h
 double GeoUtilCalculateIsaTemp(double alt_pres_ft) {
     return GeoUtil::calculateIsaTemp(alt_pres_ft);
 }
-/**
+
 double GeoUtilConvertPressureToDensityAlt(double alt_pres_ft, double sat) {
     return GeoUtil::convertPressureToDensityAlt(alt_pres_ft, sat);
 }
@@ -421,7 +420,7 @@ double GeoUtilConvertIasToTasFromDensityAltitude(double ias, double alt_dens_ft)
 
 double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft) {
     return GeoUtil::convertTasToIas(tas, alt_dens_ft);
-}**/
+}
 
 double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading) {
     return GeoUtil::calculateTurnAmount(currentHeading, desiredHeading);
@@ -445,4 +444,4 @@ double GeoUtilGetStdLapseRate() {
 
 double GeoUtilGetStdPresDrop() {
     return GeoUtil::STD_PRES_DROP;
-}
+}*/

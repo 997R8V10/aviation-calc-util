@@ -50,7 +50,7 @@ const std::string &MagneticModel::getModelName() const {
 const date &MagneticModel::getReleaseDate() const {
     return releaseDate;
 }
-
+/*
 std::shared_ptr<const MagneticModel> *
 CreateMagModel(double modelEpoch, const char *modelName, InteropDateStruct dStruct,
                MagneticModelCoefficients **coefficients, int coeffsSize) {
@@ -120,3 +120,4 @@ InteropDateStruct MagModelGetReleaseDate(std::shared_ptr<const MagneticModel> *m
 
     return InteropBoostDateToStruct(model->get()->getReleaseDate());
 }
+*/

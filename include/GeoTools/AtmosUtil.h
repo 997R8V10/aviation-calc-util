@@ -131,7 +131,7 @@ namespace AviationCalcUtil::GeoTools {
         AVIATIONCALC_EXPORT static double convertTasToIas(double tas_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
     };
 }
-
+/*
 extern "C" {
     extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_R_DRY_AIR();
     extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_SPEC_HEAT_RATIO_AIR();
@@ -156,6 +156,6 @@ extern AVIATIONCALC_EXPORT double AtmosUtilCalculateDensityAltitude(double p, do
 extern AVIATIONCALC_EXPORT double AtmosUtilCalculateSpeedOfSoundDryAir(double T);
 extern AVIATIONCALC_EXPORT double AtmosUtilConvertIasToTas(double ias_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
 extern AVIATIONCALC_EXPORT double AtmosUtilConvertTasToIas(double tas_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
-}
+}*/
 
 #endif //AVIATION_CALC_UTIL_ATMOSUTIL_H
