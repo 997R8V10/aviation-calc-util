@@ -26,6 +26,12 @@ set_property(SOURCE GeoTools/MagneticTools/MagneticFieldElements.i PROPERTY COMP
 set_property(SOURCE GeoTools/MagneticTools/MagneticModelCoefficients.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE GeoTools/MagneticTools/MagneticModelCoefficients.i PROPERTY COMPILE_OPTIONS
         -namespace AviationCalcUtilNet.GeoTools.MagneticTools)
+set_property(SOURCE GeoTools/MagneticTools/MagneticModel.i PROPERTY CPLUSPLUS ON)
+set_property(SOURCE GeoTools/MagneticTools/MagneticModel.i PROPERTY COMPILE_OPTIONS
+        -namespace AviationCalcUtilNet.GeoTools.MagneticTools)
+set_property(SOURCE GeoTools/MagneticTools/MagneticResult.i PROPERTY CPLUSPLUS ON)
+set_property(SOURCE GeoTools/MagneticTools/MagneticResult.i PROPERTY COMPILE_OPTIONS
+        -namespace AviationCalcUtilNet.GeoTools.MagneticTools)
 
 
 # Build Bridge Library
@@ -41,6 +47,8 @@ swig_add_library(aviationcalc_netbrg
         GeoTools/GeoTile.i
         GeoTools/MagneticTools/MagneticFieldElements.i
         GeoTools/MagneticTools/MagneticModelCoefficients.i
+        GeoTools/MagneticTools/MagneticModel.i
+        GeoTools/MagneticTools/MagneticResult.i
         )
 
 set_target_properties(aviationcalc_netbrg PROPERTIES

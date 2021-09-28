@@ -3,7 +3,7 @@
 %include <attribute.i>
 
 %define %unique_ptr(TYPE)
-    %typemap (ctype) std::auto_ptr<TYPE > "void *"
+    %typemap (ctype) std::unique_ptr<TYPE > "void *"
     %typemap (imtype, out="global::System.IntPtr") std::unique_ptr<TYPE > "HandleRef"
     %typemap (cstype) std::unique_ptr<TYPE > "$typemap(cstype, TYPE)"
     %typemap (out) std::unique_ptr<TYPE > %{
@@ -16,7 +16,7 @@
     }
 
     // Out var handling
-    %typemap (ctype) std::auto_ptr<TYPE > & OUTPUT "void **"
+    %typemap (ctype) std::unique_ptr<TYPE > & OUTPUT "void **"
     %typemap (imtype, out="global::System.IntPtr") std::unique_ptr<TYPE > & OUTPUT "out global::System.IntPtr"
     %typemap (cstype) std::unique_ptr<TYPE > & OUTPUT "out $typemap(cstype, TYPE)"
 

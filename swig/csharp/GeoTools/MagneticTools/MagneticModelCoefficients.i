@@ -8,10 +8,14 @@
 // Imports
 %include <attribute.i>
 %include ../../tools/std_unique_ptr.i
+%include <std_shared_ptr.i>
 %import ../../tools/boost_gregorian_date.i
 
 // Boost Date
 %boost_gregorian_date();
+
+// Shared Pointer
+%shared_ptr(AviationCalcUtil::GeoTools::MagneticTools::MagneticModelCoefficients);
 
 // Unique Ptr
 %unique_ptr(AviationCalcUtil::GeoTools::MagneticTools::MagneticModelCoefficients);
