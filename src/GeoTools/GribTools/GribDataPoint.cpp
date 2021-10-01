@@ -138,7 +138,7 @@ GribTools::GribDataPoint::GribDataPoint(const GribTools::GribDataPoint &point): 
     rh = point.getRelHumidity();
     sfcPress_hPa = point.getSfcPressHPa();
 }
-
+/*
 GribDataPoint *CreateGribDataPoint(double lat, double lon, int level_hPa) {
     return new GribDataPoint(lat, lon, level_hPa);
 }
@@ -327,3 +327,4 @@ void GribDataPointSetSfcPressHPa(GribDataPoint *point, double newSfcPressHPa) {
         point->setSfcPressHPa(newSfcPressHPa);
     }
 }
+*/

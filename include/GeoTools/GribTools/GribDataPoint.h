@@ -79,7 +79,7 @@ namespace AviationCalcUtil::GeoTools::GribTools {
         AVIATIONCALC_EXPORT void setSfcPressHPa(double newSfcPressHPa);
     };
 }
-
+/*
 using namespace GribTools;
 
 extern "C"{
@@ -110,4 +110,5 @@ extern "C"{
     extern AVIATIONCALC_EXPORT double GribDataPointGetSfcPressHPa(GribDataPoint *point);
     extern AVIATIONCALC_EXPORT void GribDataPointSetSfcPressHPa(GribDataPoint *point, double newSfcPressHPa);
 }
+ */
 #endif //AVIATION_CALC_UTIL_GRIBDATAPOINT_H

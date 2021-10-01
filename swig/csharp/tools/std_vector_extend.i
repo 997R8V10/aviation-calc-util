@@ -3,13 +3,17 @@
 %include <std_vector.i>
 
 %define %std_vector_extend(NAME, TYPE)
-    SWIG_STD_VECTOR_ENHANCED(TYPE);
-    %typemap (cstype) const std::vector<TYPE> & "global::System.Collections.IList<$typemap(cstype, TYPE)>"
-
-    %typemap(csin,
-             pre="    NAME temp$csinput = new NAME($csinput);"
-                     ) const std::vector<TYPE> & "temp$csinput"
+    %rename("%s", %$isfunction) "";
     namespace std {
         %template(NAME) vector<TYPE>;
     };
+%enddef
+
+%define %std_vector_apply(NAME, TYPE, ARG)
+    %rename("%s", %$isfunction) "";
+    %typemap (cstype) const std::vector<TYPE> & ARG "global::System.Collections.Generic.IEnumerable<$typemap(cstype, TYPE)>"
+
+    %typemap(csin,
+         pre="    NAME temp$csinput = new NAME($csinput);"
+                 ) const std::vector<TYPE> & ARG "$csclassname.getCPtr(temp$csinput)"
 %enddef

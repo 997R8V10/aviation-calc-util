@@ -429,7 +429,7 @@ string GribTile::getDownloadUrl() const {
 
     return ss.str();
 }
-
+/*
 shared_ptr<const GribTile> *GribTileFindOrCreateGribTile(GeoPoint *pos, uint64_t dateTime) {
     if (pos == NULL){
         return nullptr;
@@ -534,3 +534,4 @@ double GribTileGetRightLon(shared_ptr<const GribTile> *tile) {
     }
     return tile->get()->getRightLon();
 }
+*/

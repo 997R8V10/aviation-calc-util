@@ -39,15 +39,14 @@
 %}
 
 // C# In Conversion
-%typemap(csin, pre=%{
-    global::System.DateTime temp$csinput = $csinput.ToUniversalTime();
-
-    //C# offset till 1400.01.01 00:00:00
-    long netEpochOffset = 441481536000000000L;
-
-    // Get Nanoseconds since boost epoch
-    ulong result$csinput = (ulong) (temp$csinput.Ticks - netEpochOffset);
-%}) const boost::posix_time::ptime & "result$csinput"
+%typemap(csin, pre="global::System.DateTime temp$csinput = $csinput.ToUniversalTime();\n"
+                   "\n"
+                   "    //C# offset till 1400.01.01 00:00:00\n"
+                   "    long netEpochOffset = 441481536000000000L;\n"
+                   "\n"
+                   "    // Get Nanoseconds since boost epoch\n"
+                   "    ulong result$csinput = (ulong) (temp$csinput.Ticks - netEpochOffset);"
+                   ) const boost::posix_time::ptime & "result$csinput";
 
 // C# Out Conversion
 %typemap(csout, excode=SWIGEXCODE) const boost::posix_time::ptime & {
@@ -88,15 +87,14 @@
 %}
 
 // C# In Conversion
-%typemap(csin, pre=%{
-    global::System.DateTime temp$csinput = $csinput.ToUniversalTime();
-
-    //C# offset till 1400.01.01 00:00:00
-    long netEpochOffset = 441481536000000000L;
-
-    // Get Nanoseconds since boost epoch
-    ulong result$csinput = (ulong) (temp$csinput.Ticks - netEpochOffset);
-%}) boost::posix_time::ptime "result$csinput"
+%typemap(csin, pre="global::System.DateTime temp$csinput = $csinput.ToUniversalTime();\n"
+                   "\n"
+                   "    //C# offset till 1400.01.01 00:00:00\n"
+                   "    long netEpochOffset = 441481536000000000L;\n"
+                   "\n"
+                   "    // Get Nanoseconds since boost epoch\n"
+                   "    ulong result$csinput = (ulong) (temp$csinput.Ticks - netEpochOffset);"
+                   ) boost::posix_time::ptime "result$csinput";
 
 // C# Out Conversion
 %typemap(csout, excode=SWIGEXCODE) boost::posix_time::ptime {
@@ -129,3 +127,12 @@
         return ret;
     }
 %}
+
+namespace boost{
+    namespace gregorian{
+
+    };
+    namespace posix_time{
+
+    };
+};

@@ -1,4 +1,5 @@
 %module mod_magneticresult
+%nspace AviationCalcUtil::GeoTools::MagneticTools::MagneticResult;
 
 // Source header
 %{
@@ -8,9 +9,13 @@
 // Imports
 %include <attribute.i>
 %import ../../tools/boost_gregorian_date.i
+%include <std_shared_ptr.i>
 %import MagneticModel.i
 %import MagneticFieldElements.i
 %import ../GeoPoint.i
+
+// Shared Ptr
+%shared_ptr(AviationCalcUtil::GeoTools::MagneticTools::MagneticResult);
 
 // Boost Date
 %boost_gregorian_date();

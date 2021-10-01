@@ -1,4 +1,5 @@
 %module mod_magneticfieldelements
+%nspace AviationCalcUtil::GeoTools::MagneticTools::MagneticFieldElements;
 
 // Source header
 %{

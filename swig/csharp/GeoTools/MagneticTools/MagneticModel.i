@@ -1,4 +1,5 @@
 %module mod_magneticmodel
+%nspace AviationCalcUtil::GeoTools::MagneticTools::MagneticModel;
 
 // Source header
 %{
@@ -10,14 +11,15 @@
 %include <std_shared_ptr.i>
 %include <std_string.i>
 %import ../../tools/boost_gregorian_date.i
-%include ../../tools/std_vector_extend.i
 %import MagneticModelCoefficients.i
+
+// Vectors
+%include ../../tools/std_vector_extend.i
+%std_vector_extend(VectorCoeffs, std::shared_ptr<AviationCalcUtil::GeoTools::MagneticTools::MagneticModelCoefficients>);
+%std_vector_apply(VectorCoeffs, std::shared_ptr<AviationCalcUtil::GeoTools::MagneticTools::MagneticModelCoefficients>, coefficients);
 
 // Boost Date
 %boost_gregorian_date();
-
-// Vectors
-%std_vector_extend(VectorCoeffs, std::shared_ptr<AviationCalcUtil::GeoTools::MagneticTools::MagneticModelCoefficients>);
 
 // Shared Ptr
 %shared_ptr(AviationCalcUtil::GeoTools::MagneticTools::MagneticModel);

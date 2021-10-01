@@ -1,4 +1,5 @@
 %module mod_atmosutil
+%nspace AviationCalcUtil::GeoTools::AtmosUtil;
 
 %{
 #include "GeoTools/AtmosUtil.h"

@@ -1,4 +1,5 @@
 %module mod_geoutil
+%nspace AviationCalcUtil::GeoTools::GeoUtil;
 
 %{
 #include "GeoTools/GeoUtil.h"

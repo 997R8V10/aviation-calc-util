@@ -22,7 +22,7 @@
 
     %typemap(csin,
         pre="    global::System.IntPtr cPtr_$csinput = global::System.IntPtr.Zero;",
-        post="      $csinput = (cPtr_$csinput == global::System.IntPtr.Zero) ? null : new $typemap(cstype, TYPE)(cPtr, true);",
+        post="      $csinput = (cPtr_$csinput == global::System.IntPtr.Zero) ? null : new $typemap(cstype, TYPE)(cPtr_$csinput, true);",
         cshin="out $csinput") std::unique_ptr<TYPE > & OUTPUT "out cPtr_$csinput"
 
     %typemap(in) std::unique_ptr<TYPE > & OUTPUT %{ $1 = new std::unique_ptr<TYPE >((TYPE *)$input); %}

@@ -60,7 +60,7 @@ namespace AviationCalcUtil::GeoTools::GribTools {
         AVIATIONCALC_EXPORT ~GribTile();
     };
 }
-
+/*
 extern "C"{
     extern AVIATIONCALC_EXPORT shared_ptr<const GribTile> *GribTileFindOrCreateGribTile(GeoPoint *pos, uint64_t dateTime);
     extern AVIATIONCALC_EXPORT shared_ptr<const GribTile> *CreateGribTile(GeoPoint *pos, uint64_t dateTime);
@@ -77,5 +77,5 @@ extern "C"{
     extern AVIATIONCALC_EXPORT double GribTileGetLeftLon(shared_ptr<const GribTile> *tile);
     extern AVIATIONCALC_EXPORT double GribTileGetRightLon(shared_ptr<const GribTile> *tile);
 }
-
+*/
 #endif //AVIATION_CALC_UTIL_GRIBTILE_H

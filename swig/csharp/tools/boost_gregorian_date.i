@@ -87,8 +87,8 @@
     %typemap(csvarout, excode=SWIGEXCODE) boost::gregorian::date %{
         /* csvarout typemap code */
         get {
-            global::AviationCalcUtilNet.InteropTools.InteropDateStruct s = $imcall;
-            global::System.DateTime ret = new global::System.DateTime(s);$excode
+            global::AviationCalcUtilNet.InteropTools.InteropDateStruct s = $imcall;$excode
+            global::System.DateTime ret = new global::System.DateTime(s.year, s.month, s.day);
             return global::System.DateTime.SpecifyKind(ret, global::System.DateTimeKind.Utc);
         }
     %}

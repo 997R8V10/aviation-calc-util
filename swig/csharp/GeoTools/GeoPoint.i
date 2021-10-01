@@ -1,17 +1,20 @@
 %module mod_geopoint
+%nspace AviationCalcUtil::GeoTools::GeoPoint;
 
 // Source header
 %{
 #include "GeoTools/GeoPoint.h"
-%};
+%}
 
 // Imports
 %include <attribute.i>
 %include <typemaps.i>
+%include <std_shared_ptr.i>;
 %include ../tools/std_unique_ptr.i
 
 // Unique Ptr
 %unique_ptr(AviationCalcUtil::GeoTools::GeoPoint);
+%shared_ptr(AviationCalcUtil::GeoTools::GeoPoint);
 
 // Rename to C# standard
 %rename("%(camelcase)s", %$isfunction) "";

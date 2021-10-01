@@ -1,4 +1,5 @@
 %module mod_magneticmodelcoeffs
+%nspace AviationCalcUtil::GeoTools::MagneticTools::MagneticModelCoefficients;
 
 // Source header
 %{

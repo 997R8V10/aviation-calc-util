@@ -1,4 +1,5 @@
 %module mod_geotile
+%nspace AviationCalcUtil::GeoTools::GeoTile;
 
 %{
 #include "GeoTools/GeoTile.h"
@@ -10,11 +11,14 @@
 %include <attribute.i>
 %include <typemaps.i>
 %include <swigtype_inout.i>
-%import GeoPoint.i
+%include <std_shared_ptr.i>
+%import "GeoPoint.i"
 
 // Remove default constructor
-%nodefaultctor GeoTile;
-%nspace AviationCalcUtil::GeoTools;
+%nodefaultctor AviationCalcUtil::GeoTools::GeoTile;
+
+// Shared Ptr
+%shared_ptr(AviationCalcUtil::GeoTools::GeoTile);
 
 // Ignores
 %ignore deprecated;
