@@ -70,7 +70,7 @@ double MathUtil::convertMpersToKts(double mpers) {
 double MathUtil::convertKtsToMpers(double kts) {
     return kts / CONV_FACTOR_MPERS_KTS;
 }
-
+/*
 double MathUtilGetConvFactorKelvinC() {
     return MathUtil::CONV_FACTOR_KELVIN_C;
 }
@@ -142,3 +142,4 @@ double MathUtilConvertKtsToMpers(double kts) {
 long MathUtilFactorial(int n) {
     return MathUtil::factorial(n);
 }
+*/

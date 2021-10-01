@@ -31,15 +31,4 @@ namespace AviationCalcUtil::MathTools {
     };
 }
 
-
-using namespace AviationCalcUtil::MathTools;
-extern "C"
-{
-    extern AVIATIONCALC_EXPORT Polynomial *LegendreUtilPolynomial(int n);
-    extern AVIATIONCALC_EXPORT double LegendreUtilFactorialRatio(int n, int m);
-    extern AVIATIONCALC_EXPORT double LegendreUtilLegendreFunction(int n, int m, double x);
-
-
-}
-
 #endif //AVIATION_CALC_UTIL_LEGENDREUTIL_H

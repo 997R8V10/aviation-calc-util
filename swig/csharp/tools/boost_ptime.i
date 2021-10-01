@@ -7,6 +7,19 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 %}
 
+namespace boost{
+    namespace gregorian{
+        struct date {
+
+        };
+    };
+    namespace posix_time{
+        struct ptime {
+
+        };
+    };
+};
+
 /**
  * const boost::posix_time::ptime &
  */
@@ -21,7 +34,9 @@
     // Boost 0 time
     boost::posix_time::ptime ptimeEpoch(boost::gregorian::date(1400, 1, 1), boost::posix_time::time_duration(0, 0, 0));
 
-    return ptimeEpoch + boost::posix_time::microseconds($input / 10LL);
+    boost::posix_time::ptime temp = ptimeEpoch + boost::posix_time::microseconds($input / 10LL);
+
+    $1 = &temp;
 %}
 
 // C Out conversion
@@ -51,7 +66,7 @@
 // C# Out Conversion
 %typemap(csout, excode=SWIGEXCODE) const boost::posix_time::ptime & {
     ulong ns = $imcall;
-    global::System.DateTime ret = new global::System.DateTime((long)ns, DateTimeKind.Utc);$excode
+    global::System.DateTime ret = new global::System.DateTime((long)ns, global::System.DateTimeKind.Utc);$excode
     return ret;
 }
 
@@ -69,7 +84,7 @@
     // Boost 0 time
     boost::posix_time::ptime ptimeEpoch(boost::gregorian::date(1400, 1, 1), boost::posix_time::time_duration(0, 0, 0));
 
-    return ptimeEpoch + boost::posix_time::microseconds($input / 10LL);
+    $1 = ptimeEpoch + boost::posix_time::microseconds($input / 10LL);
 %}
 
 // C Out conversion
@@ -99,7 +114,7 @@
 // C# Out Conversion
 %typemap(csout, excode=SWIGEXCODE) boost::posix_time::ptime {
     ulong ns = $imcall;
-    global::System.DateTime ret = new global::System.DateTime((long)ns, DateTimeKind.Utc);$excode
+    global::System.DateTime ret = new global::System.DateTime((long)ns, global::System.DateTimeKind.Utc);$excode
     return ret;
 }
 
@@ -123,16 +138,7 @@
     /* csvarout typemap code */
     get {
         ulong ns = $imcall;
-        global::System.DateTime ret = new global::System.DateTime((long)ns, DateTimeKind.Utc);$excode
+        global::System.DateTime ret = new global::System.DateTime((long)ns, global::System.DateTimeKind.Utc);$excode
         return ret;
     }
 %}
-
-namespace boost{
-    namespace gregorian{
-
-    };
-    namespace posix_time{
-
-    };
-};

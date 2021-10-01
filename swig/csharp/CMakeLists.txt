@@ -23,6 +23,9 @@ set_property(SOURCE GeoTools/MagneticTools/MagneticUtil.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE GeoTools/GribTools/GribDataPoint.i PROPERTY CPLUSPLUS ON)
 set_property(SOURCE GeoTools/GribTools/GribTile.i PROPERTY CPLUSPLUS ON)
 
+# MathTools
+set_property(SOURCE MathTools/MathTools.i PROPERTY CPLUSPLUS ON)
+
 # Build Bridge Library
 swig_add_library(aviationcalc_netbrg
         TYPE SHARED
@@ -42,6 +45,7 @@ swig_add_library(aviationcalc_netbrg
         GeoTools/MagneticTools/MagneticUtil.i
         GeoTools/GribTools/GribDataPoint.i
         GeoTools/GribTools/GribTile.i
+        MathTools/MathTools.i
         )
 
 set_target_properties(aviationcalc_netbrg PROPERTIES

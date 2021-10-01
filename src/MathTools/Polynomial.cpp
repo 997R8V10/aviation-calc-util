@@ -50,7 +50,7 @@ std::shared_ptr<Polynomial> AviationCalcUtil::MathTools::Polynomial::derivative(
 Polynomial::Polynomial(const Polynomial &other) {
     coefficients = other.getCoefficients();
 }
-
+/*
 Polynomial *CreatePolynomial(double *coefficients, int coefficientsSize) {
     vector<double> coefficientsVector{};
     for (int i = 0; i < coefficientsSize; i++)
@@ -105,3 +105,4 @@ double *PolynomialGetCoefficients(Polynomial* ptr, int& size) {
     size = 0;
     return new double[0];
 }
+*/

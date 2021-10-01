@@ -28,14 +28,4 @@ namespace AviationCalcUtil::MathTools {
     };
 }
 
-using namespace AviationCalcUtil::MathTools;
-extern "C"
-{
-    extern AVIATIONCALC_EXPORT Polynomial* CreatePolynomial(double* coefficients, int coefficientsSize);
-    extern AVIATIONCALC_EXPORT void DisposePolynomial(Polynomial* ptr);
-    extern AVIATIONCALC_EXPORT double PolynomialEvaluate(Polynomial* ptr, double x);
-    extern AVIATIONCALC_EXPORT Polynomial* PolynomialDerivative(Polynomial* ptr, int n);
-    extern AVIATIONCALC_EXPORT double* PolynomialGetCoefficients(Polynomial* ptr, int& size);
-}
-
 #endif //AVIATION_CALC_UTIL_POLYNOMIAL_H

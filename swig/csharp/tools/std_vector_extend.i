@@ -15,5 +15,13 @@
 
     %typemap(csin,
          pre="    NAME temp$csinput = new NAME($csinput);"
-                 ) const std::vector<TYPE> & ARG "$csclassname.getCPtr(temp$csinput)"
+                 ) const std::vector<TYPE> & ARG "$csclassname.getCPtr(temp$csinput)";
+
+    %typemap(csvarout, excode=SWIGEXCODE) const std::vector<TYPE> & ARG %{
+        /* csvarout typemap code */
+        get {
+            global::System.Collections.Generic.IEnumerable<$typemap(cstype, TYPE)> tempVector = new NAME($imcall, false);$excode
+            return tempVector;
+        }
+    %}
 %enddef
