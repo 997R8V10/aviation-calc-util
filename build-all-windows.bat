@@ -30,7 +30,7 @@ conan install . -if build\windows\x86\debug -s arch=x86 -s build_type=Debug --bu
 ECHO Generating CMake Files
 cmake -S . -B build\windows\x86\debug -DCMAKE_BUILD_TYPE=Debug -A Win32
 ECHO Building with CMake
-cmake --build build\windows\x86\debug --target aviationcalc
+cmake --build build\windows\x86\debug --target aviationcalc --config Debug
 ECHO 
 
 ECHO \--------------------------------------------------------------\
@@ -44,7 +44,7 @@ conan install . -if build\windows\x86\release -s arch=x86 -s build_type=Release 
 ECHO Generating CMake Files
 cmake -S . -B build\windows\x86\release -DCMAKE_BUILD_TYPE=Release -A Win32
 ECHO Building with CMake
-cmake --build build\windows\x86\release --target aviationcalc
+cmake --build build\windows\x86\release --target aviationcalc --config Release
 ECHO 
 
 ECHO \--------------------------------------------------------------\
@@ -58,7 +58,7 @@ conan install . -if build\windows\x64\debug -s arch=x86_64 -s build_type=Debug -
 ECHO Generating CMake Files
 cmake -S . -B build\windows\x64\debug -DCMAKE_BUILD_TYPE=Debug -A x64
 ECHO Building with CMake
-cmake --build build\windows\x64\debug --target aviationcalc
+cmake --build build\windows\x64\debug --target aviationcalc --config Debug
 ECHO
 
 ECHO \--------------------------------------------------------------\
@@ -72,5 +72,5 @@ conan install . -if build\windows\x64\release -s arch=x86_64 -s build_type=Relea
 ECHO Generating CMake Files
 cmake -S . -B build\windows\x64\release -DCMAKE_BUILD_TYPE=Release -A x64
 ECHO Building with CMake
-cmake --build build\windows\x64\release --target aviationcalc
+cmake --build build\windows\x64\release --target aviationcalc --config Release
 ECHO
