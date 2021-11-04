@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.6] - 2021-11-04
+### Fixed
+- Release builds were being built as debug on Windows.
+
 ## [0.3.5] - 2021-09-19
 ### Fixed
 - ecCodes: Fixed erroneous perl dependency in conanfile.
@@ -112,7 +116,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
-[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.3.5...HEAD
+[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.3.6...HEAD
+[0.3.6]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.5...v0.3.6
 [0.3.5]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.4...v0.3.5
 [0.3.4]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.3...v0.3.4
 [0.3.3]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.2...v0.3.3
