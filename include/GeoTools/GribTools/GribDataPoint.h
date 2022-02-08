@@ -6,7 +6,7 @@
 #define AVIATION_CALC_UTIL_GRIBDATAPOINT_H
 
 #include "GeoTools/GeoPoint.h"
-#include "GeoTools/GeoUtil.h"
+#include "GeoTools/AtmosUtil.h"
 #include <string>
 #include "aviationcalc_exports.h"
 
@@ -23,7 +23,7 @@ namespace AviationCalcUtil::GeoTools::GribTools {
         double v_mpers{};
         double u_mpers{};
         double rh{};
-        double sfcPress_hPa{GeoUtil::STD_PRES_HPA};
+        double sfcPress_hPa{AtmosUtil::ISA_STD_PRES_hPa};
 
     public:
         AVIATIONCALC_EXPORT GribDataPoint(double lat, double lon, int level_hPa);

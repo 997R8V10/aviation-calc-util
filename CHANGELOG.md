@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2022-02-07
+### Changed
+- Moved Atmospheric Functions from GeoUtil to AtmosUtil
+
+### Removed
+- Deprecated GeoUtil Atmospheric Functions
+  - `convertPressureToDensityAlt`
+  - `convertIasToTas`
+  - `convertTasToIas`
+
 ## [0.3.6] - 2021-11-04
 ### Fixed
 - Release builds were being built as debug on Windows.

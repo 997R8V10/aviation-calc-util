@@ -123,63 +123,6 @@ tuple<double, double> GeoUtil::calculateChordHeadingAndDistance(double startHead
     return {chordHeading, chordLengthNMi};
 }
 
-double GeoUtil::convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    double pressDiff = pres_set_hpa - sfc_pres_hpa;
-    return alt_ind_ft - (STD_PRES_DROP * pressDiff);
-}
-
-double GeoUtil::convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    double pressDiff = pres_set_hpa - sfc_pres_hpa;
-    return alt_abs_ft + (STD_PRES_DROP * pressDiff);
-}
-
-double GeoUtil::convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
-    double pressDiff = pres_set_hpa - STD_PRES_HPA;
-    return alt_ind_ft - (STD_PRES_DROP * pressDiff);
-}
-
-double GeoUtil::calculateIsaTemp(double alt_pres_ft) {
-    if (alt_pres_ft >= 36000) {
-        return -56.5;
-    }
-
-    return STD_TEMP_C - (alt_pres_ft * STD_LAPSE_RATE);
-}
-
-double GeoUtil::convertPressureToDensityAlt(double alt_pres_ft, double sat) {
-    double isaDev = sat - calculateIsaTemp(alt_pres_ft);
-
-    return alt_pres_ft + (118.8 * isaDev);
-}
-
-double GeoUtil::convertIasToTas(double ias, double alt_dens_ft) {
-    double daStdTemp = MathUtil::CONV_FACTOR_KELVIN_C + STD_TEMP_C -
-            (alt_dens_ft * STD_LAPSE_RATE);
-    double tempRatio = daStdTemp / (STD_TEMP_C + MathUtil::CONV_FACTOR_KELVIN_C);
-    double densityRatio = std::pow(tempRatio, 1 / 0.234969);
-    double tasCoeff = 1 / (std::sqrt(densityRatio));
-
-    return tasCoeff * ias;
-}
-
-double GeoUtil::convertTasToIas(double tas, double alt_dens_ft) {
-    double daStdTemp = MathUtil::CONV_FACTOR_KELVIN_C + STD_TEMP_C -
-            (alt_dens_ft * STD_LAPSE_RATE);
-    double tempRatio = daStdTemp / (STD_TEMP_C + MathUtil::CONV_FACTOR_KELVIN_C);
-    double densityRatio = std::pow(tempRatio, 1 / 0.234969);
-    double tasCoeff = 1 / (std::sqrt(densityRatio));
-
-    return tas / tasCoeff;
-}
-
-double GeoUtil::convertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat) {
-    return convertIasToTas(ias, convertPressureToDensityAlt(convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa), sat));
-}
-
-double GeoUtil::convertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat) {
-    return convertTasToIas(tas, convertPressureToDensityAlt(convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa), sat));
-}
-
 double GeoUtil::calculateTurnAmount(double currentHeading, double desiredHeading) {
     // Either distance or 360 - distance
     double phi = std::fmod(std::fabs(desiredHeading - currentHeading), 360);
@@ -421,62 +364,10 @@ void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degrees
     chordDistance = std::get<1>(answer);
 }
 
-double GeoUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    return GeoUtil::convertIndicatedToAbsoluteAlt(alt_ind_ft, pres_set_hpa, sfc_pres_hpa);
-}
-
-double GeoUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    return GeoUtil::convertAbsoluteToIndicatedAlt(alt_abs_ft, pres_set_hpa, sfc_pres_hpa);
-}
-
-double GeoUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
-    return GeoUtil::convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa);
-}
-
-double GeoUtilCalculateIsaTemp(double alt_pres_ft) {
-    return GeoUtil::calculateIsaTemp(alt_pres_ft);
-}
-
-double GeoUtilConvertPressureToDensityAlt(double alt_pres_ft, double sat) {
-    return GeoUtil::convertPressureToDensityAlt(alt_pres_ft, sat);
-}
-
-double GeoUtilConvertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat) {
-    return GeoUtil::convertIasToTas(ias, pres_set_hpa, alt_ind_ft, sat);
-}
-
-double GeoUtilConvertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat) {
-    return GeoUtil::convertTasToIas(tas, pres_set_hpa, alt_ind_ft, sat);
-}
-
-double GeoUtilConvertIasToTasFromDensityAltitude(double ias, double alt_dens_ft) {
-    return GeoUtil::convertIasToTas(ias, alt_dens_ft);
-}
-
-double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft) {
-    return GeoUtil::convertTasToIas(tas, alt_dens_ft);
-}
-
 double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading) {
     return GeoUtil::calculateTurnAmount(currentHeading, desiredHeading);
 }
 
 double GeoUtilGetEarthRadiusM() {
     return GeoUtil::EARTH_RADIUS_M;
-}
-
-double GeoUtilGetStdPresHpa() {
-    return GeoUtil::STD_PRES_HPA;
-}
-
-double GeoUtilGetStdTempC() {
-    return GeoUtil::STD_TEMP_C;
-}
-
-double GeoUtilGetStdLapseRate() {
-    return GeoUtil::STD_LAPSE_RATE;
-}
-
-double GeoUtilGetStdPresDrop() {
-    return GeoUtil::STD_PRES_DROP;
 }

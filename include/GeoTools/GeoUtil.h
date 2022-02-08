@@ -16,11 +16,6 @@ namespace AviationCalcUtil::GeoTools {
     class AVIATIONCALC_EXPORT GeoUtil {
     public:
         static constexpr double EARTH_RADIUS_M = 6371e3;
-        static constexpr double STD_PRES_HPA = 1013.25;
-        static constexpr double STD_TEMP_C = 15;
-        static constexpr double STD_LAPSE_RATE = 2.0 / 1000.0;
-        static constexpr double STD_PRES_DROP = 30.0;
-
 
         /// Calculates the direct course to intercept towards a waypoint.
         /// Returns -1 if direct course is not possible to achieve.
@@ -111,30 +106,6 @@ namespace AviationCalcUtil::GeoTools {
         static tuple<double, double> calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
                                                                       double radiusOfTurnNMi, bool isRightTurn);
 
-
-        static double convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
-
-        static double convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa);
-
-        static double convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa);
-
-        static double calculateIsaTemp(double alt_pres_ft);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertPressureToDensityAlt(double alt_pres_ft, double sat);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertIasToTas(double ias, double alt_dens_ft);
-
-        [[deprecated("Inaccurate. Use function in AtmosUtil.")]]
-        static double convertTasToIas(double tas, double alt_dens_ft);
-
         static double calculateTurnAmount(double currentHeading, double desiredHeading);
 
 
@@ -165,28 +136,14 @@ extern AVIATIONCALC_EXPORT double GeoUtilCalculateRadiusOfTurn(double bankAngle,
 
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateBankAngle(double radiusOfTurn, double groundSpeed);
 
-
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing, double windSpeed, double tas);
 extern AVIATIONCALC_EXPORT double GeoUtilGetHeadwindComponent(double windSpeed, double windBearing, double bearing);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateDistanceTravelledNMi(double groundSpeedKts, double timeMs);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateDegreesTurned(double distTravelledNMi, double radiusOfTurnNMi);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn);
 extern AVIATIONCALC_EXPORT void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi, bool isRightTurn, double &chordHeading, double &chordDistance);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa);
-extern AVIATIONCALC_EXPORT double GeoUtilCalculateIsaTemp(double alt_pres_ft);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertPressureToDensityAlt(double alt_pres_ft, double sat);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertIasToTasFromDensityAltitude(double ias, double alt_dens_ft);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading);
 extern AVIATIONCALC_EXPORT double GeoUtilGetEarthRadiusM();
-extern AVIATIONCALC_EXPORT double GeoUtilGetStdPresHpa();
-extern AVIATIONCALC_EXPORT double GeoUtilGetStdTempC();
-extern AVIATIONCALC_EXPORT double GeoUtilGetStdLapseRate();
-extern AVIATIONCALC_EXPORT double GeoUtilGetStdPresDrop();
 }
 
 

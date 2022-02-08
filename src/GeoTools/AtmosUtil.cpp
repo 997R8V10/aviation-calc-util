@@ -161,6 +161,30 @@ double AtmosUtil::convertTasToIas(double tas_kts, double refPress_hPa, double al
     return MathUtil::convertMpersToKts(cas);
 }
 
+
+double AtmosUtil::convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    double pressDiff = pres_set_hpa - sfc_pres_hpa;
+    return alt_ind_ft - (ISA_STD_PRES_DROP_ft_per_hPa * pressDiff);
+}
+
+double AtmosUtil::convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    double pressDiff = pres_set_hpa - sfc_pres_hpa;
+    return alt_abs_ft + (ISA_STD_PRES_DROP_ft_per_hPa * pressDiff);
+}
+
+double AtmosUtil::convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
+    double pressDiff = pres_set_hpa - ISA_STD_PRES_hPa;
+    return alt_ind_ft - (ISA_STD_PRES_DROP_ft_PER_hPa * pressDiff);
+}
+
+double AtmosUtil::calculateIsaTemp(double alt_pres_ft) {
+    if (alt_pres_ft >= 36000) {
+        return -56.5;
+    }
+
+    return ISA_STD_TEMP_C - (alt_pres_ft * ISA_STD_PRES_DROP_ft_PER_hPa);
+}
+
 double AtmosUtilCalculateDryAirDensity(double p, double T) {
     return AtmosUtil::calculateDryAirDensity(p, T);
 }
