@@ -170,6 +170,7 @@ extern "C" {
     extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_DENS();
     extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_LAPSE_RATE();
     extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_EARTH_G();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_PRES_DROP_ft_PER_hPa();
 extern AVIATIONCALC_EXPORT double AtmosUtilCalculateDryAirDensity(double p, double T);
 extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure1(double cas);
 extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure2(double M, double p);
