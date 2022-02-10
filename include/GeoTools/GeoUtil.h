@@ -7,6 +7,7 @@
 
 #include "GeoTools/GeoPoint.h"
 #include <tuple>
+#include <string>
 #include <memory>
 #include "aviationcalc_exports.h"
 
@@ -61,54 +62,125 @@ namespace AviationCalcUtil::GeoTools {
 
         /// Calculates the intersection between the aircraft's current track and a course to/from a waypoint.
         /// \param position Aircraft Position
-        /// <param name="wp"><c>GeoPoint</c> Waypoint</param>
-        /// <param name="course"><c>double</c> Course To/From Waypoint (degrees).</param>
-        /// <returns><c>GeoPoint</c> The intersection, should one exist; otherwise <c>null</c></returns>
+        /// \param wp Waypoint
+        /// \param course Course To/From Waypoint (degrees).
+        /// \return The intersection, should one exist; otherwise null
         static std::unique_ptr<GeoPoint> findIntersection(const GeoPoint &position, const GeoPoint &wp,
                                                           double trueTrack, double course);
 
-        /// <summary>
         /// Normalizes Longitude between -180 and +180 degrees
-        /// </summary>
-        /// <param name="lon">Input Longitude (degrees)</param>
-        /// <returns>Normalized Longitude (degrees)</returns>
+        /// \param lon Input Longitude (degrees)
+        /// \return Normalized Longitude (degrees)
         static double normalizeLongitude(double lon);
 
-        /// <summary>
         /// Normalizes Heading between 0 and 360 degrees
-        /// </summary>
-        /// <param name="hdg">Input Heading (degrees)</param>
-        /// <returns>Normalized Heading (degrees)</returns>
+        /// \param hdg Input Heading (degrees)
+        /// \return Normalized Heading (degrees)
         static double normalizeHeading(double hdg);
 
-        /// Calculates maximum bank angle
-        /// \param groundSpeed
-        /// \param bankLimit
-        /// \param turnRate
-        /// \return
+        /// Calculates maximum bank angle for a given rate of turn.
+        /// \param groundSpeed Ground speed (kts)
+        /// \param bankLimit Bank limit (degrees)
+        /// \param turnRate Rate of turn (degrees/s)
+        /// \return Bank angle (degrees)
         static double calculateMaxBankAngle(double groundSpeed, double bankLimit, double turnRate);
 
+        /// Calculates radius of turn at a certain bank angle.
+        /// \param bankAngle Bank angle (degrees)
+        /// \param groundSpeed Ground speed (kts)
+        /// \return Radius of turn (nautical miles)
         static double calculateRadiusOfTurn(double bankAngle, double groundSpeed);
 
+        /// Calculates bank angle at a certain radius of turn.
+        /// \param radiusOfTurn Radius of turn (nautical miles)
+        /// \param groundSpeed Ground speed (kts)
+        /// \return Bank angle (degrees)
         static double calculateBankAngle(double radiusOfTurn, double groundSpeed);
 
+        /// Calculates the radius of turn required for a constant radius turn with wind.
+        /// \param startBearing Start bearing (degrees)
+        /// \param turnAmount Amount to turn (degrees)
+        /// \param windBearing Bearing that wind is coming from (degrees)
+        /// \param windSpeed Wind speed (kts)
+        /// \param tas True air speed (kts)
+        /// \return Radius of turn (nautical miles)
         static double calculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing,
                                                   double windSpeed, double tas);
 
+        /// Gets the headwind/tailwind component.
+        /// \param windSpeed Wind speed (kts)
+        /// \param windBearing Bearing that wind is coming from (degrees)
+        /// \param bearing Bearing that aircraft is headed in (degrees)
+        /// \return Headwind Component (negative for tailwind) (kts)
         static double getHeadwindComponent(double windSpeed, double windBearing, double bearing);
 
+        /// Calculate distance travelled in nautical miles.
+        /// \param groundSpeedKts Ground speed (kts)
+        /// \param timeMs Time (ms)
+        /// \return Distance travelled (nautical miles)
         static double calculateDistanceTravelledNMi(double groundSpeedKts, double timeMs);
 
+        /// Calculate amount of degrees turned.
+        /// \param distTravelledNMi Distance travelled (nautical miles)
+        /// \param radiusOfTurnNMi Radius of turn (nautical miles)
+        /// \return Degrees turned (degrees)
         static double calculateDegreesTurned(double distTravelledNMi, double radiusOfTurnNMi);
 
+        /// Calculate roll out heading.
+        /// \param startHeading Start heading (degrees)
+        /// \param degreesTurned Amount of turn (degrees)
+        /// \param isRightTurn Is the turn to the right?
+        /// \return Roll out heading (degrees)
         static double calculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn);
 
+        /// Calculate direct heading and distance along a circle (chord line)
+        /// \param startHeading Start heading (degrees)
+        /// \param degreesTurned Amount of turn (degrees)
+        /// \param radiusOfTurnNMi Radius of turn (nautical miles)
+        /// \param isRightTurn Is the turn to the right?
+        /// \return Chord heading (degrees), Chord distance (nautical miles)
         static tuple<double, double> calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
                                                                       double radiusOfTurnNMi, bool isRightTurn);
 
+        /// Calculate amount of turn between two headings (0-360)
+        /// \param currentHeading Current heading (degrees)
+        /// \param desiredHeading Desired heading (degrees)
+        /// \return Amount of turn (degrees). Negative is left.
         static double calculateTurnAmount(double currentHeading, double desiredHeading);
 
+        /// Convert from degrees.minutes.seconds to decimal degrees.
+        /// \param degrees Degrees (signed integer)
+        /// \param mins Minutes (unsigned integer)
+        /// \param secs Seconds (double)
+        /// \return Decimal degrees
+        static double convertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs);
 
+        /// Convert from decimal degrees to degrees.minutes.seconds.
+        /// \param decimalDegs Decimal degrees
+        /// \param degrees Output degrees (signed integer)
+        /// \param mins Output minutes (unsigned integer)
+        /// \param secs Output seconds (double)
+        static void convertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs);
+
+        /// Convert from NATS style coordinates to decimal degrees.
+        /// \param natsCoord NATS style coordinate
+        /// \return Decimal degrees
+        static double convertNatsToDecimalDegs(const std::string &natsCoord);
+
+        /// Convert from decimal degrees to NATS style coordinates.
+        /// \param decimalDegs Decimal degrees
+        /// \return NATS style coordinate
+        static string convertDecimalDegsToNats(double decimalDegs);
+
+        /// Convert from VRC/Euroscope style coordinates to decimal degrees.
+        /// \param vrcCoord VRC/Euroscope style coordinate
+        /// \return Decimal degrees
+        static double convertVrcToDecimalDegs(const std::string &vrcCoord);
+
+        /// Convert from decimal degrees to VRC/Euroscope style coordinates.
+        /// \param decimalDegs Decimal degrees
+        /// \return VRC/Euroscope style coordinate
+        static string convertDecimalDegsToVrc(double decimalDegs);
     };
 }
 
@@ -144,6 +216,12 @@ extern AVIATIONCALC_EXPORT double GeoUtilCalculateEndHeading(double startHeading
 extern AVIATIONCALC_EXPORT void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi, bool isRightTurn, double &chordHeading, double &chordDistance);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading);
 extern AVIATIONCALC_EXPORT double GeoUtilGetEarthRadiusM();
+extern AVIATIONCALC_EXPORT double GeoUtilConvertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs);
+extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertNatsToDecimalDegs(const char *natsCoord);
+extern AVIATIONCALC_EXPORT const char *GeoUtilConvertDecimalDegsToNats(double decimalDegs);
+extern AVIATIONCALC_EXPORT double GeoUtilConvertVrcToDecimalDegs(const char *vrcCoord);
+extern AVIATIONCALC_EXPORT const char *GeoUtilConvertDecimalDegsToVrc(double decimalDegs);
 }
 
 

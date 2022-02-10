@@ -269,6 +269,39 @@ std::unique_ptr<GeoPoint> GeoUtil::findIntersection(const GeoPoint &position, co
     return intersection2;
 }
 
+double GeoUtil::convertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs) {
+    int sign = (degrees < 0) ? -1 : 1;
+    degrees *= sign;
+    return sign * (degrees + (mins / 60.0) + (secs / 3600.0));
+}
+
+void GeoUtil::convertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs) {
+    int sign = (decimalDegs < 0) ? -1 : 1;
+    decimalDegs *= sign;
+
+    degrees = (int) floor(decimalDegs);
+    mins = (unsigned int) ((decimalDegs - degrees) * 60.0);
+    secs = (decimalDegs - degrees - (mins / 60.0)) * 3600.0;
+
+    degrees *= sign;
+}
+
+double GeoUtil::convertNatsToDecimalDegs(const string &natsCoord) {
+    return 0;
+}
+
+string GeoUtil::convertDecimalDegsToNats(double decimalDegs) {
+    return std::string();
+}
+
+double GeoUtil::convertVrcToDecimalDegs(const string &vrcCoord) {
+    return 0;
+}
+
+string GeoUtil::convertDecimalDegsToVrc(double decimalDegs) {
+    return std::string();
+}
+
 double GeoUtilCalculateDirectBearingAfterTurn(AviationCalcUtil::GeoTools::GeoPoint *aircraft,
                                               AviationCalcUtil::GeoTools::GeoPoint *waypoint, double r,
                                               double curBearing) {
@@ -370,4 +403,28 @@ double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading) 
 
 double GeoUtilGetEarthRadiusM() {
     return GeoUtil::EARTH_RADIUS_M;
+}
+
+double GeoUtilConvertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs) {
+    return 0;
+}
+
+void GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs) {
+
+}
+
+double GeoUtilConvertNatsToDecimalDegs(const char *natsCoord) {
+    return 0;
+}
+
+const char *GeoUtilConvertDecimalDegsToNats(double decimalDegs) {
+    return nullptr;
+}
+
+double GeoUtilConvertVrcToDecimalDegs(const char *vrcCoord) {
+    return 0;
+}
+
+const char *GeoUtilConvertDecimalDegsToVrc(double decimalDegs) {
+    return nullptr;
 }

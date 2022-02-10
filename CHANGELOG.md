@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2022-02-07
+## [1.0.0] - 2022-02-09
+### Added
+- Coordinate Utilities
+  - Added functions to convert between decimal degrees and DDD.MM.SS.SSS.
+  - Added functions to convert from NATS/VRC/Euroscope coordinates to decimal and back.
+
 ### Changed
 - Moved Atmospheric Functions from GeoUtil to AtmosUtil
 
@@ -67,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 - Geo Tools
   - GeoUtil
-    - Use the function sin AtmosUtil
+    - Use the functions in AtmosUtil
       - `convertIasToTas`
       - `convertTasToIas`
       - `convertedPressureToDensityAlt`
@@ -126,7 +131,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
-[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.3.6...HEAD
+[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v1.0.0...HEAD
+[1.0.0]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.6...v1.0.0
 [0.3.6]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.5...v0.3.6
 [0.3.5]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.4...v0.3.5
 [0.3.4]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.3.3...v0.3.4
