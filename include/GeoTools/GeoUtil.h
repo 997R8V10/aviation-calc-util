@@ -249,11 +249,12 @@ extern AVIATIONCALC_EXPORT double GeoUtilCalculateEndHeading(double startHeading
 extern AVIATIONCALC_EXPORT void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi, bool isRightTurn, double &chordHeading, double &chordDistance);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading);
 extern AVIATIONCALC_EXPORT double GeoUtilGetEarthRadiusM();
+
 extern AVIATIONCALC_EXPORT double GeoUtilConvertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs);
 extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertNatsToDecimalDegs(const char *natsCoord);
+extern AVIATIONCALC_EXPORT void GeoUtilConvertNatsToDecimalDegs(const char *natsLat, const char *natsLon, double &decLat, double &decLon);
 extern AVIATIONCALC_EXPORT const char *GeoUtilConvertDecimalDegsToNats(double decimalDegs);
-extern AVIATIONCALC_EXPORT double GeoUtilConvertVrcToDecimalDegs(const char *vrcCoord);
+extern AVIATIONCALC_EXPORT void GeoUtilConvertVrcToDecimalDegs(const char *vrcLat, const char *vrcLon, double &decLat, double &decLon);
 extern AVIATIONCALC_EXPORT const char *GeoUtilConvertDecimalDegsToVrc(double decimalDegs);
 }
 

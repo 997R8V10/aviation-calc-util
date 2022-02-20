@@ -517,23 +517,37 @@ double GeoUtilGetEarthRadiusM() {
 }
 
 double GeoUtilConvertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs) {
-    return 0;
+    return GeoUtil::convertDegMinSecToDecimalDegs(degrees, mins, secs);
 }
 
 void GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs) {
-
+    GeoUtil::convertDecimalDegsToDegMinSec(decimalDegs, degrees, mins, secs);
 }
 
-double GeoUtilConvertNatsToDecimalDegs(const char *natsCoord) {
-    return 0;
+void GeoUtilConvertNatsToDecimalDegs(const char *natsLat, const char *natsLon, double &decLat, double &decLon) {
+    if (natsLat == NULL || natsLon == NULL) {
+        decLat = -1;
+        decLon = -1;
+        return;
+    }
+    string natsLatStr(natsLat);
+    string natsLonStr(natsLon);
+    GeoUtil::convertNatsToDecimalDegs(natsLatStr, natsLonStr, decLat, decLon);
+}
+
+void GeoUtilConvertVrcToDecimalDegs(const char *vrcLat, const char *vrcLon, double &decLat, double &decLon) {
+    if (vrcLat == NULL || vrcLon == NULL) {
+        decLat = -1;
+        decLon = -1;
+        return;
+    }
+    string vrcLatStr(vrcLat);
+    string vrcLonStr(vrcLon);
+    GeoUtil::convertVrcToDecimalDegs(vrcLatStr, vrcLonStr, decLat, decLon);
 }
 
 const char *GeoUtilConvertDecimalDegsToNats(double decimalDegs) {
     return nullptr;
-}
-
-double GeoUtilConvertVrcToDecimalDegs(const char *vrcCoord) {
-    return 0;
 }
 
 const char *GeoUtilConvertDecimalDegsToVrc(double decimalDegs) {
