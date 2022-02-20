@@ -54,8 +54,56 @@ void testCalculatePressureAtAlt(){
     cout << "\tP is " << P << endl;
 }
 
+void testNatsToDecimalDegrees(string natsLat, string natsLon) {
+    double decLat;
+    double decLon;
+    GeoUtil::convertNatsToDecimalDegs(natsLat, natsLon, decLat, decLon);
+    cout << "Test natsToDecimalDegrees" << endl;
+    cout << "\tInput lat\t" << natsLat << endl;
+    cout << "\tGot\t" << decLat << endl << endl;
+    cout << "\tInput lon\t" << natsLon << endl;
+    cout << "\tGot\t" << decLon << endl << endl;
+}
+
+void testDecimalToNatsCoords(double decimalLat, double decimalLong) {
+    string natsLat;
+    string natsLon;
+    GeoUtil::convertDecimalDegsToNats(decimalLat, decimalLong, natsLat, natsLon);
+    cout << "Test decimalToNatsCoords" << endl;
+    cout << "\tInput lat\t" << decimalLat << endl;
+    cout << "\tGot\t" << natsLat << endl << endl;
+    cout << "\tInput lon\t" << decimalLong << endl;
+    cout << "\tGot\t" << natsLon << endl << endl;
+}
+
+void testDecimalToVrc(double decimalLat, double decimalLong) {
+    string vrcLat;
+    string vrcLon;
+    GeoUtil::convertDecimalDegsToVrc(decimalLat, decimalLong, vrcLat, vrcLon);
+    cout << "Test decimalToVrcCoords" << endl;
+    cout << "\tInput lat\t" << decimalLat << endl;
+    cout << "\tGot\t" << vrcLat << endl << endl;
+    cout << "\tInput lon\t" << decimalLong << endl;
+    cout << "\tGot\t" << vrcLon << endl << endl;
+}
+
+void testVrcToDecimal(string vrcLat, string vrcLong) {
+    double decLat;
+    double decLon;
+    GeoUtil::convertVrcToDecimalDegs(vrcLat, vrcLong, decLat, decLon);
+    cout << "Test vrcToDecimal" << endl;
+    cout << "\tInput lat\t" << vrcLat << endl;
+    cout << "\tGot\t" << decLat << endl << endl;
+    cout << "\tInput lon\t" << vrcLong << endl;
+    cout << "\tGot\t" << decLon << endl << endl;
+}
+
 int main(){
     testTrueAirspeed1(260, 35000, -39);
     testConvertTasToIas();
     testCalculatePressureAtAlt();
+    testNatsToDecimalDegrees("543927N", "0061257W");
+    testDecimalToNatsCoords(89.999972, 179.999972);
+    testDecimalToVrc(54.6575, -6.21583);
+    testVrcToDecimal("N054.39.27.000", "W006.12.57.000");
 }

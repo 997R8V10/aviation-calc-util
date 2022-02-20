@@ -15,6 +15,28 @@ using namespace std;
 
 namespace AviationCalcUtil::GeoTools {
     class AVIATIONCALC_EXPORT GeoUtil {
+
+    private:
+        /// Convert a single decimal degree to a VRC/Euroscope style coordinate.
+        /// \param decimalCoord Decimal degree
+        /// \return VRC/Euroscope style coordinate
+        static string convertDecimalDegToVrcSingle(double decimalCoord, bool isLatitude);
+
+        /// Convert a single VRC/Euroscope style coordinate to a decimal degree.
+        /// \param vrcCoord VRC/Euroscope style coordinate
+        /// \return decimal degree
+        static double convertVrcToDecimalSingle(const std::string &vrcCoord);
+
+        /// Convert a single NATS style coordinate to a decimal degree.
+        /// \param natsCoord NATS style coordinate
+        /// \param isLatitude True if the coordinate is latitude, false if it is longitude
+        static double convertNatsToDecimalSingle(const std::string &natsCoord, bool isLatitude);
+
+        /// Convert a single NATS style coordinate to a decimal degree.
+        /// \param decimalCoord Decimal degree
+        /// \param isLatitude True if the coordinate is latitude, false if it is longitude
+        static string convertDecimalToNatsSingle(double decimalCoord, bool isLatitude);
+
     public:
         static constexpr double EARTH_RADIUS_M = 6371e3;
 
@@ -163,24 +185,35 @@ namespace AviationCalcUtil::GeoTools {
         static void convertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs);
 
         /// Convert from NATS style coordinates to decimal degrees.
-        /// \param natsCoord NATS style coordinate
-        /// \return Decimal degrees
-        static double convertNatsToDecimalDegs(const std::string &natsCoord);
+        /// \param natsLat NATS style latitude
+        /// \param natsLon NATS style longitude
+        /// \param decimalLat Decimal latitude out variable
+        /// \param decimalLon Decimal longitude out variable
+        static void convertNatsToDecimalDegs(const std::string &natsLat, const std::string &natsLon, double& decimalLat, double& decimalLon);
 
         /// Convert from decimal degrees to NATS style coordinates.
-        /// \param decimalDegs Decimal degrees
-        /// \return NATS style coordinate
-        static string convertDecimalDegsToNats(double decimalDegs);
+        /// \param decimalLat Decimal latitude
+        /// \param decimalLon Decimal longitude
+        /// \param natsLat Out NATS latitude
+        /// \param natsLon Out NATS longitude
+        static void convertDecimalDegsToNats(double decimalLat, double decimalLon, string& natsLat, string& natsLon);
 
         /// Convert from VRC/Euroscope style coordinates to decimal degrees.
-        /// \param vrcCoord VRC/Euroscope style coordinate
-        /// \return Decimal degrees
-        static double convertVrcToDecimalDegs(const std::string &vrcCoord);
+        /// \param vrcLat VRC/Euroscope style latitude
+        /// \param vrcLon VRC/Euroscope style longitude
+        /// \param decimalLat Out decimal latitude
+        /// \param decimalLon Out decimal longitude
+        static void convertVrcToDecimalDegs(const std::string &vrcLat, const std::string &vrcLon, double& decimalLat, double& decimalLon);
 
         /// Convert from decimal degrees to VRC/Euroscope style coordinates.
-        /// \param decimalDegs Decimal degrees
-        /// \return VRC/Euroscope style coordinate
-        static string convertDecimalDegsToVrc(double decimalDegs);
+        /// \param decimalLat Decimal latitude
+        /// \param decimalLon Decimal longitude
+        /// \param vrcLat Out VRC/Euroscope style latitude
+        /// \param vrcLon Out VRC/Euroscope style longitude
+        static void convertDecimalDegsToVrc(double decimalLat, double decimalLon, string& vrcLat, string& vrcLon);
+
+
+
     };
 }
 

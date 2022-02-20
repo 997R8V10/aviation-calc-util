@@ -286,20 +286,131 @@ void GeoUtil::convertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, un
     degrees *= sign;
 }
 
-double GeoUtil::convertNatsToDecimalDegs(const string &natsCoord) {
-    return 0;
+void GeoUtil::convertNatsToDecimalDegs(const string &natsLat, const string &natsLon, double& decimalLat, double& decimalLon) {
+    decimalLat = convertNatsToDecimalSingle(natsLat, true);
+    decimalLon = convertNatsToDecimalSingle(natsLon, false);
 }
 
-string GeoUtil::convertDecimalDegsToNats(double decimalDegs) {
-    return std::string();
+double GeoUtil::convertNatsToDecimalSingle(const string &natsCoord, bool isLatitude) {
+    int length = isLatitude ? 7 : 8;
+    string lastChar = natsCoord.substr(length - 1, 1);
+    int sign = lastChar == "S" || lastChar == "W" ? -1 : 1;
+    int currentPos = 0, firstChunk = isLatitude ? 2 : 3;
+    int degrees = (stoi(natsCoord.substr(currentPos, firstChunk))) * sign;
+    currentPos += firstChunk;
+    uint minutes = stoi(natsCoord.substr(currentPos, 2));
+    currentPos += 2;
+    double seconds = stod(natsCoord.substr(currentPos, 2));
+    return convertDegMinSecToDecimalDegs(degrees, minutes, seconds);
 }
 
-double GeoUtil::convertVrcToDecimalDegs(const string &vrcCoord) {
-    return 0;
+void GeoUtil::convertDecimalDegsToNats(double decimalLat, double decimalLon, string &natsLat, string &natsLon) {
+    natsLat = convertDecimalToNatsSingle(decimalLat, true);
+    natsLon = convertDecimalToNatsSingle(decimalLon, false);
 }
 
-string GeoUtil::convertDecimalDegsToVrc(double decimalDegs) {
-    return std::string();
+
+
+
+string GeoUtil::convertDecimalToNatsSingle(double decimalCoord, bool isLatitude) {
+    int degrees;
+    unsigned int minutes;
+    double seconds;
+    convertDecimalDegsToDegMinSec(decimalCoord, degrees, minutes, seconds);
+
+//Determine which letter to append at the end of the return value
+    char dirLetter;
+    if (degrees < 0) dirLetter = isLatitude ? 'S' : 'W';
+    else dirLetter = isLatitude ? 'N' : 'E';
+    degrees = abs(degrees);
+
+    //Determine how long the return value is to be
+    int returnLength = isLatitude ? 7 : 8;
+
+    //Round seconds
+    seconds = round(seconds);
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            degrees++;
+            if (isLatitude && degrees > 90)
+            {
+                degrees = 90 - (degrees - 90);
+                if (dirLetter == 'N') dirLetter = 'S';
+                else dirLetter = 'N';
+            }
+            else if (!isLatitude && degrees > 180)
+            {
+                degrees = 180 - (degrees - 180);
+                if (dirLetter == 'E') dirLetter = 'W';
+                else dirLetter = 'E';
+            }
+        }
+    }
+    int secondsI = seconds;
+
+    //Set up an empty char* of the appropriate size to hold the return value before it is converted to a std::string
+    char value[returnLength];
+
+    //format the return value string with the appropriate level of zero-padding
+    if (isLatitude) {
+        sprintf(value, "%02d%02u%02d%c", degrees, minutes, secondsI, dirLetter);
+    }
+    else {
+        sprintf(value, "%03d%02u%02d%c", degrees, minutes, secondsI, dirLetter);
+    }
+
+    //Convert the formatted char* to a std::string
+    string natsCoord(value, returnLength);
+
+    return natsCoord;
+}
+
+string GeoUtil::convertDecimalDegToVrcSingle(double decimalCoord, bool isLatitude) {
+    //Convert to Degrees Minutes and Seconds first
+    int degrees;
+    uint minutes;
+    double seconds;
+    convertDecimalDegsToDegMinSec(decimalCoord, degrees, minutes, seconds);
+    degrees = abs(degrees);
+
+    //Determine which letter should precede the coordinate
+    char dirLetter;
+    if (decimalCoord < 0) dirLetter = isLatitude ? 'S' : 'W';
+    else dirLetter = isLatitude ? 'N' : 'E';
+
+    //Set up the empty char* in which to format the string
+    char value[14];
+
+    //Format the char*
+    sprintf(value, "%c%03d.%02u.%03.3f", dirLetter, degrees, minutes, seconds);
+
+    //Convert the formatted char* to a std::string
+    string vrcCoord(value, 14);
+
+    return vrcCoord;
+}
+
+double GeoUtil::convertVrcToDecimalSingle(const string &vrcCoord) {
+    //W077.52.27.771
+    string first = vrcCoord.substr(0,1);
+    int sign = first == "N" || first == "E" ? 1 : -1;
+    int degrees = (stoi(vrcCoord.substr(1, 3))) * sign;
+    unsigned int minutes = stoi(vrcCoord.substr(5, 2));
+    double seconds = stod(vrcCoord.substr(8));
+    return convertDegMinSecToDecimalDegs(degrees, minutes, seconds);
+}
+
+void GeoUtil::convertVrcToDecimalDegs(const string &vrcLat, const string &vrcLon, double &decimalLat, double &decimalLon) {
+    decimalLat = convertVrcToDecimalSingle(vrcLat);
+    decimalLon = convertVrcToDecimalSingle(vrcLon);
+}
+
+void GeoUtil::convertDecimalDegsToVrc(double decimalLat, double decimalLon, string &vrcLat, string &vrcLon) {
+    vrcLat = convertDecimalDegToVrcSingle(decimalLat, true);
+    vrcLon = convertDecimalDegToVrcSingle(decimalLon, false);
 }
 
 double GeoUtilCalculateDirectBearingAfterTurn(AviationCalcUtil::GeoTools::GeoPoint *aircraft,
