@@ -298,7 +298,7 @@ double GeoUtil::convertNatsToDecimalSingle(const string &natsCoord, bool isLatit
     int currentPos = 0, firstChunk = isLatitude ? 2 : 3;
     int degrees = (stoi(natsCoord.substr(currentPos, firstChunk))) * sign;
     currentPos += firstChunk;
-    uint minutes = stoi(natsCoord.substr(currentPos, 2));
+    unsigned int minutes = stoi(natsCoord.substr(currentPos, 2));
     currentPos += 2;
     double seconds = stod(natsCoord.substr(currentPos, 2));
     return convertDegMinSecToDecimalDegs(degrees, minutes, seconds);
@@ -352,7 +352,7 @@ string GeoUtil::convertDecimalToNatsSingle(double decimalCoord, bool isLatitude)
     int secondsI = seconds;
 
     //Set up an empty char* of the appropriate size to hold the return value before it is converted to a std::string
-    char value[returnLength];
+    char* value = new char[returnLength];
 
     //format the return value string with the appropriate level of zero-padding
     if (isLatitude) {
@@ -371,7 +371,7 @@ string GeoUtil::convertDecimalToNatsSingle(double decimalCoord, bool isLatitude)
 string GeoUtil::convertDecimalDegToVrcSingle(double decimalCoord, bool isLatitude) {
     //Convert to Degrees Minutes and Seconds first
     int degrees;
-    uint minutes;
+    unsigned int minutes;
     double seconds;
     convertDecimalDegsToDegMinSec(decimalCoord, degrees, minutes, seconds);
     degrees = abs(degrees);
