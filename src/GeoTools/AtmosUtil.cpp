@@ -161,6 +161,30 @@ double AtmosUtil::convertTasToIas(double tas_kts, double refPress_hPa, double al
     return MathUtil::convertMpersToKts(cas);
 }
 
+
+double AtmosUtil::convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    double pressDiff = pres_set_hpa - sfc_pres_hpa;
+    return alt_ind_ft - (ISA_STD_PRES_DROP_ft_PER_hPa * pressDiff);
+}
+
+double AtmosUtil::convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    double pressDiff = pres_set_hpa - sfc_pres_hpa;
+    return alt_abs_ft + (ISA_STD_PRES_DROP_ft_PER_hPa * pressDiff);
+}
+
+double AtmosUtil::convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
+    double pressDiff = pres_set_hpa - ISA_STD_PRES_hPa;
+    return alt_ind_ft - (ISA_STD_PRES_DROP_ft_PER_hPa * pressDiff);
+}
+
+double AtmosUtil::calculateIsaTemp(double alt_pres_ft) {
+    if (alt_pres_ft >= 36000) {
+        return -56.5;
+    }
+
+    return ISA_STD_TEMP_C - (alt_pres_ft * ISA_STD_PRES_DROP_ft_PER_hPa);
+}
+
 double AtmosUtilCalculateDryAirDensity(double p, double T) {
     return AtmosUtil::calculateDryAirDensity(p, T);
 }
@@ -220,6 +244,22 @@ double AtmosUtilConvertTasToIas(double tas_kts, double refPress_hPa, double alt_
     return AtmosUtil::convertTasToIas(tas_kts, refPress_hPa, alt_ft, refAlt_ft, refTemp_K, mach);
 }
 
+double AtmosUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa){
+    return AtmosUtil::convertIndicatedToAbsoluteAlt(alt_ind_ft, pres_set_hpa, sfc_pres_hpa);
+}
+
+double AtmosUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa){
+    return AtmosUtil::convertAbsoluteToIndicatedAlt(alt_abs_ft, pres_set_hpa, sfc_pres_hpa);
+}
+
+double AtmosUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa){
+    return AtmosUtil::convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa);
+}
+
+double AtmosUtilCalculateIsaTemp(double alt_pres_ft){
+    return AtmosUtil::calculateIsaTemp(alt_pres_ft);
+}
+
 double AtmosUtilGetConst_R_DRY_AIR() {
     return AtmosUtil::R_DRY_AIR;
 }
@@ -250,6 +290,10 @@ double AtmosUtilGetConst_ISA_STD_DENS() {
 
 double AtmosUtilGetConst_ISA_STD_LAPSE_RATE() {
     return AtmosUtil::ISA_STD_LAPSE_RATE;
+}
+
+double AtmosUtilGetConst_ISA_STD_PRES_DROP_ft_PER_hPa() {
+    return AtmosUtil::ISA_STD_PRES_DROP_ft_PER_hPa;
 }
 
 double AtmosUtilGetConst_EARTH_G() {

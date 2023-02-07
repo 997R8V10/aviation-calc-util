@@ -21,7 +21,7 @@ set(HEADER_FILES
         ${CMAKE_BINARY_DIR}/genheaders/FileSystem.h)
 
 # Add Source Files
-add_library(aviationcalc SHARED
+add_library(aviationcalc
         ${HEADER_FILES}
         GeoTools/GeoUtil.cpp
         GeoTools/GeoPoint.cpp
@@ -67,6 +67,10 @@ if (WIN32)
             Boost::boost
             eccodes::eccodes
             std::filesystem)
+	
+	# Tell Boost to NOT auto link against compiler specific libs
+	add_definitions( -DBOOST_ALL_NO_LIB )
+	add_definitions( -DBOOST_LIB_DIAGNOSTIC )
 else ()
     target_link_libraries(aviationcalc Boost::boost eccodes::eccodes CURL::libcurl std::filesystem)
 endif ()
@@ -74,8 +78,7 @@ endif ()
 # DLL Export Headers
 GENERATE_EXPORT_HEADER(aviationcalc
         BASE_NAME AVIATIONCALC
-        EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/genheaders/aviationcalc_exports.h
-        STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
+        EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/genheaders/aviationcalc_exports.h)
 
 # NuGet Package
 # Install Settings
