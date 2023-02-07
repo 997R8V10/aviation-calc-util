@@ -546,10 +546,18 @@ void GeoUtilConvertVrcToDecimalDegs(const char *vrcLat, const char *vrcLon, doub
     GeoUtil::convertVrcToDecimalDegs(vrcLatStr, vrcLonStr, decLat, decLon);
 }
 
-const char *GeoUtilConvertDecimalDegsToNats(double decimalDegs) {
-    return nullptr;
+void GeoUtilConvertDecimalDegsToNats(double decimalLat, double decimalLon, const char **natsLat, const char **natsLon) {
+    string natsLatStr{};
+    string natsLonStr{};
+    GeoUtil::convertDecimalDegsToNats(decimalLat, decimalLon, natsLatStr, natsLonStr);
+    *natsLat = natsLatStr.c_str();
+    *natsLon = natsLonStr.c_str();
 }
 
-const char *GeoUtilConvertDecimalDegsToVrc(double decimalDegs) {
-    return nullptr;
+void GeoUtilConvertDecimalDegsToVrc(double decimalLat, double decimalLon, const char **vrcLat, const char **vrcLon) {
+    string vrcLatStr{};
+    string vrcLonStr{};
+    GeoUtil::convertDecimalDegsToVrc(decimalLat, decimalLon, vrcLatStr, vrcLonStr);
+    *vrcLat = vrcLatStr.c_str();
+    *vrcLon = vrcLonStr.c_str();
 }

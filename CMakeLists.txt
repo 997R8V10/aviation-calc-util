@@ -12,6 +12,8 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmakescripts)
 
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
 # Includes
 include(FetchContent)
 include(GenerateExportHeader)
@@ -46,9 +48,16 @@ endif()
 # End MacOS RPath
 
 # Boost
-set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_NO_SYSTEM_PATHS ON)
+if (BUILD_SHARED_LIBS)
+	set(Boost_USE_STATIC_LIBS OFF)
+	set(Boost_USE_STATIC_RUNTIME OFF)
+else()
+	set(Boost_USE_STATIC_LIBS ON)
+	set(Boost_USE_STATIC_RUNTIME ON)
+endif()
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
+
 find_package(Boost 1.76.0 REQUIRED)
 # End Boost
 

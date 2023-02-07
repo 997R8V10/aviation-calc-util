@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2022-02-09
+## [1.0.0] - 2023-02-06
 ### Added
 - Coordinate Utilities
   - Added functions to convert between decimal degrees and DDD.MM.SS.SSS.
@@ -20,6 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `convertPressureToDensityAlt`
   - `convertIasToTas`
   - `convertTasToIas`
+
+### Fixed
+- Static Library Builds
+  - Added batch file.
+  - Fixed EcCodes MemFS not linking.
+  - Fixed issue with static libs not being built.
 
 ## [0.3.6] - 2021-11-04
 ### Fixed

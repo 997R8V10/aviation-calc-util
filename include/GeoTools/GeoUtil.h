@@ -211,9 +211,6 @@ namespace AviationCalcUtil::GeoTools {
         /// \param vrcLat Out VRC/Euroscope style latitude
         /// \param vrcLon Out VRC/Euroscope style longitude
         static void convertDecimalDegsToVrc(double decimalLat, double decimalLon, string& vrcLat, string& vrcLon);
-
-
-
     };
 }
 
@@ -253,9 +250,9 @@ extern AVIATIONCALC_EXPORT double GeoUtilGetEarthRadiusM();
 extern AVIATIONCALC_EXPORT double GeoUtilConvertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs);
 extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs);
 extern AVIATIONCALC_EXPORT void GeoUtilConvertNatsToDecimalDegs(const char *natsLat, const char *natsLon, double &decLat, double &decLon);
-extern AVIATIONCALC_EXPORT const char *GeoUtilConvertDecimalDegsToNats(double decimalDegs);
+extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToNats(double decimalLat, double decimalLon, const char **natsLat, const char **natsLon);
 extern AVIATIONCALC_EXPORT void GeoUtilConvertVrcToDecimalDegs(const char *vrcLat, const char *vrcLon, double &decLat, double &decLon);
-extern AVIATIONCALC_EXPORT const char *GeoUtilConvertDecimalDegsToVrc(double decimalDegs);
+extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToVrc(double decimalLat, double decimalLon, const char **vrcLat, const char **vrcLon);
 }
 
 
