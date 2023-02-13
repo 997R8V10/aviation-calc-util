@@ -12,35 +12,34 @@ ECHO \--------------------------------------------------------------\
 ECHO
 
 ECHO Cleaning NuGet folder
-rmdir /S /Q out\nuget\windows
+rmdir /S /Q out\nuget\win-x86
+rmdir /S /Q out\nuget\win-x64
 ECHO
 
 CALL build-all-windows.bat
 
 ECHO \--------------------------------------------------------------\
-ECHO \                    Packing NuGet Package                     \
+ECHO \               Packing NuGet Package (Win-x86)                \
 ECHO \--------------------------------------------------------------\
 ECHO
 
-cd out\nuget\windows
-ECHO Fetching NuGet executable
-powershell -Command "Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile nuget.exe"
-ECHO Packing Package
-nuget.exe pack .
-ECHO
-
-ECHO \--------------------------------------------------------------\
-ECHO \                   Installing NuGet Package                   \
-ECHO \--------------------------------------------------------------\
-ECHO
-
+cd out\nuget\win-x86
 CALL pack-nuget.bat %nugetfeedpath%
-
-cd ..\..
+cd ..\..\..
 ECHO
 
 ECHO \--------------------------------------------------------------\
-ECHO \                      Package Installed                       \
+ECHO \               Packing NuGet Package (Win-x64)                \
+ECHO \--------------------------------------------------------------\
+ECHO
+
+cd out\nuget\win-x64
+CALL pack-nuget.bat %nugetfeedpath%
+cd ..\..\..
+ECHO
+
+ECHO \--------------------------------------------------------------\
+ECHO \                     Packages Installed                       \
 ECHO \--------------------------------------------------------------\
 ECHO
 ECHO Add %nugetfeedpath% to your Visual Studio NuGet Package Feed.

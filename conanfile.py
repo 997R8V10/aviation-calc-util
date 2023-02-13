@@ -6,7 +6,7 @@ from shutil import copyfile
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "1.0.0"
+    version = "1.0.2"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"

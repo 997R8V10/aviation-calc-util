@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata minClientVersion="2.5">
-    <id>${NUGET_PACKAGE_NAME}</id>
+    <id>${NUGET_PACKAGE_NAME}.${NUGET_ARCH}</id>
     <version>${CMAKE_PROJECT_VERSION}</version>
     <authors>Prithvi Shivaraman</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -20,9 +20,6 @@
   </metadata>
   <files>
     <file src="build\**" target="build" />
-    <file src="runtimes\**" target="runtimes" />
-    <file src="runtimes\native\**" target="lib/netstandard2.0" />
-    <file src="lib\native\**" target="lib/native" />
-    <file src="lib\native\**" target="lib/netstandard2.0" />
+    <file src="lib\**" target="lib" />
   </files>
 </package>
