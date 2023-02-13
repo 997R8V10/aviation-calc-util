@@ -6,9 +6,7 @@ ECHO \--------------------------------------------------------------\
 ECHO
 
 ECHO Cleaning Build folders
-rmdir /S /Q build\windows\x86\debug
 rmdir /S /Q build\windows\x86\release
-rmdir /S /Q build\windows\x64\debug
 rmdir /S /Q build\windows\x64\release
 ECHO
 
@@ -28,7 +26,7 @@ mkdir build\windows\x86\release
 ECHO Installing Conan Packages
 conan install . -if build\windows\x86\release -s arch=x86 -s build_type=Release --build=missing
 ECHO Generating CMake Files
-cmake -S . -B build\windows\x86\release -DCMAKE_BUILD_TYPE=Release -A Win32
+cmake -S . -B build\windows\x86\release -DCMAKE_BUILD_TYPE=Release -A Win32 -DNUGET_ARCH=win-x86
 ECHO Building with CMake
 cmake --build build\windows\x86\release --target aviationcalc --config Release
 ECHO
@@ -42,7 +40,7 @@ mkdir build\windows\x64\release
 ECHO Installing Conan Packages
 conan install . -if build\windows\x64\release -s arch=x86_64 -s build_type=Release --build=missing
 ECHO Generating CMake Files
-cmake -S . -B build\windows\x64\release -DCMAKE_BUILD_TYPE=Release -A x64
+cmake -S . -B build\windows\x64\release -DCMAKE_BUILD_TYPE=Release -A x64 -DNUGET_ARCH=win-x64
 ECHO Building with CMake
 cmake --build build\windows\x64\release --target aviationcalc --config Release
 ECHO

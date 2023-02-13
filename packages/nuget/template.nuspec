@@ -12,7 +12,7 @@
     -->
     <description>${CMAKE_PROJECT_DESCRIPTION}</description>
     <copyright>None</copyright>
-    <tags>aviationcalc netstandard2 Native native</tags>
+    <tags>aviationcalc</tags>
     <dependencies>
       <group targetFramework="native" />
       <group targetFramework="netstandard2.0" />
