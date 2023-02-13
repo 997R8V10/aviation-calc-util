@@ -1,9 +1,12 @@
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
+import os
+import glob
+from shutil import copyfile
 
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "0.2.1"
+    version = "1.0.4"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"
@@ -14,6 +17,7 @@ class AviationcalcConan(ConanFile):
     default_options = {
         "shared": True,
         "fPIC": True,
+        "boost:header_only": False,
         "boost:multithreading": True,
         "boost:without_atomic": True,
         "boost:without_chrono": True,
@@ -21,10 +25,10 @@ class AviationcalcConan(ConanFile):
         "boost:without_context": True,
         "boost:without_contract": True,
         "boost:without_coroutine": True,
-        "boost:without_date_time": True,
+        "boost:without_date_time": False,
         "boost:without_exception": True,
         "boost:without_fiber": True,
-        "boost:without_filesystem": False,
+        "boost:without_filesystem": True,
         "boost:without_graph": True,
         "boost:without_graph_parallel": True,
         "boost:without_iostreams": True,
@@ -40,7 +44,7 @@ class AviationcalcConan(ConanFile):
         "boost:without_regex": True,
         "boost:without_serialization": True,
         "boost:without_stacktrace": True,
-        "boost:without_system": False,
+        "boost:without_system": True,
         "boost:without_test": True,
         "boost:without_thread": True,
         "boost:without_timer": True,
@@ -73,9 +77,18 @@ class AviationcalcConan(ConanFile):
 
     def imports(self):
         self.copy("*.dll", dst="bin", src="bin")
-        self.copy("*.dylib*", dst="bin", src="lib")
+        self.copy("*.dylib*", dst="lib", src="lib")
         self.copy("*.lib", dst="lib", src="lib")
-        # self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
+        self.copy("*.so*", dst="lib", src="lib")
+
+        with tools.chdir(os.path.join(self.imports_folder, "lib")):
+            for dynamic_lib in glob.iglob("*.so.*", recursive=True):
+                lib_symlink = "{}.so".format(dynamic_lib.split(".so")[0])  # basename
+                if os.path.exists(lib_symlink):
+                    os.remove(lib_symlink)
+                self.output.info("Copying {} --> {}".format(dynamic_lib, lib_symlink))
+                copyfile(dynamic_lib, lib_symlink)
+        #self.copy("*.*", dst="bin/eccodes/definitions", src="data/eccodes/definitions")
 
     def build(self):
         cmake = CMake(self)

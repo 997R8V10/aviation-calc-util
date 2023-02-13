@@ -11,11 +11,12 @@
 
 #endif
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <curl/curl.h>
 #endif
 
 #include "GeoTools/GribTools/GribTile.h"
+#include "InteropTools/InteropUtil.h"
 #include <sstream>
 #include <iomanip>
 #include <fstream>
@@ -260,20 +261,31 @@ void GribTile::extractData() {
 
 }
 
-boost::filesystem::path GribTile::getGribPath() const {
-    return boost::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+std::filesystem::path GribTile::getGribPath() const {
+    try {
+        return std::filesystem::temp_directory_path() / "aviationcalc" / "gribtiles";
+    } catch (const std::filesystem::filesystem_error &ex){
+        std::cout << "Error getting temp path for grib file: " << ex.what() << endl;
+        return  std::filesystem::path("temp") / "gribtiles";
+    }
 }
 
 void GribTile::downloadTile() {
     if (!downloaded) {
         string gribFileName = getGribFileName();
-        remove(gribFileName.c_str());
+        try {
+            remove(gribFileName.c_str());
+        }
+        catch (const std::exception &ex)
+        {
+            std::cout << "Error deleting GRIB file!" << ex.what() << endl;
+        }
 
         // Generate URL
         string url = getDownloadUrl();
 
         // Create folder if doesn't exist
-        boost::filesystem::create_directories(getGribPath());
+        std::filesystem::create_directories(getGribPath());
 
         // Download file (Windows & Unix)
 #ifdef _WIN32
@@ -285,19 +297,30 @@ void GribTile::downloadTile() {
         }
 #endif
 
-#ifdef __unix__
-        CURL *curl;
-        FILE *file;
-        CURLcode res;
-        curl = curl_easy_init();
-        if (curl){
-            file = fopen(gribFileName.c_str(), "wb");
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
-            res = curl_easy_perform(curl);
-            /* always cleanup */
-            curl_easy_cleanup(curl);
-            fclose(file);
+#if defined(__unix__) || defined(__APPLE__)
+        try {
+            CURL *curl;
+            FILE *file;
+            CURLcode res;
+            curl = curl_easy_init();
+
+            if (curl) {
+                file = fopen(gribFileName.c_str(), "wb");
+
+                curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
+                res = curl_easy_perform(curl);
+
+                /* always cleanup */
+                curl_easy_cleanup(curl);
+                fclose(file);
+            }
+        }
+        catch (const std::exception &ex)
+        {
+            std::cout << "Error loading GRIB data!" << ex.what() << endl;
+            downloaded = false;
+            return;
         }
 #endif
 
@@ -325,6 +348,7 @@ GribTile::GribTile(const GeoPoint &pos, ptime dateTime) : GeoTile(pos, 1) {
     thread([this]() {
         downloadTile();
     }).detach();
+
 }
 
 ptime GribTile::getForecastDateUtc() const {
@@ -333,6 +357,7 @@ ptime GribTile::getForecastDateUtc() const {
 
 string GribTile::getGribFileName() const {
     stringstream ss;
+
     auto path = getGribPath();
 
     ss << "GribTile_" << getGribDateString()
@@ -343,7 +368,6 @@ string GribTile::getGribFileName() const {
        << ".grb";
 
     path /= ss.str();
-
     return path.string();
 }
 
@@ -404,4 +428,109 @@ string GribTile::getDownloadUrl() const {
        << "&dir=%2Fgfs." << getGribDateString() << "%2F" << cycleStr << "%2Fatmos";
 
     return ss.str();
+}
+
+shared_ptr<const GribTile> *GribTileFindOrCreateGribTile(GeoPoint *pos, uint64_t dateTime) {
+    if (pos == NULL){
+        return nullptr;
+    }
+    return new std::shared_ptr<const GribTile>(GribTile::findOrCreateGribTile(*pos, InteropNsToBoostTime(dateTime)));
+}
+
+shared_ptr<const GribTile> *CreateGribTile(GeoPoint *pos, uint64_t dateTime) {
+    if (pos == NULL){
+        return nullptr;
+    }
+    return new std::shared_ptr<const GribTile>(std::make_shared<const GribTile>(*pos, InteropNsToBoostTime(dateTime)));
+}
+
+uint64_t GribTileGetForecastDateUtc(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return InteropBoostTimeToNs(tile->get()->getForecastDateUtc());
+}
+
+const char *GribTileGetGribFileName(shared_ptr<const GribTile> *point) {
+    if (point == NULL){
+        return NULL;
+    }
+    return InteropCppStrToCStr(point->get()->getGribFileName());
+}
+
+GribDataPoint *GribTileGetClosestPoint(shared_ptr<const GribTile> *point, GeoPoint *acftPos) {
+    if (point == NULL || acftPos == NULL){
+        return NULL;
+    }
+
+    auto closest = point->get()->getClosestPoint(*acftPos);
+
+    if (closest == nullptr){
+        return nullptr;
+    }
+
+    return new GribDataPoint(*closest);
+}
+
+bool GribTileIsValid(shared_ptr<const GribTile> *point, uint64_t dateTime) {
+    if (point == NULL){
+        return false;
+    }
+    return point->get()->isValid(InteropNsToBoostTime(dateTime));
+}
+
+bool GribTileEquals(shared_ptr<const GribTile> *point, shared_ptr<const GribTile> *o) {
+    if (point == NULL || o == NULL){
+        return false;
+    }
+    return point->get()->equals(**o);
+}
+
+void DisposeGribTile(shared_ptr<const GribTile> *tile) {
+    if (tile != NULL){
+        delete tile;
+        tile = NULL;
+    }
+}
+
+bool GribTileIsPointInTile(shared_ptr<const GribTile> *tile, GeoPoint *point) {
+    if (tile == NULL || point == NULL){
+        return false;
+    }
+    return tile->get()->isPointInTile(*point);
+}
+
+GeoPoint *GribTileGetCenterPoint(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return NULL;
+    }
+    return tile->get()->getCenterPoint().release();
+}
+
+double GribTileGetBottomLat(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getBottomLat();
+}
+
+double GribTileGetTopLat(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getTopLat();
+}
+
+double GribTileGetLeftLon(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getLeftLon();
+}
+
+double GribTileGetRightLon(shared_ptr<const GribTile> *tile) {
+    if (tile == NULL){
+        return -1;
+    }
+    return tile->get()->getRightLon();
 }

@@ -11,6 +11,7 @@
 #include <memory>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "aviationcalc_exports.h"
+#include "InteropTools/InteropUtil.h"
 
 using namespace AviationCalcUtil::GeoTools;
 namespace AviationCalcUtil::GeoTools::MagneticTools {
@@ -34,7 +35,7 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
 
     public:
         AVIATIONCALC_EXPORT MagneticResult(const std::shared_ptr<const MagneticModel> &model, const GeoPoint &point,
-                       boost::gregorian::date date);
+                                           boost::gregorian::date date);
 
         AVIATIONCALC_EXPORT const MagneticFieldElements &getMainFieldElements() const;
 
@@ -42,4 +43,11 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
     };
 }
 
+extern "C"
+{
+extern AVIATIONCALC_EXPORT std::shared_ptr<const MagneticResult> *CreateMagneticResult(std::shared_ptr<const MagneticModel> *model, GeoPoint *point, InteropDateStruct dStruct);
+extern AVIATIONCALC_EXPORT void DisposeMagneticResult(std::shared_ptr<const MagneticResult> *ptr);
+extern AVIATIONCALC_EXPORT MagneticFieldElements *MagneticResultGetMainFieldElements(std::shared_ptr<const MagneticResult> *ptr);
+extern AVIATIONCALC_EXPORT MagneticFieldElements *MagneticResultGetSecularFieldElements(std::shared_ptr<const MagneticResult> *ptr);
+}
 #endif //AVIATION_CALC_UTIL_MAGNETICRESULT_H

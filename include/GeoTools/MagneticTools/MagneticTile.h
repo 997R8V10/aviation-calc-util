@@ -43,4 +43,19 @@ namespace AviationCalcUtil::GeoTools::MagneticTools {
     };
 }
 
+extern "C"{
+    extern AVIATIONCALC_EXPORT double MagnetiTileGetResolution();
+    extern AVIATIONCALC_EXPORT shared_ptr<const MagneticTile> *MagneticTileFindOrCreateTile(GeoPoint *pos, InteropDateStruct dStruct);
+    extern AVIATIONCALC_EXPORT shared_ptr<const MagneticTile> *CreateMagneticTile(GeoPoint *point, InteropDateStruct dStruct);
+    extern AVIATIONCALC_EXPORT void DisposeMagneticTile(shared_ptr<const MagneticTile> *tile);
+    extern AVIATIONCALC_EXPORT bool MagneticTileIsValid(shared_ptr<const MagneticTile> *tile, InteropDateStruct dStruct);
+    extern AVIATIONCALC_EXPORT shared_ptr<const MagneticResult> *MagneticTileGetData(shared_ptr<const MagneticTile> *tile);
+    extern AVIATIONCALC_EXPORT bool MagneticTileIsPointInTile(shared_ptr<const MagneticTile> *tile, GeoPoint *point);
+    extern AVIATIONCALC_EXPORT GeoPoint *MagneticTileGetCenterPoint(shared_ptr<const MagneticTile> *tile);
+    extern AVIATIONCALC_EXPORT double MagneticTileGetBottomLat(shared_ptr<const MagneticTile> *tile);
+    extern AVIATIONCALC_EXPORT double MagneticTileGetTopLat(shared_ptr<const MagneticTile> *tile);
+    extern AVIATIONCALC_EXPORT double MagneticTileGetLeftLon(shared_ptr<const MagneticTile> *tile);
+    extern AVIATIONCALC_EXPORT double MagneticTileGetRightLon(shared_ptr<const MagneticTile> *tile);
+}
+
 #endif //AVIATION_CALC_UTIL_MAGNETICTILE_H

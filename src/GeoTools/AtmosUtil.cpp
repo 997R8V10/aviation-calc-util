@@ -160,3 +160,142 @@ double AtmosUtil::convertTasToIas(double tas_kts, double refPress_hPa, double al
 
     return MathUtil::convertMpersToKts(cas);
 }
+
+
+double AtmosUtil::convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    double pressDiff = pres_set_hpa - sfc_pres_hpa;
+    return alt_ind_ft - (ISA_STD_PRES_DROP_ft_PER_hPa * pressDiff);
+}
+
+double AtmosUtil::convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
+    double pressDiff = pres_set_hpa - sfc_pres_hpa;
+    return alt_abs_ft + (ISA_STD_PRES_DROP_ft_PER_hPa * pressDiff);
+}
+
+double AtmosUtil::convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
+    double pressDiff = pres_set_hpa - ISA_STD_PRES_hPa;
+    return alt_ind_ft - (ISA_STD_PRES_DROP_ft_PER_hPa * pressDiff);
+}
+
+double AtmosUtil::calculateIsaTemp(double alt_pres_ft) {
+    if (alt_pres_ft >= 36000) {
+        return -56.5;
+    }
+
+    return ISA_STD_TEMP_C - (alt_pres_ft * ISA_STD_PRES_DROP_ft_PER_hPa);
+}
+
+double AtmosUtilCalculateDryAirDensity(double p, double T) {
+    return AtmosUtil::calculateDryAirDensity(p, T);
+}
+
+double AtmosUtilCalculateImpactPressure1(double cas) {
+    return AtmosUtil::calculateImpactPressure(cas);
+}
+
+double AtmosUtilCalculateImpactPressure2(double M, double p) {
+    return AtmosUtil::calculateImpactPressure(M, p);
+}
+
+double AtmosUtilCalculateCalibratedAirspeed(double qc) {
+    return AtmosUtil::calculateCalibratedAirspeed(qc);
+}
+
+double AtmosUtilCalculateMachNumber(double qc, double p) {
+    return AtmosUtil::calculateMachNumber(qc, p);
+}
+
+double AtmosUtilCalculateEas(double M, double p) {
+    return AtmosUtil::calculateEas(M, p);
+}
+
+double AtmosUtilConvertMachToTas(double M, double T) {
+    return AtmosUtil::convertMachToTas(M, T);
+
+}
+
+double AtmosUtilConvertTasToMach(double tas, double T) {
+    return AtmosUtil::convertTasToMach(tas, T);
+}
+
+double AtmosUtilCalculatePressureAtAlt(double h, double h0, double p0, double T) {
+    return AtmosUtil::calculatePressureAtAlt(h, h0, p0, T);
+}
+
+double AtmosUtilCalculateTempAtAlt(double h, double h0, double T0) {
+    return AtmosUtil::calculateTempAtAlt(h, h0, T0);
+}
+
+double AtmosUtilCalculateDensityAltitude(double p, double T) {
+    return AtmosUtil::calculateDensityAltitude(p, T);
+}
+
+double AtmosUtilCalculateSpeedOfSoundDryAir(double T) {
+    return AtmosUtil::calculateSpeedOfSoundDryAir(T);
+}
+
+double AtmosUtilConvertIasToTas(double ias_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K,
+                                double &mach) {
+    return AtmosUtil::convertIasToTas(ias_kts, refPress_hPa, alt_ft, refAlt_ft, refTemp_K, mach);
+}
+
+double AtmosUtilConvertTasToIas(double tas_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K,
+                                double &mach) {
+    return AtmosUtil::convertTasToIas(tas_kts, refPress_hPa, alt_ft, refAlt_ft, refTemp_K, mach);
+}
+
+double AtmosUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa){
+    return AtmosUtil::convertIndicatedToAbsoluteAlt(alt_ind_ft, pres_set_hpa, sfc_pres_hpa);
+}
+
+double AtmosUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa){
+    return AtmosUtil::convertAbsoluteToIndicatedAlt(alt_abs_ft, pres_set_hpa, sfc_pres_hpa);
+}
+
+double AtmosUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa){
+    return AtmosUtil::convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa);
+}
+
+double AtmosUtilCalculateIsaTemp(double alt_pres_ft){
+    return AtmosUtil::calculateIsaTemp(alt_pres_ft);
+}
+
+double AtmosUtilGetConst_R_DRY_AIR() {
+    return AtmosUtil::R_DRY_AIR;
+}
+
+double AtmosUtilGetConst_SPEC_HEAT_RATIO_AIR() {
+    return AtmosUtil::SPEC_HEAT_RATIO_AIR;
+}
+
+double AtmosUtilGetConst_ISA_STD_TEMP_K() {
+    return AtmosUtil::ISA_STD_TEMP_K;
+}
+
+double AtmosUtilGetConst_ISA_STD_TEMP_C() {
+    return AtmosUtil::ISA_STD_TEMP_C;
+}
+
+double AtmosUtilGetConst_ISA_STD_PRES_Pa() {
+    return AtmosUtil::ISA_STD_PRES_Pa;
+}
+
+double AtmosUtilGetConst_ISA_STD_PRES_hPa() {
+    return AtmosUtil::ISA_STD_PRES_hPa;
+}
+
+double AtmosUtilGetConst_ISA_STD_DENS() {
+    return AtmosUtil::ISA_STD_DENS;
+}
+
+double AtmosUtilGetConst_ISA_STD_LAPSE_RATE() {
+    return AtmosUtil::ISA_STD_LAPSE_RATE;
+}
+
+double AtmosUtilGetConst_ISA_STD_PRES_DROP_ft_PER_hPa() {
+    return AtmosUtil::ISA_STD_PRES_DROP_ft_PER_hPa;
+}
+
+double AtmosUtilGetConst_EARTH_G() {
+    return AtmosUtil::EARTH_G;
+}

@@ -20,7 +20,8 @@ namespace AviationCalcUtil::GeoTools {
         AVIATIONCALC_EXPORT static constexpr double ISA_STD_TEMP_K = 288.15;
 
         /// ISA Sea Level Standard Temperature (C)
-        AVIATIONCALC_EXPORT static constexpr double ISA_STD_TEMP_C = ISA_STD_TEMP_K - MathTools::MathUtil::CONV_FACTOR_KELVIN_C;
+        AVIATIONCALC_EXPORT static constexpr double ISA_STD_TEMP_C =
+                ISA_STD_TEMP_K - MathTools::MathUtil::CONV_FACTOR_KELVIN_C;
 
         /// ISA Sea Level Standard Pressure (Pa)
         AVIATIONCALC_EXPORT static constexpr double ISA_STD_PRES_Pa = 101325;
@@ -36,6 +37,9 @@ namespace AviationCalcUtil::GeoTools {
 
         /// Earth Surface Gravitational Acceleration (m/s^2)
         AVIATIONCALC_EXPORT static constexpr double EARTH_G = 9.80665;
+
+        /// Conversion Factor between hPa and ft of altitude.
+        AVIATIONCALC_EXPORT static constexpr double ISA_STD_PRES_DROP_ft_PER_hPa = 30.0;
 
         /// Calculates the density of dry air at a given temperature and pressure.
         /// \param p Absolute pressure (Pa)
@@ -128,7 +132,63 @@ namespace AviationCalcUtil::GeoTools {
         /// \param mach output Mach number
         /// \return Indicated air speed (kts)
         AVIATIONCALC_EXPORT static double convertTasToIas(double tas_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
+
+        /// Converts Indicated Altitude to Absolute Altitude
+        /// \param alt_ind_ft Indicated altitude (ft)
+        /// \param pres_set_hpa Pressure setting (hPa)
+        /// \param sfc_pres_hpa Surface pressure (hPa)
+        /// \return Absolute altitude (ft)
+        AVIATIONCALC_EXPORT static double convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
+
+        /// Converts Absolute Altitude to Indicated Altitude
+        /// \param alt_abs_ft Absolute altitude (ft)
+        /// \param pres_set_hpa Pressure setting (hPa)
+        /// \param sfc_pres_hpa Surface pressure (hPa)
+        /// \return Indicated altitude (ft)
+        AVIATIONCALC_EXPORT static double convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa);
+
+        /// Converts Indicated Altitude to Pressure Altitude
+        /// \param alt_ind_ft Indicated altitude (ft)
+        /// \param pres_set_hpa Pressure setting (hPa)
+        /// \return Pressure altitude (ft)
+        AVIATIONCALC_EXPORT static double convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa);
+
+        /// Calculate ISA (International Standard Atmosphere) Temperature at a Pressure Altitude.
+        /// \param alt_pres_ft Pressure altitude (ft)
+        /// \return ISA Temp (C)
+        AVIATIONCALC_EXPORT static double calculateIsaTemp(double alt_pres_ft);
     };
+}
+
+extern "C" {
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_R_DRY_AIR();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_SPEC_HEAT_RATIO_AIR();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_TEMP_K();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_TEMP_C();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_PRES_Pa();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_PRES_hPa();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_DENS();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_LAPSE_RATE();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_EARTH_G();
+    extern AVIATIONCALC_EXPORT double AtmosUtilGetConst_ISA_STD_PRES_DROP_ft_PER_hPa();
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateDryAirDensity(double p, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure1(double cas);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateImpactPressure2(double M, double p);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateCalibratedAirspeed(double qc);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateMachNumber(double qc, double p);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateEas(double M, double p);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertMachToTas(double M, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertTasToMach(double tas, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculatePressureAtAlt(double h, double h0, double p0, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateTempAtAlt(double h, double h0, double T0);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateDensityAltitude(double p, double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateSpeedOfSoundDryAir(double T);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertIasToTas(double ias_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertTasToIas(double tas_kts, double refPress_hPa, double alt_ft, double refAlt_ft, double refTemp_K, double &mach);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa);
+extern AVIATIONCALC_EXPORT double AtmosUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa);
+extern AVIATIONCALC_EXPORT double AtmosUtilCalculateIsaTemp(double alt_pres_ft);
 }
 
 #endif //AVIATION_CALC_UTIL_ATMOSUTIL_H

@@ -1,7 +1,7 @@
 # Aviation Calc Util
 
 A library to assist with complex aviation-related calculations. Primarily used for the VATSIM ATC Training Simulator
-Project. The library is written in C++ 20 standard and requires a compiler that is capable of building to this standard.
+Project. The library is written in C++ 17 standard and requires a compiler that is capable of building to this standard.
 
 ## Overview
 
@@ -11,21 +11,24 @@ The library contains utilities to handle geographical calculations, magnetic cal
 
 The project depends on the following libraries and tools:
 
-- **C & C++ 20 Compiler**
-  - **Windows:** Visual Studio with C++ development enabled.
-  - **Unix:** Should come standard with a C & C++ compiler.
+- **C & C++ 17 Compiler**
 - **[CMake 3.14+](https://cmake.org/download/)**
-  - C++ Build Automation Tool
+    - C++ Build Automation Tool
 - **[Conan 1.39+](https://conan.io/downloads.html)**
-  - C++ Dependency Manager
+    - C++ Dependency Manager
 - **[Python 3.0+](https://www.python.org/downloads/)**
-  - Required for ecCodes build.
+    - Required for ecCodes build.
 - **[Boost 1.76.0+](https://www.boost.org/)**
-  - No Download Required
-  - Fetched through Conan
+    - No Download Required
+    - Fetched through Conan
 - **[ecCodes 2.22.1](https://confluence.ecmwf.int/display/ECC)**
-  - No Download or manual build required.
-  - See Below
+    - No Download or manual build required.
+    - See [below](#eccodes)
+- **Curl (_Linux/MacOS Only_)**
+    - Both the library and dev packages must be installed
+    - Installation:
+        - **Ubuntu**: `sudo apt install libcurl4-openssl-dev`
+        - **MacOS**: XCode developer tools will ship with libcurl dev.
 
 ### ecCodes
 
@@ -37,6 +40,7 @@ To install the package data, simply run `conan export` in the `eccodes` director
 _**Note:** Building the NuGet package will automatically export ecCodes_
 
 ## Building
+
 Below are the steps to build the code manually.
 
 _**Note:** Building the NuGet package will automatically build for all configurations_
@@ -66,13 +70,26 @@ To generate the Conan package, simply run `conan export` in the source folder.
 _**Note:** ecCodes **MUST** be built prior to building the main package_
 
 ### NuGet Package
+To create a NuGet package, simply follow the instructions depending on your operating system below.
 
+Then add your local NuGet feed to Visual Studio.
+
+The project will be available in Visual Studio as a NuGet package under the name `PShivaraman.AviationCalcUtil`
+
+#### Windows
 Simply run `create-nuget-package.bat` to generate a NuGet package. The default feed is set
 to `%USERPROFILE%\.nuget\feed`.
 
 Overriding default feed can be accomplished by passing your desired feed in as an argument: \
 `create-nuget-package.bat S:\data\nugetfeed`
 
-Now add your local NuGet feed to Visual Studio.
+#### Unix (Mono)
+[Mono](https://www.mono-project.com/download/stable/) is required to build nuget packages on Unix systems.
 
-The project will be available in Visual Studio as a NuGet package under the name `PShivaraman.AviationCalcUtil`
+**MacOS**: Install wget through brew.
+
+Simply run `create-nuget-package-dotnet.sh` to generate a NuGet package. The default feed is set
+to `$HOME/.nuget/feed`.
+
+Overriding default feed can be accomplished by passing your desired feed in as an argument: \
+`create-nuget-package-dotnet.sh ~/data/nugetfeed`

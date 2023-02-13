@@ -4,7 +4,72 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.4] - 2023-02-13
+### Fixed
+- Added LICENSE and README to NuGet Package
+
+
+## [1.0.3] - 2023-02-13
+### Fixed
+- Fixed NuGet Package Generation
+
+## [1.0.2] - 2023-02-12
+### Changed
+- Generating separate NuGet Packages per architecture
+
+## [1.0.0] - 2023-02-06
+### Added
+- Coordinate Utilities
+  - Added functions to convert between decimal degrees and DDD.MM.SS.SSS.
+  - Added functions to convert from NATS/VRC/Euroscope coordinates to decimal and back.
+
+### Changed
+- Moved Atmospheric Functions from GeoUtil to AtmosUtil
+
+### Removed
+- Deprecated GeoUtil Atmospheric Functions
+  - `convertPressureToDensityAlt`
+  - `convertIasToTas`
+  - `convertTasToIas`
+
+### Fixed
+- Static Library Builds
+  - Added batch file.
+  - Fixed EcCodes MemFS not linking.
+  - Fixed issue with static libs not being built.
+
+## [0.3.6] - 2021-11-04
+### Fixed
+- Release builds were being built as debug on Windows.
+
+## [0.3.5] - 2021-09-19
+### Fixed
+- ecCodes: Fixed erroneous perl dependency in conanfile.
+
+## [0.3.4] - 2021-09-19
+### Fixed
+- Corrected issue with GeoPoint setters only setting latitude.
+
+## [0.3.3] - 2021-09-16
+### Fixed
+- Issues on MacOS with Filesystem linker flags.
+
+## [0.3.2] - 2021-09-16
+### Fixed
+- Errors on Ubuntu with Boost::Filesystem.
+  - Boost Filesystem replaced with std::filesystem
+- Added exception handling to GribTile
+
+## [0.3.1] - 2021-09-15
+### Fixed
+- Targeting .NETStandard2.0 for NuGet package.
+
+## [0.3.0] - 2021-09-15
+### Added
+- C api for all functions for .NET and Swift support.
+- NuGet package creation on Linux.
+- Copy Constructors added to several classes.
+- NuGet package now targets Native, .NET Core App 3.1, and .NET Framework 4.7
 
 ## [0.2.1] - 2021-09-03
 ### Fixed
@@ -24,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 - Geo Tools
   - GeoUtil
-    - Use the function sin AtmosUtil
+    - Use the functions in AtmosUtil
       - `convertIasToTas`
       - `convertTasToIas`
       - `convertedPressureToDensityAlt`
@@ -83,10 +148,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
-[Unreleased]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/0.2.1...HEAD
-[0.2.1]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.2.0...v0.2.1
-[0.2.0]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.1.0...v0.2.0
-[0.1.0]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.0.7...v0.1.0
-[0.0.7]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/compare/v0.0.1...v0.0.7
-[0.0.1]: https://gitlab.com/vatsim-tools/aviation-calc-util/-/releases/v0.0.1
+[1.0.4]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.3...v1.0.4
+[1.0.3]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.0...v1.0.2
+[1.0.0]: https://github.com/997R8V10/aviation-calc-util/compare/v0.3.6...v1.0.0
+[0.3.6]: https://github.com/997R8V10/aviation-calc-util/compare/v0.3.5...v0.3.6
+[0.3.5]: https://github.com/997R8V10/aviation-calc-util/compare/v0.3.4...v0.3.5
+[0.3.4]: https://github.com/997R8V10/aviation-calc-util/compare/v0.3.3...v0.3.4
+[0.3.3]: https://github.com/997R8V10/aviation-calc-util/compare/v0.3.2...v0.3.3
+[0.3.2]: https://github.com/997R8V10/aviation-calc-util/compare/v0.3.1...v0.3.2
+[0.3.1]: https://github.com/997R8V10/aviation-calc-util/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/997R8V10/aviation-calc-util/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/997R8V10/aviation-calc-util/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/997R8V10/aviation-calc-util/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/997R8V10/aviation-calc-util/compare/v0.0.7...v0.1.0
+[0.0.7]: https://github.com/997R8V10/aviation-calc-util/compare/v0.0.1...v0.0.7
+[0.0.1]: https://github.com/997R8V10/aviation-calc-util/releases/tag/v0.0.1
 

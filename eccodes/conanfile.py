@@ -56,13 +56,14 @@ class EccodesConan(ConanFile):
 		"enable_python2": False,
 		"enable_extra_tests": False
 	}
-	build_requires = ["strawberryperl/5.28.1.1@conan/stable"]
+	build_requires = []
 	generators = ["cmake", "txt"]
 	build_policy = "missing"
 
 	def config_options(self):
 		if self.settings.os == "Windows":
 			del self.options.fPIC
+			self.build_requires.append("strawberryperl/5.28.1.1")
 
 	def source(self):
 		url = "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz"
@@ -204,6 +205,9 @@ conan_basic_setup()''')
 		cmake.definitions["ENABLE_AEC"] = "ON" if self.options.enable_aec else "OFF"
 		cmake.definitions["ENABLE_PYTHON2"] = "ON" if self.options.enable_python2 else "OFF"
 		cmake.definitions["ENABLE_EXTRA_TESTS"] = "ON" if self.options.enable_extra_tests else "OFF"
+		
+		# LE Check
+		cmake.definitions["IEEE_LE"] = 1
 
 		cmake.configure(source_folder="eccodes")
 
@@ -234,3 +238,5 @@ conan_basic_setup()''')
 
 	def package_info(self):
 		self.cpp_info.libs = ["eccodes"]
+		if self.options.enable_memfs:
+			self.cpp_info.libs.append("eccodes_memfs")

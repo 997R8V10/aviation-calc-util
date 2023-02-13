@@ -84,3 +84,72 @@ unique_ptr<GeoPoint> GeoTile::getCenterPoint() const {
     double centerLon = (leftLon + rightLon) / 2;
     return make_unique<GeoPoint>(centerLat, centerLon);
 }
+
+GeoTile *CreateGeoTile(double botLat, double topLat, double leftLon, double rightLon) {
+    return new GeoTile(botLat, topLat, leftLon, rightLon);
+}
+
+GeoTile *CreateGeoTileFromGeoPoint(GeoPoint *point, double resolutionDegs) {
+    if (point == NULL){
+        return NULL;
+    }
+
+    return new GeoTile(*point, resolutionDegs);
+}
+
+bool GeoTileIsPointInTile(GeoTile *tile, GeoPoint *point) {
+    if (tile == NULL || point == NULL){
+        return false;
+    }
+    return tile->isPointInTile(*point);
+}
+
+GeoPoint *GeoTileGetCenterPoint(GeoTile *tile) {
+    if (tile == nullptr){
+        return nullptr;
+    }
+
+    return tile->getCenterPoint().release();
+}
+
+double GeoTileGetBottomLat(GeoTile *tile) {
+    if (tile == nullptr){
+        return -1;
+    }
+    return tile->getBottomLat();
+}
+
+double GeoTileGetTopLat(GeoTile *tile) {
+    if (tile == nullptr){
+        return -1;
+    }
+    return tile->getTopLat();
+}
+
+double GeoTileGetLeftLon(GeoTile *tile) {
+    if (tile == nullptr){
+        return -1;
+    }
+    return tile->getLeftLon();
+}
+
+double GeoTileGetRightLon(GeoTile *tile) {
+    if (tile == nullptr){
+        return -1;
+    }
+    return tile->getRightLon();
+}
+
+void DisposeGeoTile(GeoTile *tile) {
+    if (tile != NULL){
+        delete tile;
+        tile = NULL;
+    }
+}
+
+GeoTile *CopyGeoTile(GeoTile *tile) {
+    if (tile == nullptr){
+        return nullptr;
+    }
+    return new GeoTile(*tile);
+}
