@@ -101,6 +101,15 @@ configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/netstandard.targets
         ${CMAKE_BINARY_DIR}/nuget/build/netstandard2.0/${NUGET_PACKAGE_NAME}.${NUGET_ARCH}.targets
         )
 
+# Generate Docs
+configure_file(${PROJECT_SOURCE_DIR}/README.md
+        ${CMAKE_BINARY_DIR}/nuget/README.md
+        )
+
+configure_file(${PROJECT_SOURCE_DIR}/LICENSE
+        ${CMAKE_BINARY_DIR}/nuget/LICENSE.txt
+        )
+
 # Generate pack-nuget.bat
 if (WIN32)
     configure_file(${PROJECT_SOURCE_DIR}/packages/nuget/pack-nuget.bat

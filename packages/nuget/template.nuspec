@@ -5,7 +5,8 @@
     <version>${CMAKE_PROJECT_VERSION}</version>
     <authors>Prithvi Shivaraman</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <license type="expression">MIT</license>
+    <readme>README.md</readme>
+    <license type="file">LICENSE.txt</license>
     <!--
     <projectUrl>${CMAKE_PROJECT_HOMEPAGE_URL}</projectUrl>
     <iconUrl></iconUrl>
@@ -21,5 +22,7 @@
   <files>
     <file src="build\**" target="build" />
     <file src="lib\**" target="lib" />
+    <file src="README.md" target="" />
+    <file src="LICENSE.txt" target="" />
   </files>
 </package>
