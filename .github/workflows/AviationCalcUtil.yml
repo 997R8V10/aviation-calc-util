@@ -20,6 +20,8 @@ jobs:
             conan-arch: x86_64
           - arch: x86
             conan-arch: x86
+          - arch: arm
+            conan-arch: armv4
           - arch: arm64
             conan-arch: armv7
           - os: macos-latest
@@ -56,6 +58,15 @@ jobs:
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
+      - name: Install Curl
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: sudo apt install -y libcurl4-openssl-dev
+      - name: Conan Cache
+        id: conan-caches
+        uses: actions/cache@v3
+        with:
+          path: ${{github.workspace}}/.conan/data
+          key: ${{ runner.os }}-conan-cache
       - name: Export ecCodes
         run: conan export eccodes
       - name: Export Conan Package
