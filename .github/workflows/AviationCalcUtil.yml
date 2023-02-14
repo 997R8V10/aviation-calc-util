@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  CONAN_USER_HOME: "${{ github.workspace }}/conan/"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan/short"
+
 jobs:
   build:
     # Processor Architectures
@@ -61,11 +65,11 @@ jobs:
       - name: Install Curl
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: sudo apt install -y libcurl4-openssl-dev
-      - name: Restore Conan Cache
-        id: cache-conan-restore
-        uses: actions/cache/restore@v3
+      - name: Conan Cache
+        id: cache-conan
+        uses: actions/cache@v3
         with:
-          path: $HOME/.conan/data
+          path: ${{ github.workspace }}/conan
           key: ${{ runner.os }}-conan-cache
       - name: Export ecCodes
         run: conan export eccodes
@@ -77,9 +81,3 @@ jobs:
         run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DNUGET_ARCH=${{ matrix.short-os }}-${{ matrix.arch }}
       - name: Build
         run: cmake --build ${{github.workspace}}/build --target aviationcalc
-      - name: Save Conan Cache
-        id: cache-conan-save
-        uses: actions/cache/save@v3
-        with:
-          path: $HOME/.conan/data
-          key: ${{ steps.cache-conan-restore.outputs.cache-primary-key }}
