@@ -88,7 +88,7 @@ jobs:
       - name: Configure CMake
         run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DNUGET_ARCH=${{ matrix.short-os }}-${{ matrix.arch }}${{ matrix.cmake-win-flag }}
       - name: Build
-        run: cmake --build ${{github.workspace}}/build --target aviationcalc
+        run: cmake --build ${{github.workspace}}/build --target aviationcalc --config ${{ matrix.configuration }}
       - name: Create NuGet Package
         if: ${{ matrix.configuration == 'Release' }}
         run: |
