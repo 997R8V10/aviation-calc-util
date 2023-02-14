@@ -17,24 +17,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x64, x86, arm, arm64]
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        #arch: [x64, x86, arm, arm64]
+        #os: [macos-latest, windows-latest, ubuntu-latest]
+        arch: [x64]
+        os: [windows-latest]
         configuration: [Debug, Release]
         include:
           - arch: x64
             conan-arch: x86_64
-          - arch: x86
-            conan-arch: x86
-          - arch: arm
-            conan-arch: armv4
-          - arch: arm64
-            conan-arch: armv7
-          - os: macos-latest
-            short-os: osx
+          #- arch: x86
+          #  conan-arch: x86
+          #- arch: arm
+          #  conan-arch: armv4
+          #- arch: arm64
+          #  conan-arch: armv7
+          #- os: macos-latest
+          #  short-os: osx
           - os: windows-latest
             short-os: win
-          - os: ubuntu-latest
-            short-os: linux
+          #- os: ubuntu-latest
+          #  short-os: linux
           - configuration: Debug
             create-nuget-package: false
           - configuration: Release
@@ -52,9 +54,6 @@ jobs:
             arch: arm
           - os: macos-latest
             arch: arm64
-          - os: macos-latest
-          - os: ubuntu-latest
-          - configuration: Debug
 
     runs-on: ${{ matrix.os }}
 
