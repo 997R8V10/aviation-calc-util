@@ -1,5 +1,5 @@
 from conans import ConanFile, CMake, tools
-
+from conan.tools.files import rename
 
 class EccodesConan(ConanFile):
 	name = "eccodes"
@@ -69,12 +69,12 @@ class EccodesConan(ConanFile):
 		url = "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz"
 		tools.download(url, "eccodes.tar.gz")
 		tools.untargz("eccodes.tar.gz")
-		tools.rename("eccodes-2.22.1-Source", "eccodes")
+		#rename(self, "eccodes-2.22.1-Source", "eccodes")
 		
 		# This small hack might be useful to guarantee proper /MT /MD linkage
 		# in MSVC if the packaged project doesn't have variables to set it
 		# properly
-		tools.replace_in_file("eccodes/CMakeLists.txt", "project( eccodes VERSION 2.22.1 LANGUAGES C )",
+		tools.replace_in_file("eccodes-2.22.1-Source/CMakeLists.txt", "project( eccodes VERSION 2.22.1 LANGUAGES C )",
 							  '''project( eccodes VERSION 2.22.1 LANGUAGES C )
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
@@ -178,9 +178,9 @@ conan_basic_setup()''')
  endif()
  
 """
-			tools.patch(base_path="eccodes", patch_string=definitions_cmake_patch, fuzz=True)
-			tools.patch(base_path="eccodes", patch_string=ifssamples_cmake_path, fuzz=True)
-			tools.patch(base_path="eccodes", patch_string=check_os_patch, fuzz=True)
+			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=definitions_cmake_patch, fuzz=True)
+			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=ifssamples_cmake_path, fuzz=True)
+			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=check_os_patch, fuzz=True)
 
 		cmake = CMake(self)
 
@@ -209,7 +209,7 @@ conan_basic_setup()''')
 		# LE Check
 		cmake.definitions["IEEE_LE"] = 1
 
-		cmake.configure(source_folder="eccodes")
+		cmake.configure(source_folder="eccodes-2.22.1-Source")
 
 		if cmake.is_multi_configuration:
 			cmake.build(target="eccodes", args=["--config %s" % self.settings.build_type])
@@ -228,13 +228,13 @@ conan_basic_setup()''')
 		self.copy("*.a", dst="lib", keep_path=False)
 
 		if not self.options.enable_memfs:
-			self.copy("*.def", dst="data/eccodes/definitions", src="eccodes/definitions")
-			self.copy("*.table", dst="data/eccodes/definitions", src="eccodes/definitions")
-			self.copy("*.pl", dst="data/eccodes/ifs_samples", src="eccodes/ifs_samples")
-			self.copy("*.tmpl", dst="data/eccodes/ifs_samples", src="eccodes/ifs_samples")
+			self.copy("*.def", dst="data/eccodes/definitions", src="eccodes-2.22.1-Source/definitions")
+			self.copy("*.table", dst="data/eccodes/definitions", src="eccodes-2.22.1-Source/definitions")
+			self.copy("*.pl", dst="data/eccodes/ifs_samples", src="eccodes-2.22.1-Source/ifs_samples")
+			self.copy("*.tmpl", dst="data/eccodes/ifs_samples", src="eccodes-2.22.1-Source/ifs_samples")
 
 		if self.options.enable_examples:
-			self.copy("*.sh", dst="data/eccodes/examples", src="eccodes/examples")
+			self.copy("*.sh", dst="data/eccodes/examples", src="eccodes-2.22.1-Source/examples")
 
 	def package_info(self):
 		self.cpp_info.libs = ["eccodes"]
