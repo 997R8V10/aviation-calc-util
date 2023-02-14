@@ -10,6 +10,7 @@ jobs:
   build:
     # Processor Architectures
     strategy:
+      fail-fast: false
       matrix:
         arch: [x64, x86, arm, arm64]
         os: [macos-latest, windows-latest, ubuntu-latest]
