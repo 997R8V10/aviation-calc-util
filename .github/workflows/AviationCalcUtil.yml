@@ -55,6 +55,10 @@ jobs:
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
+      - name: Export ecCodes
+        run: conan export eccodes
+      - name: Export Conan Package
+        run: conan export .
       - name: Install Conan Packages
         run: conan install . -if ${{github.workspace}}/build -s arch=${{ matrix.conan-arch }} -s build_type=${{ matrix.configuration }} --build=missing
       - name: Configure CMake
