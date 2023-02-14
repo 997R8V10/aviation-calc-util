@@ -17,30 +17,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #arch: [x64, x86, arm, arm64]
-        #os: [macos-latest, windows-latest, ubuntu-latest]
-        arch: [x64]
-        os: [windows-latest]
+        arch: [x64, x86, arm, arm64]
+        os: [macos-latest, windows-latest, ubuntu-latest]
         configuration: [Debug, Release]
         include:
           - arch: x64
             conan-arch: x86_64
-          #- arch: x86
-          #  conan-arch: x86
-          #- arch: arm
-          #  conan-arch: armv4
-          #- arch: arm64
-          #  conan-arch: armv7
-          #- os: macos-latest
-          #  short-os: osx
+          - arch: x86
+            conan-arch: x86
+          - arch: arm
+            conan-arch: armv4
+          - arch: arm64
+            conan-arch: armv7
+          - os: macos-latest
+            short-os: osx
           - os: windows-latest
             short-os: win
-          #- os: ubuntu-latest
-          #  short-os: linux
-          - configuration: Debug
-            create-nuget-package: false
-          - configuration: Release
-            create-nuget-package: true
+          - os: ubuntu-latest
+            short-os: linux
         exclude:
           - os: windows-latest
             arch: arm
@@ -84,3 +78,25 @@ jobs:
         run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DNUGET_ARCH=${{ matrix.short-os }}-${{ matrix.arch }}
       - name: Build
         run: cmake --build ${{github.workspace}}/build --target aviationcalc
+      - name: Create NuGet Package
+        if: ${{ matrix.configuration == 'Release' }}
+        run: |
+          cd ${{ github.workspace }}/out/nuget/${{ matrix.short-os }}-${{ matrix.arch }}
+          dotnet pack --no-build --output .
+      - name: Archive Binary Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: AviationCalcUtil-bin-${{ matrix.short-os }}-${{ matrix.arch }}-${{ matrix.configuration }}
+          path: |
+            ${{ github.workspace }}/build/bin/*.dll
+            ${{ github.workspace }}/build/bin/*.pdb
+            ${{ github.workspace }}/build/lib/*.so*
+            ${{ github.workspace }}/build/lib/*.dylib*
+      - name: Archive NuGet Packages
+        if: ${{ matrix.configuration == 'Release' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: AviationCalcUtil-NuGet-${{ matrix.short-os }}-${{ matrix.arch }}
+          path: |
+            ${{ github.workspace }}/**/*.nupkg
+            ${{ github.workspace }}/**/*.snupkg
