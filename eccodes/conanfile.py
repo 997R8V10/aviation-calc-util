@@ -1,5 +1,5 @@
 from conans import ConanFile, CMake, tools
-
+from conan.tools.files import rename
 
 class EccodesConan(ConanFile):
 	name = "eccodes"
@@ -69,7 +69,7 @@ class EccodesConan(ConanFile):
 		url = "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz"
 		tools.download(url, "eccodes.tar.gz")
 		tools.untargz("eccodes.tar.gz")
-		tools.rename("eccodes-2.22.1-Source", "eccodes")
+		rename(self, "eccodes-2.22.1-Source", "eccodes")
 		
 		# This small hack might be useful to guarantee proper /MT /MD linkage
 		# in MSVC if the packaged project doesn't have variables to set it
