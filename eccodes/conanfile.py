@@ -238,3 +238,5 @@ conan_basic_setup()''')
 
 	def package_info(self):
 		self.cpp_info.libs = ["eccodes"]
+		if self.options.enable_memfs:
+			self.cpp_info.libs.append("eccodes_memfs")

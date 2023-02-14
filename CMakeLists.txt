@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 0.3.5
+        VERSION 1.0.0
         DESCRIPTION "A library to assist with aviation related calculations."
         LANGUAGES CXX
         )
@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmakescripts)
+
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # Includes
 include(FetchContent)
@@ -46,9 +48,16 @@ endif()
 # End MacOS RPath
 
 # Boost
-set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_NO_SYSTEM_PATHS ON)
+if (BUILD_SHARED_LIBS)
+	set(Boost_USE_STATIC_LIBS OFF)
+	set(Boost_USE_STATIC_RUNTIME OFF)
+else()
+	set(Boost_USE_STATIC_LIBS ON)
+	set(Boost_USE_STATIC_RUNTIME ON)
+endif()
 set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
+
 find_package(Boost 1.76.0 REQUIRED)
 # End Boost
 

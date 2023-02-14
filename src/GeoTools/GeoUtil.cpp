@@ -107,27 +107,20 @@ double GeoUtil::calculateEndHeading(double startHeading, double degreesTurned, b
     return normalizeHeading(newHeading);
 }
 
-double GeoUtil::convertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    double pressDiff = pres_set_hpa - sfc_pres_hpa;
-    return alt_ind_ft - (STD_PRES_DROP * pressDiff);
-}
+tuple<double, double> GeoUtil::calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
+                                                                double radiusOfTurnNMi, bool isRightTurn) {
+    double chordLengthNMi = 2 * radiusOfTurnNMi * std::sin(degreesTurned * M_PI / (180.0 * 2));
+    double chordHeading = startHeading;
 
-double GeoUtil::convertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    double pressDiff = pres_set_hpa - sfc_pres_hpa;
-    return alt_abs_ft + (STD_PRES_DROP * pressDiff);
-}
-
-double GeoUtil::convertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
-    double pressDiff = pres_set_hpa - STD_PRES_HPA;
-    return alt_ind_ft - (STD_PRES_DROP * pressDiff);
-}
-
-double GeoUtil::calculateIsaTemp(double alt_pres_ft) {
-    if (alt_pres_ft >= 36000) {
-        return -56.5;
+    if (isRightTurn) {
+        chordHeading += (degreesTurned / 2);
+    } else {
+        chordHeading -= (degreesTurned / 2);
     }
 
-    return STD_TEMP_C - (alt_pres_ft * STD_LAPSE_RATE);
+    chordHeading = normalizeHeading(chordHeading);
+
+    return {chordHeading, chordLengthNMi};
 }
 
 double GeoUtil::calculateTurnAmount(double currentHeading, double desiredHeading) {
@@ -290,6 +283,150 @@ void GeoUtil::calculateChordHeadingAndDistance(double startHeading, double degre
     chordHeading = normalizeHeading(chordHeading);
 }
 
+double GeoUtil::convertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs) {
+    int sign = (degrees < 0) ? -1 : 1;
+    degrees *= sign;
+    return sign * (degrees + (mins / 60.0) + (secs / 3600.0));
+}
+
+void GeoUtil::convertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs) {
+    int sign = (decimalDegs < 0) ? -1 : 1;
+    decimalDegs *= sign;
+
+    degrees = (int) floor(decimalDegs);
+    mins = (unsigned int) ((decimalDegs - degrees) * 60.0);
+    secs = (decimalDegs - degrees - (mins / 60.0)) * 3600.0;
+
+    degrees *= sign;
+}
+
+void GeoUtil::convertNatsToDecimalDegs(const string &natsLat, const string &natsLon, double& decimalLat, double& decimalLon) {
+    decimalLat = convertNatsToDecimalSingle(natsLat, true);
+    decimalLon = convertNatsToDecimalSingle(natsLon, false);
+}
+
+double GeoUtil::convertNatsToDecimalSingle(const string &natsCoord, bool isLatitude) {
+    int length = isLatitude ? 7 : 8;
+    string lastChar = natsCoord.substr(length - 1, 1);
+    int sign = lastChar == "S" || lastChar == "W" ? -1 : 1;
+    int currentPos = 0, firstChunk = isLatitude ? 2 : 3;
+    int degrees = (stoi(natsCoord.substr(currentPos, firstChunk))) * sign;
+    currentPos += firstChunk;
+    unsigned int minutes = stoi(natsCoord.substr(currentPos, 2));
+    currentPos += 2;
+    double seconds = stod(natsCoord.substr(currentPos, 2));
+    return convertDegMinSecToDecimalDegs(degrees, minutes, seconds);
+}
+
+void GeoUtil::convertDecimalDegsToNats(double decimalLat, double decimalLon, string &natsLat, string &natsLon) {
+    natsLat = convertDecimalToNatsSingle(decimalLat, true);
+    natsLon = convertDecimalToNatsSingle(decimalLon, false);
+}
+
+
+
+
+string GeoUtil::convertDecimalToNatsSingle(double decimalCoord, bool isLatitude) {
+    int degrees;
+    unsigned int minutes;
+    double seconds;
+    convertDecimalDegsToDegMinSec(decimalCoord, degrees, minutes, seconds);
+
+//Determine which letter to append at the end of the return value
+    char dirLetter;
+    if (degrees < 0) dirLetter = isLatitude ? 'S' : 'W';
+    else dirLetter = isLatitude ? 'N' : 'E';
+    degrees = abs(degrees);
+
+    //Determine how long the return value is to be
+    int returnLength = isLatitude ? 7 : 8;
+
+    //Round seconds
+    seconds = round(seconds);
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            degrees++;
+            if (isLatitude && degrees > 90)
+            {
+                degrees = 90 - (degrees - 90);
+                if (dirLetter == 'N') dirLetter = 'S';
+                else dirLetter = 'N';
+            }
+            else if (!isLatitude && degrees > 180)
+            {
+                degrees = 180 - (degrees - 180);
+                if (dirLetter == 'E') dirLetter = 'W';
+                else dirLetter = 'E';
+            }
+        }
+    }
+    int secondsI = seconds;
+
+    //Set up an empty char* of the appropriate size to hold the return value before it is converted to a std::string
+    char* value = new char[returnLength];
+
+    //format the return value string with the appropriate level of zero-padding
+    if (isLatitude) {
+        sprintf(value, "%02d%02u%02d%c", degrees, minutes, secondsI, dirLetter);
+    }
+    else {
+        sprintf(value, "%03d%02u%02d%c", degrees, minutes, secondsI, dirLetter);
+    }
+
+    //Convert the formatted char* to a std::string
+    string natsCoord(value, returnLength);
+
+    return natsCoord;
+}
+
+string GeoUtil::convertDecimalDegToVrcSingle(double decimalCoord, bool isLatitude) {
+    //Convert to Degrees Minutes and Seconds first
+    int degrees;
+    unsigned int minutes;
+    double seconds;
+    convertDecimalDegsToDegMinSec(decimalCoord, degrees, minutes, seconds);
+    degrees = abs(degrees);
+
+    //Determine which letter should precede the coordinate
+    char dirLetter;
+    if (decimalCoord < 0) dirLetter = isLatitude ? 'S' : 'W';
+    else dirLetter = isLatitude ? 'N' : 'E';
+
+    //Set up the empty char* in which to format the string
+    char value[14];
+
+    //Format the char*
+    sprintf(value, "%c%03d.%02u.%03.3f", dirLetter, degrees, minutes, seconds);
+
+    //Convert the formatted char* to a std::string
+    string vrcCoord(value, 14);
+
+    return vrcCoord;
+}
+
+double GeoUtil::convertVrcToDecimalSingle(const string &vrcCoord) {
+    //W077.52.27.771
+    string first = vrcCoord.substr(0,1);
+    int sign = first == "N" || first == "E" ? 1 : -1;
+    int degrees = (stoi(vrcCoord.substr(1, 3))) * sign;
+    unsigned int minutes = stoi(vrcCoord.substr(5, 2));
+    double seconds = stod(vrcCoord.substr(8));
+    return convertDegMinSecToDecimalDegs(degrees, minutes, seconds);
+}
+
+void GeoUtil::convertVrcToDecimalDegs(const string &vrcLat, const string &vrcLon, double &decimalLat, double &decimalLon) {
+    decimalLat = convertVrcToDecimalSingle(vrcLat);
+    decimalLon = convertVrcToDecimalSingle(vrcLon);
+}
+
+void GeoUtil::convertDecimalDegsToVrc(double decimalLat, double decimalLon, string &vrcLat, string &vrcLon) {
+    vrcLat = convertDecimalDegToVrcSingle(decimalLat, true);
+    vrcLon = convertDecimalDegToVrcSingle(decimalLon, false);
+}
+
 /*
 double GeoUtilCalculateDirectBearingAfterTurn(AviationCalcUtil::GeoTools::GeoPoint *aircraft,
                                               AviationCalcUtil::GeoTools::GeoPoint *waypoint, double r,
@@ -386,42 +523,6 @@ void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degrees
     chordDistance = std::get<1>(answer);
 }
 
-double GeoUtilConvertIndicatedToAbsoluteAlt(double alt_ind_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    return GeoUtil::convertIndicatedToAbsoluteAlt(alt_ind_ft, pres_set_hpa, sfc_pres_hpa);
-}
-
-double GeoUtilConvertAbsoluteToIndicatedAlt(double alt_abs_ft, double pres_set_hpa, double sfc_pres_hpa) {
-    return GeoUtil::convertAbsoluteToIndicatedAlt(alt_abs_ft, pres_set_hpa, sfc_pres_hpa);
-}
-
-double GeoUtilConvertIndicatedToPressureAlt(double alt_ind_ft, double pres_set_hpa) {
-    return GeoUtil::convertIndicatedToPressureAlt(alt_ind_ft, pres_set_hpa);
-}
-
-double GeoUtilCalculateIsaTemp(double alt_pres_ft) {
-    return GeoUtil::calculateIsaTemp(alt_pres_ft);
-}
-
-double GeoUtilConvertPressureToDensityAlt(double alt_pres_ft, double sat) {
-    return GeoUtil::convertPressureToDensityAlt(alt_pres_ft, sat);
-}
-
-double GeoUtilConvertIasToTas(double ias, double pres_set_hpa, double alt_ind_ft, double sat) {
-    return GeoUtil::convertIasToTas(ias, pres_set_hpa, alt_ind_ft, sat);
-}
-
-double GeoUtilConvertTasToIas(double tas, double pres_set_hpa, double alt_ind_ft, double sat) {
-    return GeoUtil::convertTasToIas(tas, pres_set_hpa, alt_ind_ft, sat);
-}
-
-double GeoUtilConvertIasToTasFromDensityAltitude(double ias, double alt_dens_ft) {
-    return GeoUtil::convertIasToTas(ias, alt_dens_ft);
-}
-
-double GeoUtilConvertTasToIasDensityAltitude(double tas, double alt_dens_ft) {
-    return GeoUtil::convertTasToIas(tas, alt_dens_ft);
-}
-
 double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading) {
     return GeoUtil::calculateTurnAmount(currentHeading, desiredHeading);
 }
@@ -430,18 +531,51 @@ double GeoUtilGetEarthRadiusM() {
     return GeoUtil::EARTH_RADIUS_M;
 }
 
-double GeoUtilGetStdPresHpa() {
-    return GeoUtil::STD_PRES_HPA;
+double GeoUtilConvertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs) {
+    return GeoUtil::convertDegMinSecToDecimalDegs(degrees, mins, secs);
 }
 
-double GeoUtilGetStdTempC() {
-    return GeoUtil::STD_TEMP_C;
+void GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs) {
+    GeoUtil::convertDecimalDegsToDegMinSec(decimalDegs, degrees, mins, secs);
 }
 
-double GeoUtilGetStdLapseRate() {
-    return GeoUtil::STD_LAPSE_RATE;
+void GeoUtilConvertNatsToDecimalDegs(const char *natsLat, const char *natsLon, double &decLat, double &decLon) {
+    if (natsLat == NULL || natsLon == NULL) {
+        decLat = -1;
+        decLon = -1;
+        return;
+    }
+    string natsLatStr(natsLat);
+    string natsLonStr(natsLon);
+    GeoUtil::convertNatsToDecimalDegs(natsLatStr, natsLonStr, decLat, decLon);
+}
+
+void GeoUtilConvertVrcToDecimalDegs(const char *vrcLat, const char *vrcLon, double &decLat, double &decLon) {
+    if (vrcLat == NULL || vrcLon == NULL) {
+        decLat = -1;
+        decLon = -1;
+        return;
+    }
+    string vrcLatStr(vrcLat);
+    string vrcLonStr(vrcLon);
+    GeoUtil::convertVrcToDecimalDegs(vrcLatStr, vrcLonStr, decLat, decLon);
+}
+
+void GeoUtilConvertDecimalDegsToNats(double decimalLat, double decimalLon, const char **natsLat, const char **natsLon) {
+    string natsLatStr{};
+    string natsLonStr{};
+    GeoUtil::convertDecimalDegsToNats(decimalLat, decimalLon, natsLatStr, natsLonStr);
+    *natsLat = natsLatStr.c_str();
+    *natsLon = natsLonStr.c_str();
 }
 
 double GeoUtilGetStdPresDrop() {
     return GeoUtil::STD_PRES_DROP;
+}
+void GeoUtilConvertDecimalDegsToVrc(double decimalLat, double decimalLon, const char **vrcLat, const char **vrcLon) {
+    string vrcLatStr{};
+    string vrcLonStr{};
+    GeoUtil::convertDecimalDegsToVrc(decimalLat, decimalLon, vrcLatStr, vrcLonStr);
+    *vrcLat = vrcLatStr.c_str();
+    *vrcLon = vrcLonStr.c_str();
 }*/
