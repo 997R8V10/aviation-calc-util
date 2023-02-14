@@ -32,3 +32,21 @@ if [ $? -eq 0 ]; then
   cmake --build build/linux/x64/release --target aviationcalc
 fi
 echo ""
+
+echo "\\--------------------------------------------------------------\\"
+echo "\\                   Building armv7 (Release)                   \\"
+echo "\\--------------------------------------------------------------\\"
+echo ""
+
+mkdir -p build/linux/arm64/release
+echo "Installing Conan Packages"
+conan install . -if build/linux/arm64/release -s arch=armv7 -s build_type=Release --build=missing
+if [ $? -eq 0 ]; then
+  echo "Generating CMake Files"
+  cmake -S . -B build/linux/arm64/release -DCMAKE_BUILD_TYPE=Release -DNUGET_ARCH=linux-arm64
+fi
+if [ $? -eq 0 ]; then
+  echo "Building with CMake"
+  cmake --build build/linux/arm64/release --target aviationcalc
+fi
+echo ""

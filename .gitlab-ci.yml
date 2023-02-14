@@ -1,0 +1,36 @@
+# GitLab Continuous Integration Script
+
+stages:
+  - build
+  - package
+
+build-windows-x86-debug:
+  stage: build
+  script:
+    - mkdir build\x86\debug
+    - conan install . -if build\x86\release -s arch=x86 -s build_type=Debug --build=missing
+    - conan build . -bf build\x86\release
+    - conan package . -bf build\x86\release -pf package\x86\release
+  artifacts:
+    paths:
+      - package\x86\release
+
+build-linux-x86-debug:
+  stage: build
+  image: conanio/gcc7
+  script:
+    - mkdir build/x86/debug
+    - conan install . -if build/x86/release -s arch=x86 -s build_type=Debug --build=missing
+    - conan build . -bf build/x86/release
+    - conan package . -bf build/x86/release -pf package/x86/release
+  artifacts:
+    paths:
+      - package/x86/release
+
+package-linux-x86-debug:
+  stage: package
+  image: conanio/gcc7
+  script:
+    - conan create . -s arch=x86 -s build_type=Debug --build=missing
+    - conan remote add gitlab ${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/conan
+    - CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN} conan upload "*" --all --remote=gitlab

@@ -1,0 +1,113 @@
+name: CMake Build and Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CONAN_USER_HOME: "${{ github.workspace }}/conan/"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan/short"
+  CONAN_VERBOSE_TRACEBACK: 1
+
+jobs:
+  build:
+    # Processor Architectures
+    strategy:
+      fail-fast: false
+      matrix:
+        #arch: [x64, x86, arm, arm64]
+        arch: [x64, x86]
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        configuration: [Debug, Release]
+        include:
+          - arch: x64
+            conan-arch: x86_64
+          - arch: x86
+            conan-arch: x86
+          #- arch: arm
+          #  conan-arch: armv4
+          #- arch: arm64
+          #  conan-arch: armv7
+          - os: macos-latest
+            short-os: osx
+          - os: windows-latest
+            short-os: win
+          - os: ubuntu-latest
+            short-os: linux
+          - os: windows-latest
+            arch: x86
+            cmake-win-flag: ' -A Win32'
+          - os: windows-latest
+            arch: x64
+            cmake-win-flag: ' -A x64'
+        exclude:
+          #- os: windows-latest
+          #  arch: arm
+          #- os: windows-latest
+          #  arch: arm64
+          - os: ubuntu-latest
+            arch: x86
+          - os: macos-latest
+            arch: x86
+          #- os: macos-latest
+          #  arch: arm
+          #- os: macos-latest
+          #  arch: arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: 'latest'
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+      - name: Install Curl
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: sudo apt install -y libcurl4-openssl-dev
+      - name: Conan Cache
+        if: ${{ matrix.os != 'windows-latest' }}
+        id: cache-conan
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/conan
+          key: ${{ runner.os }}-conan-cache
+      - name: Export ecCodes
+        run: conan export eccodes
+      - name: Export Conan Package
+        run: conan export .
+      - name: Install Conan Packages
+        run: conan install . -if ${{github.workspace}}/build -s arch=${{ matrix.conan-arch }} -s build_type=${{ matrix.configuration }} --build=missing
+      - name: Configure CMake
+        run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DNUGET_ARCH=${{ matrix.short-os }}-${{ matrix.arch }}${{ matrix.cmake-win-flag }}
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --target aviationcalc --config ${{ matrix.configuration }}
+      - name: Create NuGet Package
+        if: ${{ matrix.configuration == 'Release' }}
+        run: |
+          cd ${{ github.workspace }}/out/nuget/${{ matrix.short-os }}-${{ matrix.arch }}
+          nuget pack .
+      - name: Archive Binary Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: AviationCalcUtil-bin-${{ matrix.short-os }}-${{ matrix.arch }}-${{ matrix.configuration }}
+          path: |
+            ${{ github.workspace }}/build/*/*.dll
+            ${{ github.workspace }}/build/*/*.pdb
+            ${{ github.workspace }}/build/*/*.so*
+            ${{ github.workspace }}/build/*/*.dylib*
+      - name: Archive NuGet Packages
+        if: ${{ matrix.configuration == 'Release' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: AviationCalcUtil-NuGet-${{ matrix.short-os }}-${{ matrix.arch }}
+          path: |
+            ${{ github.workspace }}/**/*.nupkg
+            ${{ github.workspace }}/**/*.snupkg
