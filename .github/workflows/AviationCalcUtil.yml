@@ -1,0 +1,63 @@
+name: AviationCalcUtil Build and Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    # Processor Architectures
+    strategy:
+      matrix:
+        arch: [x64, x86, arm, arm64]
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        configuration: [Debug, Release]
+        include:
+          - arch: x64
+            conan-arch: x86_64
+          - arch: x86
+            conan-arch: x86
+          - arch: arm64
+            conan-arch: armv7
+          - os: macos-latest
+            short-os: osx
+          - os: windows-latest
+            short-os: win
+          - os: ubuntu-latest
+            short-os: linux
+          - configuration: Debug
+            create-nuget-package: false
+          - configuration: Release
+            create-nuget-package: true
+        exclude:
+          - os: windows-latest
+            arch: arm
+          - os: windows-latest
+            arch: arm64
+          - os: ubuntu-latest
+            arch: x86
+          - os: macos-latest
+            arch: x86
+          - os: macos-latest
+            arch: arm
+          - os: macos-latest
+            arch: arm64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Conan
+          id: conan
+          uses: turtlebrowser/get-conan@main
+      - name: Install Conan Packages
+        run: conan install . -if ${{github.workspace}}/build -s arch=${{ matrix.conan-arch }} -s build_type=${{ matrix.configuration }} --build=missing
+      - name: Configure CMake
+        run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DNUGET_ARCH=${{ matrix.short-os }}-${{ matrix.arch }}
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --target aviationcalc
