@@ -1,4 +1,4 @@
-name: AviationCalcUtil Build and Deploy
+name: CMake Build and Deploy
 
 on:
   push:
