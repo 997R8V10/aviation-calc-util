@@ -65,7 +65,7 @@ jobs:
         id: conan-caches
         uses: actions/cache@v3
         with:
-          path: ${{github.workspace}}/.conan/data
+          path: $HOME/.conan/data
           key: ${{ runner.os }}-conan-cache
       - name: Export ecCodes
         run: conan export eccodes
