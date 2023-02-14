@@ -164,6 +164,17 @@ namespace AviationCalcUtil::GeoTools {
         static tuple<double, double> calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
                                                                       double radiusOfTurnNMi, bool isRightTurn);
 
+        /// Calculate direct heading and distance along a circle (chord line)
+        /// \param startHeading Start heading (degrees)
+        /// \param degreesTurned Amount of turn (degrees)
+        /// \param radiusOfTurnNMi Radius of turn (nautical miles)
+        /// \param isRightTurn Is the turn to the right?
+        /// \param chordHeading Output Chord heading (degrees)
+        /// \param chordDistance Output Chord distance (nautical miles)
+        static void calculateChordHeadingAndDistance(double startHeading, double degreesTurned,
+                                                     double radiusOfTurnNMi, bool isRightTurn,
+                                                     double &chordHeading, double &chordDistance);
+
         /// Calculate amount of turn between two headings (0-360)
         /// \param currentHeading Current heading (degrees)
         /// \param desiredHeading Desired heading (degrees)
