@@ -92,10 +92,10 @@ jobs:
         with:
           name: AviationCalcUtil-bin-${{ matrix.short-os }}-${{ matrix.arch }}-${{ matrix.configuration }}
           path: |
-            ${{ github.workspace }}/build/bin/*.dll
-            ${{ github.workspace }}/build/bin/*.pdb
-            ${{ github.workspace }}/build/lib/*.so*
-            ${{ github.workspace }}/build/lib/*.dylib*
+            ${{ github.workspace }}/build/*/*.dll
+            ${{ github.workspace }}/build/*/*.pdb
+            ${{ github.workspace }}/build/*/*.so*
+            ${{ github.workspace }}/build/*/*.dylib*
       - name: Archive NuGet Packages
         if: ${{ matrix.configuration == 'Release' }}
         uses: actions/upload-artifact@v3
