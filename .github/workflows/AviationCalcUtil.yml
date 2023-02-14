@@ -35,6 +35,12 @@ jobs:
             short-os: win
           - os: ubuntu-latest
             short-os: linux
+          - os: windows-latest
+            arch: x86
+            cmake-win-flag: ' -A Win32'
+          - os: windows-latest
+            arch: x64
+            cmake-win-flag: ' -A x64'
         exclude:
           - os: windows-latest
             arch: arm
@@ -79,7 +85,7 @@ jobs:
       - name: Install Conan Packages
         run: conan install . -if ${{github.workspace}}/build -s arch=${{ matrix.conan-arch }} -s build_type=${{ matrix.configuration }} --build=missing
       - name: Configure CMake
-        run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DNUGET_ARCH=${{ matrix.short-os }}-${{ matrix.arch }}
+        run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DNUGET_ARCH=${{ matrix.short-os }}-${{ matrix.arch }}${{ matrix.cmake-win-flag }}
       - name: Build
         run: cmake --build ${{github.workspace}}/build --target aviationcalc
       - name: Create NuGet Package
