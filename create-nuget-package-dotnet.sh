@@ -14,32 +14,19 @@ echo "\\--------------------------------------------------------------\\"
 echo ""
 
 echo "Cleaning NuGet folder"
-rm -rf out/nuget/linux
+rm -rf out/nuget/linux-x64
 echo ""
 
 # Build all
 ./build-all-linux.sh
 
 echo "\\--------------------------------------------------------------\\"
-echo "\\                    Packing NuGet Package                     \\"
+echo "\\              Packing NuGet Package (Linux-x64)               \\"
 echo "\\--------------------------------------------------------------\\"
 echo ""
 
-cd out/nuget/linux
-echo "Fetching Nuget executable"
-wget https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-echo "Packing Package"
-mono nuget.exe pack .
-echo ""
-
-echo "\\--------------------------------------------------------------\\"
-echo "\\                   Installing NuGet Package                   \\"
-echo "\\--------------------------------------------------------------\\"
-echo ""
-
+cd out/nuget/linux-x64
 ./pack-nuget.sh $nugetfeedpath
-
-cd ../..
 echo ""
 
 echo "\\--------------------------------------------------------------\\"

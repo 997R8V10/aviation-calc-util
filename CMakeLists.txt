@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 1.0.0
+        VERSION 1.0.4
         DESCRIPTION "A library to assist with aviation related calculations."
         LANGUAGES CXX
         )
