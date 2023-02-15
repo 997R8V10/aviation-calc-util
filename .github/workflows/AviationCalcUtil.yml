@@ -1,10 +1,10 @@
-name: CMake CI/CD
+name: CMake CI/CD and NuGet Deploy
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "master" ]
 
 env:
   CONAN_USER_HOME: "${{ github.workspace }}/conan/"
