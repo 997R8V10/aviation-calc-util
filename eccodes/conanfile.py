@@ -3,7 +3,7 @@ from conan.tools.files import rename
 
 class EccodesConan(ConanFile):
 	name = "eccodes"
-	version = "2.22.1"
+	version = "2.22.1.p1"
 	license = "Apache Licence Version 2.0"
 	author = "ecwmf"
 	url = "https://github.com/ecmwf/eccodes"
@@ -77,7 +77,7 @@ class EccodesConan(ConanFile):
 		tools.replace_in_file("eccodes-2.22.1-Source/CMakeLists.txt", "project( eccodes VERSION 2.22.1 LANGUAGES C )",
 							  '''project( eccodes VERSION 2.22.1 LANGUAGES C )
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()''')
+conan_basic_setup(KEEP_RPATHS)''')
 
 	def build(self):
 		# Replace some files on windows builds
@@ -181,6 +181,43 @@ conan_basic_setup()''')
 			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=definitions_cmake_patch, fuzz=True)
 			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=ifssamples_cmake_path, fuzz=True)
 			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=check_os_patch, fuzz=True)
+		# Add RPath Patch
+		ecbuild_declare_project_patch = """--- cmake/ecbuild_declare_project.cmake	Tue May 11 08:42:16 2021
++++ cmake/ecbuild_declare_project.cmake	Fri Feb 17 00:44:46 2023
+@@ -171,25 +171,12 @@
+ 
+   # correctly set CMAKE_INSTALL_RPATH
+ 
+-  if( ENABLE_RPATHS )
+-
+-    if( ENABLE_RELATIVE_RPATHS )
+-
+-      file( RELATIVE_PATH relative_rpath ${${PROJECT_NAME}_FULL_INSTALL_BIN_DIR} ${${PROJECT_NAME}_FULL_INSTALL_LIB_DIR} )
+-      # ecbuild_debug_var( relative_rpath )
+-
+-      ecbuild_append_to_rpath( ${relative_rpath} )
+-
+-    else() # make rpaths absolute
+-
+-      if( IS_ABSOLUTE ${INSTALL_LIB_DIR} )
+-        ecbuild_append_to_rpath( "${INSTALL_LIB_DIR}" )
+-      else()
+-        ecbuild_append_to_rpath( "${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR}" )
+-      endif()
+-
+-    endif()
+-
++  if (APPLE)
++    set(CMAKE_BUILD_WITH_INSTALL_RPATH 1)
++    set(CMAKE_INSTALL_RPATH "@loader_path")
++  elseif(UNIX)
++  	set(CMAKE_BUILD_WITH_INSTALL_RPATH 1)
++  	set(CMAKE_INSTALL_RPATH "$ORIGIN")
+   endif()
+ 
+   # make sure nothing breaks if INSTALL_LIB_DIR is not lib
+"""
+		tools.patch(base_path="eccodes-2.22.1-Source", patch_string=ecbuild_declare_project_patch, fuzz=True)
 
 		cmake = CMake(self)
 
@@ -205,7 +242,15 @@ conan_basic_setup()''')
 		cmake.definitions["ENABLE_AEC"] = "ON" if self.options.enable_aec else "OFF"
 		cmake.definitions["ENABLE_PYTHON2"] = "ON" if self.options.enable_python2 else "OFF"
 		cmake.definitions["ENABLE_EXTRA_TESTS"] = "ON" if self.options.enable_extra_tests else "OFF"
-		
+
+		# RPath Setup
+		if self.settings.os == "Macos":
+			cmake.definitions["CMAKE_BUILD_WITH_INSTALL_RPATH"] = "1"
+			cmake.definitions["CMAKE_INSTALL_RPATH"] = "@loader_path"
+		elif self.settings.os == "Linux":
+			cmake.definitions["CMAKE_BUILD_WITH_INSTALL_RPATH"] = "1"
+			cmake.definitions["CMAKE_INSTALL_RPATH"] = "$ORIGIN"
+
 		# LE Check
 		cmake.definitions["IEEE_LE"] = 1
 

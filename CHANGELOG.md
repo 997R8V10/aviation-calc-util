@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.11] - 2023-02-17
+### Fixed
+- Fixed RPATH issues on Linux and MacOS with eccodes package.
+- Update eccodes package with 'p1' for patch 1.
+
 ## [1.0.9] - 2023-02-16
 ### Fixed
 - Fixed libcurl dependency issues. Now included with Conan
@@ -163,6 +168,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
+[1.0.11]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.9...v1.0.11
 [1.0.9]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.5...v1.0.7
