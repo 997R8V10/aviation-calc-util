@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 1.0.9
+        VERSION 1.0.11
         DESCRIPTION "A library to assist with aviation related calculations."
         LANGUAGES CXX
         )
@@ -44,6 +44,9 @@ include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 if (APPLE)
     set(CMAKE_BUILD_WITH_INSTALL_RPATH 1)
     set(CMAKE_INSTALL_RPATH "@loader_path")
+elseif(UNIX)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH 1)
+    set(CMAKE_INSTALL_RPATH "$ORIGIN")
 endif()
 # End MacOS RPath
 

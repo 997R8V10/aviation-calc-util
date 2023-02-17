@@ -6,7 +6,7 @@ from shutil import copyfile
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "1.0.9"
+    version = "1.0.11"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"
@@ -62,7 +62,7 @@ class AviationcalcConan(ConanFile):
         "eccodes:enable_install_eccodes_samples": False,
         "eccodes:enable_memfs": True
     }
-    requires = ["boost/1.76.0", "eccodes/2.22.1"]
+    requires = ["boost/1.76.0", "eccodes/2.22.1.p1"]
     generators = ["cmake", "cmake_find_package", "cmake_paths", "txt"]
     no_copy_source = True
     exports_sources = ["src/*", "include/*", "cmakescripts/*", "CMakeLists.txt"]
