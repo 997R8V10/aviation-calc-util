@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)..\..\lib\native\**\*.*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>%(FileName)%(Extension)</Link>
+        </Content>
+    </ItemGroup>
 	<Target Name="AfterBuild">
 		<ItemGroup>
 			<_Definitions Include="$(MSBuildThisFileDirectory)..\..\lib\native\**\*.*" />
