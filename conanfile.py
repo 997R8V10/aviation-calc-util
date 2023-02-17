@@ -6,7 +6,7 @@ from shutil import copyfile
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "1.0.8"
+    version = "1.0.9"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"
@@ -68,12 +68,17 @@ class AviationcalcConan(ConanFile):
     exports_sources = ["src/*", "include/*", "cmakescripts/*", "CMakeLists.txt"]
     build_policy = "missing"
 
+    def requirements(self):
+        if self.settings.os != "Windows":
+            self.requires("libcurl/7.87.0")
+
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
         self.options["boost"].shared = self.options.shared
         self.options["eccodes"].shared = self.options.shared
+        self.options["libcurl"].shared = self.options.shared
 
     def imports(self):
         self.copy("*.dll", dst="bin", src="bin")

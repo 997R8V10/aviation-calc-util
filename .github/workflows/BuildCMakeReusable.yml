@@ -56,9 +56,6 @@ jobs:
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
-      - name: Install Curl
-        if: ${{ inputs.os == 'ubuntu-latest' }}
-        run: sudo apt install -y libcurl4-openssl-dev
       - name: Conan Cache
         if: ${{ inputs.os != 'windows-latest' }}
         id: cache-conan

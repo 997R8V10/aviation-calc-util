@@ -25,10 +25,8 @@ The project depends on the following libraries and tools:
     - No Download or manual build required.
     - See [below](#eccodes)
 - **Curl (_Linux/MacOS Only_)**
-    - Both the library and dev packages must be installed
-    - Installation:
-        - **Ubuntu**: `sudo apt install libcurl4-openssl-dev`
-        - **MacOS**: XCode developer tools will ship with libcurl dev.
+    - No Download Required
+    - Fetched through Conan
 
 ### ecCodes
 
