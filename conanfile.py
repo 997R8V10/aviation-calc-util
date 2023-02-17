@@ -6,7 +6,7 @@ from shutil import copyfile
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "1.0.11"
+    version = "1.0.12"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://gitlab.com/vatsim-tools/aviation-calc-util"
@@ -69,7 +69,7 @@ class AviationcalcConan(ConanFile):
     build_policy = "missing"
 
     def requirements(self):
-        if self.settings.os != "Windows":
+        if self.settings.os == "Linux":
             self.requires("libcurl/7.87.0")
 
     def config_options(self):
