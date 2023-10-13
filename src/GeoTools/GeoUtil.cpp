@@ -214,6 +214,33 @@ double GeoUtil::calculateCrossTrackErrorM(const GeoPoint &aircraft, const GeoPoi
     return std::fabs(turnAmt) < 90 ? -xTrackM : xTrackM;
 }
 
+double GeoUtil::calculateArcCourseInfo(const GeoPoint &aircraft, const GeoPoint &arcCenter, double startRadial,
+                                       double endRadial, double radiusM, double &requiredCourse, double &alongTrackDistanceM) {
+    // Set waypoint's altitude to aircraft's altitude to minimize error
+    GeoPoint tempWp(arcCenter.getLat(), arcCenter.getLon(), aircraft.getAlt());
+
+    // Calculate required course
+    double radial = GeoPoint::finalBearing(arcCenter, tempWp);
+    bool clockwise = GeoUtil::calculateTurnAmount(startRadial, endRadial) > 0;
+    requiredCourse = GeoUtil::normalizeHeading(clockwise ? radial + 90 : radial - 90);
+
+    // Calculate Cross Track Error
+    double curRadiusM = GeoPoint::flatDistanceM(tempWp, aircraft);
+    double xTrackM = clockwise ? radiusM - curRadiusM : curRadiusM - radiusM;
+
+    // Calculate Along Track Distance
+    double alongTrackM = 0;
+    double deltaToStartRadial = GeoUtil::calculateTurnAmount(radial, startRadial);
+    double deltaToEndRadial = GeoUtil::calculateTurnAmount(radial, endRadial);
+
+    // Calculate angle
+    double theta = std::fabs(deltaToEndRadial);
+    if (clockwise){
+
+    }
+
+}
+
 double GeoUtil::calculateTurnLeadDistance(const GeoPoint &point, double theta, double r) {
     double halfAngle = MathUtil::convertDegreesToRadians(theta / 2);
 

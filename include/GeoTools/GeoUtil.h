@@ -60,6 +60,18 @@ namespace AviationCalcUtil::GeoTools {
         static double calculateCrossTrackErrorM(const GeoPoint &aircraft, const GeoPoint &waypoint, double course,
                                                 double &requiredCourse, double &alongTrackDistanceM);
 
+        /// Calculates Cross Track Error in meters for an arc.
+        /// \param aircraft Aircraft's Position
+        /// \param arcCenter Arc Center Position.
+        /// \param startRadial Start Radial (degrees)
+        /// \param endRadial End Radial (degrees)
+        /// \param radiusM Radius (m)
+        /// \param requiredCourse Output's course along arc at current position.
+        /// \param alongTrackDistanceM Output's distance along arc. Negative if station passage has occurred.
+        /// \return Cross track error (m). Right: Positive; Left: Negative;
+        static double calculateArcCourseInfo(const GeoPoint &aircraft, const GeoPoint &arcCenter, double startRadial, double endRadial,
+                                             double radiusM, double &requiredCourse, double &alongTrackDistanceM);
+
         /// Calculates required lead in distance for a turn.
         /// \param point Intersection between current course and desired course
         /// \param theta Amount of turn in degrees
@@ -223,6 +235,9 @@ GeoUtilCalculateDirectBearingAfterTurn(GeoPoint *aircraft, GeoPoint *waypoint, d
 extern AVIATIONCALC_EXPORT double
 GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, double course,
                                  double &requiredCourse, double &alongTrackDistanceM);
+extern AVIATIONCALC_EXPORT double
+GeoUtilCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial, double endRadial,
+                              double radiusM, double &requiredCourse, double &alongTrackDistanceM);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnLeadInDistance(GeoPoint *ptr, double theta, double r);
 extern AVIATIONCALC_EXPORT double
 GeoUtilCalculateTurnLeadDistance(GeoPoint *pos, GeoPoint *wp, double trueTrack, double tas,
