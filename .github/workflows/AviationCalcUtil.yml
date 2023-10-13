@@ -38,10 +38,10 @@ jobs:
             short-os: linux
           - os: windows-latest
             arch: x86
-            cmake-win-flag: ' -A Win32'
+            cmake-win-flag: ' -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" -A Win32'
           - os: windows-latest
             arch: x64
-            cmake-win-flag: ' -A x64'
+            cmake-win-flag: ' -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" -A x64'
         exclude:
           #- os: windows-latest
           #  arch: arm
@@ -65,6 +65,7 @@ jobs:
       cmake-win-flag: ${{ matrix.cmake-win-flag }}
       configuration: ${{ matrix.configuration }}
       create-nuget-package: ${{ matrix.configuration == 'Release' }}
+      copy-nuget-defs: ${{ matrix.short-os == 'win' && matrix.arch == 'x64' }}
   deploy:
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master')}}
     runs-on: ubuntu-latest
@@ -73,10 +74,16 @@ jobs:
       - uses: nuget/setup-nuget@v1
         with:
           nuget-version: 'latest'
-      - name: Download NuGet Packages
+      - name: Download NuGet Packages Contents
         uses: actions/download-artifact@v3
         with:
-          path: artifacts
-      - name: Push NuGet Packages
+          name: AviationCalcUtil-NuGet
+          path: ${{ github.workspace }}/nuget
+      - name: Create NuGet Package
         run: |
-          nuget push artifacts/**/*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+          cd ${{ github.workspace }}/nuget
+          nuget pack .
+      - name: Upload NuGet Package
+        run: |
+          cd ${{ github.workspace }}/nuget
+          nuget push *.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}

@@ -12,9 +12,7 @@ ECHO \--------------------------------------------------------------\
 ECHO
 
 ECHO Cleaning NuGet folder
-rmdir /S /Q out\nuget\win-x86
-rmdir /S /Q out\nuget\win-x64
-rmdir /S /Q out\nuget\win-arm64
+rmdir /S /Q out\nuget
 ECHO
 
 CALL build-all-windows.bat

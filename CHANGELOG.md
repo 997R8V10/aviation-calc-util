@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.16] - 2023-10-13
+### Changed
+- Create 1 nuget package with all native deps inside.
+
 ## [1.0.12] - 2023-02-17
 ### Fixed
 - Removed Curl dependency for MacOS
@@ -172,6 +176,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
+[1.0.16]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.12...v1.0.16
 [1.0.12]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.11...v1.0.12
 [1.0.11]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.9...v1.0.11
 [1.0.9]: https://github.com/997R8V10/aviation-calc-util/compare/v1.0.8...v1.0.9

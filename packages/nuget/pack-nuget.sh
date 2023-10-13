@@ -14,6 +14,6 @@ echo "Packing Package"
 mono nuget.exe pack .
 
 echo "Deleting existing package"
-mono nuget.exe delete ${NUGET_PACKAGE_NAME}.${NUGET_ARCH} ${CMAKE_PROJECT_VERSION} -Source $nugetfeedpath -NonInteractive
+mono nuget.exe delete ${NUGET_PACKAGE_NAME} ${CMAKE_PROJECT_VERSION} -Source $nugetfeedpath -NonInteractive
 echo "Installing new package"
 mono nuget.exe init . $nugetfeedpath
