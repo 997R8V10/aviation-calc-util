@@ -8,7 +8,7 @@ from conan.tools import files
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "1.0.17"
+    version = "1.0.18"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://github.com/997R8V10/aviation-calc-util"

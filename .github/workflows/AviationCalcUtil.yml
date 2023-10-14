@@ -65,7 +65,7 @@ jobs:
       configuration: ${{ matrix.configuration }}
       create-nuget-package: ${{ matrix.configuration == 'Release' }}
       copy-nuget-defs: ${{ matrix.short-os == 'win' && matrix.arch == 'x64' }}
-  deploy:
+  upload-nuget-package:
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/heads/master')}}
     runs-on: ubuntu-latest
     needs: build

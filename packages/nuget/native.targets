@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Windows'))">win-$(Platform)</RunId>
-        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Linux'))">linux-$(Platform)</RunId>
-        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('OSX'))">osx-$(Platform)</RunId>
+        <PlatId Condition="'$(PlatId)' == ''">$(PlatformTarget)</PlatId>
+        <PlatId Condition="'$(PlatId)' == ''">$(Platform)</PlatId>
+        <PlatId Condition="'$(PlatId)' == '' Or '$(PlatId)' == 'AnyCPU'">x64</PlatId>
+        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Windows'))">win-$(PlatId)</RunId>
+        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Linux'))">linux-$(PlatId)</RunId>
+        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('OSX'))">osx-$(PlatId)</RunId>
         <RunId Condition="'$(RunId)' == ''">$(RuntimeIdentifier)</RunId>
     </PropertyGroup>
     <ItemGroup>
