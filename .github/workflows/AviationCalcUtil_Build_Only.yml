@@ -13,12 +13,12 @@ env:
 jobs:
   build:
     uses: ./.github/workflows/BuildCMakeReusable.yml
-      with:
-        arch: x64
-        conan-arch: x86_64
-        os: ubuntu-latest
-        short-os: linux
-        cmake-win-flag: ""
-        configuration: "Debug"
-        create-nuget-package: False
-        copy-nuget-defs: False
+    with:
+      arch: x64
+      conan-arch: x86_64
+      os: ubuntu-latest
+      short-os: linux
+      cmake-win-flag: ""
+      configuration: "Debug"
+      create-nuget-package: False
+      copy-nuget-defs: False

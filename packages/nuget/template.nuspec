@@ -7,9 +7,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <readme>README.md</readme>
     <license type="file">LICENSE.txt</license>
-    <repository type="git">https://github.com/997R8V10/aviation-calc-util#readme</repository>
-    <!--
+    <repository type="git" url="https://github.com/997R8V10/aviation-calc-util" />
     <projectUrl>${CMAKE_PROJECT_HOMEPAGE_URL}</projectUrl>
+    <!--
     <iconUrl></iconUrl>
     -->
     <description>${CMAKE_PROJECT_DESCRIPTION}</description>
