@@ -14,7 +14,7 @@ The project depends on the following libraries and tools:
 - **C & C++ 17 Compiler**
 - **[CMake 3.14+](https://cmake.org/download/)**
     - C++ Build Automation Tool
-- **[Conan 1.39+](https://conan.io/downloads.html)**
+- **[Conan 2.00+](https://conan.io/downloads.html)**
     - C++ Dependency Manager
 - **[Python 3.0+](https://www.python.org/downloads/)**
     - Required for ecCodes build.

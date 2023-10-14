@@ -42,7 +42,7 @@ on:
         type: boolean
 
 env:
-  CONAN_USER_HOME: "${{ github.workspace }}/conan/"
+  CONAN_HOME: "${{ github.workspace }}/conan/"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan/short"
   CONAN_VERBOSE_TRACEBACK: 1
 
@@ -72,8 +72,8 @@ jobs:
         id: cache-conan
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/.conan2
-          key: ${{ runner.os }}-conan-cache
+          path: ${{ github.workspace }}/conan
+          key: ${{ inputs.short-os }}-${{ inputs.arch }}-conan2-cache
       - name: Build Default Conan Profile
         run: conan profile detect
       - name: Export ecCodes

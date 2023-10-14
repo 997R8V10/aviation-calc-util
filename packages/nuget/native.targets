@@ -7,7 +7,7 @@
         <RunId Condition="'$(RunId)' == ''">$(RuntimeIdentifier)</RunId>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(RunId)\**\*.*">
+        <None Include="$(MSBuildThisFileDirectory)/../runtimes/$(RunId)/**/*.*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>%(FileName)%(Extension)</Link>
         </None>
