@@ -67,13 +67,13 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1.13
         with:
           cmake-version: '3.21.x'
-#      - name: Conan Cache
-#        if: ${{ inputs.os != 'windows-latest' }}
-#        id: cache-conan
-#        uses: actions/cache@v3
-#        with:
-#          path: ${{ github.workspace }}/conan
-#          key: ${{ inputs.short-os }}-${{ inputs.arch }}-conan2-cache
+      - name: Conan Cache
+        if: ${{ inputs.os != 'windows-latest' }}
+        id: cache-conan
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/conan
+          key: ${{ inputs.short-os }}-${{ inputs.arch }}-conan2-cache
       - name: Build Default Conan Profile
         run: conan profile detect --force
       - name: Export ecCodes
@@ -86,11 +86,11 @@ jobs:
         run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/build/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ inputs.configuration }} -DCREATE_NUGET_PACKAGE=${{ inputs.create-nuget-package && 1 || 0 }} -DCOPY_NUGET_DEFS=${{ inputs.copy-nuget-defs && 1 || 0 }} -DNUGET_ARCH=${{ inputs.short-os }}-${{ inputs.arch }}${{ inputs.cmake-win-flag }}
       - name: Build
         run: cmake --build ${{github.workspace}}/build --target aviationcalc --config ${{ inputs.configuration }}
-      - name: Create NuGet Package
-        if: ${{ inputs.create-nuget-package }}
-        run: |
-          cd ${{ github.workspace }}/out/nuget/${{ inputs.short-os }}-${{ inputs.arch }}
-          nuget pack .
+#      - name: Create NuGet Package
+#        if: ${{ inputs.create-nuget-package }}
+#        run: |
+#          cd ${{ github.workspace }}/out/nuget/${{ inputs.short-os }}-${{ inputs.arch }}
+#          nuget pack .
       - name: Archive Binary Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -108,7 +108,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: AviationCalcUtil-bins
-          path: ${{ github.workspace }}/out/AviationCaclUtil-bin-${{ inputs.short-os }}-${{ inputs.arch }}.tar.gz
+          path: ${{ github.workspace }}/out/AviationCalcUtil-bin-${{ inputs.short-os }}-${{ inputs.arch }}.tar.gz
       - name: Archive NuGet Files
         if: ${{ inputs.create-nuget-package }}
         uses: actions/upload-artifact@v3
