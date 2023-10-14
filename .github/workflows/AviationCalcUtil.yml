@@ -1,11 +1,8 @@
-name: CMake CI/CD and NuGet Deploy
+name: Tagged Release
 
 on:
   push:
-    branches: [ "master" ]
     tags: [ "v*" ]
-  pull_request:
-    branches: [ "master" ]
 
 env:
   CONAN_HOME: "${{ github.workspace }}/conan/"
@@ -97,7 +94,7 @@ jobs:
         with:
           name: AviationCalcUtil-bins
           path: ${{ github.workspace }}/bins
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false

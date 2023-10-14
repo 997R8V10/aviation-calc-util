@@ -1,0 +1,24 @@
+name: Dev Build
+
+on:
+  push:
+    branches: [ "release/*", "dev" ]
+  pull_request:
+    branches: [ "release/*", "dev" ]
+
+env:
+  CONAN_HOME: "${{ github.workspace }}/conan/"
+  CONAN_VERBOSE_TRACEBACK: 1
+
+jobs:
+  build:
+    uses: ./.github/workflows/BuildCMakeReusable.yml
+      with:
+        arch: x64
+        conan-arch: x86_64
+        os: ubuntu-latest
+        short-os: linux
+        cmake-win-flag: ""
+        configuration: "Debug"
+        create-nuget-package: False
+        copy-nuget-defs: False
