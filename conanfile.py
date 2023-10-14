@@ -99,18 +99,19 @@ class AviationcalcConan(ConanFile):
     def generate(self):
         # Copy imports
         for dep in self.dependencies.values():
-            files.copy(self, "*.dll", src=os.path.join(dep.package_folder, "bin"), dst=os.path.join(self.build_folder, "bin"))
-            files.copy(self, "*.dylib*", src=os.path.join(dep.package_folder, "lib"), dst=os.path.join(self.build_folder, "lib"))
-            files.copy(self, "*.lib", src=os.path.join(dep.package_folder, "lib"), dst=os.path.join(self.build_folder, "lib"))
-            files.copy(self, "*.so*", src=os.path.join(dep.package_folder, "lib"), dst=os.path.join(self.build_folder, "lib"))
+            if dep.package_folder is not None:
+                files.copy(self, "*.dll", src=os.path.join(dep.package_folder, "bin"), dst=os.path.join(self.build_folder, "bin"))
+                files.copy(self, "*.dylib*", src=os.path.join(dep.package_folder, "lib"), dst=os.path.join(self.build_folder, "lib"))
+                files.copy(self, "*.lib", src=os.path.join(dep.package_folder, "lib"), dst=os.path.join(self.build_folder, "lib"))
+                files.copy(self, "*.so*", src=os.path.join(dep.package_folder, "lib"), dst=os.path.join(self.build_folder, "lib"))
 
-            with files.chdir(self, os.path.join(self.build_folder, "lib")):
-                for dynamic_lib in glob.iglob("*.so.*", recursive=True):
-                    lib_symlink = "{}.so".format(dynamic_lib.split(".so")[0])  # basename
-                    if os.path.exists(lib_symlink):
-                        os.remove(lib_symlink)
-                    self.output.info("Copying {} --> {}".format(dynamic_lib, lib_symlink))
-                    copyfile(dynamic_lib, lib_symlink)
+                with files.chdir(self, os.path.join(self.build_folder, "lib")):
+                    for dynamic_lib in glob.iglob("*.so.*", recursive=True):
+                        lib_symlink = "{}.so".format(dynamic_lib.split(".so")[0])  # basename
+                        if os.path.exists(lib_symlink):
+                            os.remove(lib_symlink)
+                        self.output.info("Copying {} --> {}".format(dynamic_lib, lib_symlink))
+                        copyfile(dynamic_lib, lib_symlink)
 
         tc = CMakeToolchain(self)
 
