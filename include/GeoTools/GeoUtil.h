@@ -248,12 +248,9 @@ extern AVIATIONCALC_EXPORT double
 GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, double course,
                                  double &requiredCourse, double &alongTrackDistanceM);
 extern AVIATIONCALC_EXPORT double
-GeoPointCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial,
+GeoUtilCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial,
                                double endRadial, double radiusM, bool clockwise, double &requiredCourse,
                                double &alongTrackDistanceM);
-extern AVIATIONCALC_EXPORT double
-GeoUtilCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial, double endRadial,
-                              double radiusM, double &requiredCourse, double &alongTrackDistanceM);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnLeadInDistance(GeoPoint *ptr, double theta, double r);
 extern AVIATIONCALC_EXPORT double
 GeoUtilCalculateTurnLeadDistance(GeoPoint *pos, GeoPoint *wp, double trueTrack, double tas,

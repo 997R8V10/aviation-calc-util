@@ -102,7 +102,9 @@ jobs:
             ${{ github.workspace }}/build/**/*.dylib*
       - name: Tar Binaries
         if: ${{ inputs.create-nuget-package }}
-        run: tar -czvf ${{ github.workspace}}/out/AviationCalcUtil-bin-${{ inputs.short-os }}-${{ inputs.arch }}.tar.gz ${{ github.workspace }}/out/nuget/runtimes/${{ inputs.short-os }}-${{ inputs.arch }}/*.*
+        run: |
+          cd ${{ github.workspace }}/out/nuget/runtimes/${{ inputs.short-os }}-${{ inputs.arch }}
+          tar -czvf ${{ github.workspace}}/out/AviationCalcUtil-bin-${{ inputs.short-os }}-${{ inputs.arch }}.tar.gz *.*
       - name: Archive Tar Binaries
         if: ${{ inputs.create-nuget-package }}
         uses: actions/upload-artifact@v3

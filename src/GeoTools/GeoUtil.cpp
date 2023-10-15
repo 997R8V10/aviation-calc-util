@@ -470,7 +470,7 @@ double GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, 
     return -1;
 }
 
-double GeoPointCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial, double endRadial,
+double GeoUtilCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial, double endRadial,
                                       double radiusM, bool clockwise, double &requiredCourse,
                                       double &alongTrackDistanceM) {
     if (aircraft != NULL && arcCenter != NULL){
