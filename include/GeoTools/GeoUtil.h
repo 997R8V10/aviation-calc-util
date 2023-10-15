@@ -66,11 +66,14 @@ namespace AviationCalcUtil::GeoTools {
         /// \param startRadial Start Radial (degrees)
         /// \param endRadial End Radial (degrees)
         /// \param radiusM Radius (m)
+        /// \param clockwise Is Turn Clockwise?
         /// \param requiredCourse Output's course along arc at current position.
-        /// \param alongTrackDistanceM Output's distance along arc. Negative if station passage has occurred.
+        /// \param alongTrackDistanceM Output's distance along arc. -1 if end radial has been passed
         /// \return Cross track error (m). Right: Positive; Left: Negative;
-        static double calculateArcCourseInfo(const GeoPoint &aircraft, const GeoPoint &arcCenter, double startRadial, double endRadial,
-                                             double radiusM, double &requiredCourse, double &alongTrackDistanceM);
+        static double calculateArcCourseInfo(const GeoPoint &aircraft, const GeoPoint &arcCenter, double startRadial,
+                                             double endRadial,
+                                             double radiusM, bool clockwise, double &requiredCourse,
+                                             double &alongTrackDistanceM);
 
         /// Calculates required lead in distance for a turn.
         /// \param point Intersection between current course and desired course
@@ -182,6 +185,13 @@ namespace AviationCalcUtil::GeoTools {
         /// \return Amount of turn (degrees). Negative is left.
         static double calculateTurnAmount(double currentHeading, double desiredHeading);
 
+        /// Calculate the delta to the desired heading (0-360)
+        /// \param currentHeading Current heading (degrees)
+        /// \param desiredHeading Desired heading (degrees)
+        /// \param isRightTurn Is the turn to the right?
+        /// \return Delta to Heading (degrees).
+        static double calculateDeltaToHeading(double currentHeading, double desiredHeading, bool isRightTurn);
+
         /// Convert from degrees.minutes.seconds to decimal degrees.
         /// \param degrees Degrees (signed integer)
         /// \param mins Minutes (unsigned integer)
@@ -201,28 +211,30 @@ namespace AviationCalcUtil::GeoTools {
         /// \param natsLon NATS style longitude
         /// \param decimalLat Decimal latitude out variable
         /// \param decimalLon Decimal longitude out variable
-        static void convertNatsToDecimalDegs(const std::string &natsLat, const std::string &natsLon, double& decimalLat, double& decimalLon);
+        static void convertNatsToDecimalDegs(const std::string &natsLat, const std::string &natsLon, double &decimalLat,
+                                             double &decimalLon);
 
         /// Convert from decimal degrees to NATS style coordinates.
         /// \param decimalLat Decimal latitude
         /// \param decimalLon Decimal longitude
         /// \param natsLat Out NATS latitude
         /// \param natsLon Out NATS longitude
-        static void convertDecimalDegsToNats(double decimalLat, double decimalLon, string& natsLat, string& natsLon);
+        static void convertDecimalDegsToNats(double decimalLat, double decimalLon, string &natsLat, string &natsLon);
 
         /// Convert from VRC/Euroscope style coordinates to decimal degrees.
         /// \param vrcLat VRC/Euroscope style latitude
         /// \param vrcLon VRC/Euroscope style longitude
         /// \param decimalLat Out decimal latitude
         /// \param decimalLon Out decimal longitude
-        static void convertVrcToDecimalDegs(const std::string &vrcLat, const std::string &vrcLon, double& decimalLat, double& decimalLon);
+        static void convertVrcToDecimalDegs(const std::string &vrcLat, const std::string &vrcLon, double &decimalLat,
+                                            double &decimalLon);
 
         /// Convert from decimal degrees to VRC/Euroscope style coordinates.
         /// \param decimalLat Decimal latitude
         /// \param decimalLon Decimal longitude
         /// \param vrcLat Out VRC/Euroscope style latitude
         /// \param vrcLon Out VRC/Euroscope style longitude
-        static void convertDecimalDegsToVrc(double decimalLat, double decimalLon, string& vrcLat, string& vrcLon);
+        static void convertDecimalDegsToVrc(double decimalLat, double decimalLon, string &vrcLat, string &vrcLon);
     };
 }
 
@@ -235,6 +247,10 @@ GeoUtilCalculateDirectBearingAfterTurn(GeoPoint *aircraft, GeoPoint *waypoint, d
 extern AVIATIONCALC_EXPORT double
 GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, double course,
                                  double &requiredCourse, double &alongTrackDistanceM);
+extern AVIATIONCALC_EXPORT double
+GeoPointCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial,
+                               double endRadial, double radiusM, bool clockwise, double &requiredCourse,
+                               double &alongTrackDistanceM);
 extern AVIATIONCALC_EXPORT double
 GeoUtilCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial, double endRadial,
                               double radiusM, double &requiredCourse, double &alongTrackDistanceM);
@@ -253,21 +269,33 @@ extern AVIATIONCALC_EXPORT double GeoUtilCalculateRadiusOfTurn(double bankAngle,
 
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateBankAngle(double radiusOfTurn, double groundSpeed);
 
-extern AVIATIONCALC_EXPORT double GeoUtilCalculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing, double windSpeed, double tas);
+extern AVIATIONCALC_EXPORT double
+GeoUtilCalculateConstantRadiusTurn(double startBearing, double turnAmount, double windBearing, double windSpeed,
+                                   double tas);
 extern AVIATIONCALC_EXPORT double GeoUtilGetHeadwindComponent(double windSpeed, double windBearing, double bearing);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateDistanceTravelledNMi(double groundSpeedKts, double timeMs);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateDegreesTurned(double distTravelledNMi, double radiusOfTurnNMi);
-extern AVIATIONCALC_EXPORT double GeoUtilCalculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn);
-extern AVIATIONCALC_EXPORT void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi, bool isRightTurn, double &chordHeading, double &chordDistance);
+extern AVIATIONCALC_EXPORT double
+GeoUtilCalculateEndHeading(double startHeading, double degreesTurned, bool isRightTurn);
+extern AVIATIONCALC_EXPORT void
+GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi,
+                                        bool isRightTurn, double &chordHeading, double &chordDistance);
 extern AVIATIONCALC_EXPORT double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading);
+extern AVIATIONCALC_EXPORT double
+GeoUtilCalculateDeltaToHeading(double currentHeading, double desiredHeading, bool isRightTurn);
 extern AVIATIONCALC_EXPORT double GeoUtilGetEarthRadiusM();
 
 extern AVIATIONCALC_EXPORT double GeoUtilConvertDegMinSecToDecimalDegs(int degrees, unsigned int mins, double secs);
-extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs);
-extern AVIATIONCALC_EXPORT void GeoUtilConvertNatsToDecimalDegs(const char *natsLat, const char *natsLon, double &decLat, double &decLon);
-extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToNats(double decimalLat, double decimalLon, const char **natsLat, const char **natsLon);
-extern AVIATIONCALC_EXPORT void GeoUtilConvertVrcToDecimalDegs(const char *vrcLat, const char *vrcLon, double &decLat, double &decLon);
-extern AVIATIONCALC_EXPORT void GeoUtilConvertDecimalDegsToVrc(double decimalLat, double decimalLon, const char **vrcLat, const char **vrcLon);
+extern AVIATIONCALC_EXPORT void
+GeoUtilConvertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, unsigned int &mins, double &secs);
+extern AVIATIONCALC_EXPORT void
+GeoUtilConvertNatsToDecimalDegs(const char *natsLat, const char *natsLon, double &decLat, double &decLon);
+extern AVIATIONCALC_EXPORT void
+GeoUtilConvertDecimalDegsToNats(double decimalLat, double decimalLon, const char **natsLat, const char **natsLon);
+extern AVIATIONCALC_EXPORT void
+GeoUtilConvertVrcToDecimalDegs(const char *vrcLat, const char *vrcLon, double &decLat, double &decLon);
+extern AVIATIONCALC_EXPORT void
+GeoUtilConvertDecimalDegsToVrc(double decimalLat, double decimalLon, const char **vrcLat, const char **vrcLon);
 }
 
 

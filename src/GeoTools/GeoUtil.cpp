@@ -3,6 +3,7 @@
 //
 
 #define _USE_MATH_DEFINES
+
 #include <cmath>
 
 #include "GeoTools/GeoUtil.h"
@@ -10,7 +11,6 @@
 
 using namespace AviationCalcUtil::GeoTools;
 using namespace AviationCalcUtil::MathTools;
-
 
 
 double GeoUtil::normalizeLongitude(double lon) {
@@ -29,7 +29,7 @@ double GeoUtil::calculateMaxBankAngle(double groundSpeed, double bankLimit, doub
 }
 
 double GeoUtil::calculateRadiusOfTurn(double bankAngle, double groundSpeed) {
-    if (groundSpeed == 0){
+    if (groundSpeed == 0) {
         return 1;
     }
 
@@ -139,6 +139,17 @@ double GeoUtil::calculateTurnAmount(double currentHeading, double desiredHeading
     return distance * sign;
 }
 
+double GeoUtil::calculateDeltaToHeading(double currentHeading, double desiredHeading, bool isRightTurn) {
+    double delta = isRightTurn ? desiredHeading - currentHeading : currentHeading - desiredHeading;
+
+    // If it passes through 360, normalize it.
+    if (delta < 0) {
+        delta = 360 + delta;
+    }
+
+    return delta;
+}
+
 double GeoUtil::calculateDirectBearingAfterTurn(const GeoPoint &aircraft, const GeoPoint &waypoint, double r,
                                                 double curBearing) {
     // Set waypoint's altitude to aircraft's altitude to minimize error
@@ -215,13 +226,13 @@ double GeoUtil::calculateCrossTrackErrorM(const GeoPoint &aircraft, const GeoPoi
 }
 
 double GeoUtil::calculateArcCourseInfo(const GeoPoint &aircraft, const GeoPoint &arcCenter, double startRadial,
-                                       double endRadial, double radiusM, double &requiredCourse, double &alongTrackDistanceM) {
+                                       double endRadial, double radiusM, bool clockwise, double &requiredCourse,
+                                       double &alongTrackDistanceM) {
     // Set waypoint's altitude to aircraft's altitude to minimize error
     GeoPoint tempWp(arcCenter.getLat(), arcCenter.getLon(), aircraft.getAlt());
 
     // Calculate required course
-    double radial = GeoPoint::finalBearing(arcCenter, tempWp);
-    bool clockwise = GeoUtil::calculateTurnAmount(startRadial, endRadial) > 0;
+    double radial = GeoPoint::initialBearing(tempWp, aircraft);
     requiredCourse = GeoUtil::normalizeHeading(clockwise ? radial + 90 : radial - 90);
 
     // Calculate Cross Track Error
@@ -229,16 +240,21 @@ double GeoUtil::calculateArcCourseInfo(const GeoPoint &aircraft, const GeoPoint 
     double xTrackM = clockwise ? radiusM - curRadiusM : curRadiusM - radiusM;
 
     // Calculate Along Track Distance
-    double alongTrackM = 0;
-    double deltaToStartRadial = GeoUtil::calculateTurnAmount(radial, startRadial);
-    double deltaToEndRadial = GeoUtil::calculateTurnAmount(radial, endRadial);
+    double deltaStartToEndRadial = GeoUtil::calculateDeltaToHeading(startRadial, endRadial, clockwise);
+    double deltaPposToEndRadial = GeoUtil::calculateDeltaToHeading(radial, endRadial, clockwise);
 
-    // Calculate angle
-    double theta = std::fabs(deltaToEndRadial);
-    if (clockwise){
+    // Calculate crossover amount to divide up the rest of the circle
+    double minDistance = deltaStartToEndRadial + 0.5 * (360 - deltaStartToEndRadial);
 
+    // If end radial has been passed
+    if (deltaPposToEndRadial > minDistance) {
+        alongTrackDistanceM = -1;
+    } else {
+        // Calculate arc length in meters
+        alongTrackDistanceM = 2 * M_PI * radiusM * deltaPposToEndRadial / 360.0; // 2 * pi * r * theta / 360
     }
 
+    return xTrackM;
 }
 
 double GeoUtil::calculateTurnLeadDistance(const GeoPoint &point, double theta, double r) {
@@ -276,7 +292,8 @@ std::unique_ptr<GeoPoint> GeoUtil::findIntersection(const GeoPoint &position, co
 
     // Try both radials and see which one works
     std::unique_ptr<GeoPoint> intersection1 = std::move(GeoPoint::intersection(point1, trueTrack, wp, course));
-    std::unique_ptr<GeoPoint> intersection2 = std::move(GeoPoint::intersection(point1, trueTrack, wp, std::fmod(course + 180, 360)));
+    std::unique_ptr<GeoPoint> intersection2 = std::move(
+            GeoPoint::intersection(point1, trueTrack, wp, std::fmod(course + 180, 360)));
 
     if (intersection1 == nullptr) {
         return intersection2;
@@ -313,7 +330,8 @@ void GeoUtil::convertDecimalDegsToDegMinSec(double decimalDegs, int &degrees, un
     degrees *= sign;
 }
 
-void GeoUtil::convertNatsToDecimalDegs(const string &natsLat, const string &natsLon, double& decimalLat, double& decimalLon) {
+void GeoUtil::convertNatsToDecimalDegs(const string &natsLat, const string &natsLon, double &decimalLat,
+                                       double &decimalLon) {
     decimalLat = convertNatsToDecimalSingle(natsLat, true);
     decimalLon = convertNatsToDecimalSingle(natsLon, false);
 }
@@ -335,8 +353,6 @@ void GeoUtil::convertDecimalDegsToNats(double decimalLat, double decimalLon, str
     natsLat = convertDecimalToNatsSingle(decimalLat, true);
     natsLon = convertDecimalToNatsSingle(decimalLon, false);
 }
-
-
 
 
 string GeoUtil::convertDecimalToNatsSingle(double decimalCoord, bool isLatitude) {
@@ -362,14 +378,11 @@ string GeoUtil::convertDecimalToNatsSingle(double decimalCoord, bool isLatitude)
         if (minutes >= 60) {
             minutes = 0;
             degrees++;
-            if (isLatitude && degrees > 90)
-            {
+            if (isLatitude && degrees > 90) {
                 degrees = 90 - (degrees - 90);
                 if (dirLetter == 'N') dirLetter = 'S';
                 else dirLetter = 'N';
-            }
-            else if (!isLatitude && degrees > 180)
-            {
+            } else if (!isLatitude && degrees > 180) {
                 degrees = 180 - (degrees - 180);
                 if (dirLetter == 'E') dirLetter = 'W';
                 else dirLetter = 'E';
@@ -379,13 +392,12 @@ string GeoUtil::convertDecimalToNatsSingle(double decimalCoord, bool isLatitude)
     int secondsI = seconds;
 
     //Set up an empty char* of the appropriate size to hold the return value before it is converted to a std::string
-    char* value = new char[returnLength];
+    char *value = new char[returnLength];
 
     //format the return value string with the appropriate level of zero-padding
     if (isLatitude) {
         sprintf(value, "%02d%02u%02d%c", degrees, minutes, secondsI, dirLetter);
-    }
-    else {
+    } else {
         sprintf(value, "%03d%02u%02d%c", degrees, minutes, secondsI, dirLetter);
     }
 
@@ -422,7 +434,7 @@ string GeoUtil::convertDecimalDegToVrcSingle(double decimalCoord, bool isLatitud
 
 double GeoUtil::convertVrcToDecimalSingle(const string &vrcCoord) {
     //W077.52.27.771
-    string first = vrcCoord.substr(0,1);
+    string first = vrcCoord.substr(0, 1);
     int sign = first == "N" || first == "E" ? 1 : -1;
     int degrees = (stoi(vrcCoord.substr(1, 3))) * sign;
     unsigned int minutes = stoi(vrcCoord.substr(5, 2));
@@ -430,7 +442,8 @@ double GeoUtil::convertVrcToDecimalSingle(const string &vrcCoord) {
     return convertDegMinSecToDecimalDegs(degrees, minutes, seconds);
 }
 
-void GeoUtil::convertVrcToDecimalDegs(const string &vrcLat, const string &vrcLon, double &decimalLat, double &decimalLon) {
+void
+GeoUtil::convertVrcToDecimalDegs(const string &vrcLat, const string &vrcLon, double &decimalLat, double &decimalLon) {
     decimalLat = convertVrcToDecimalSingle(vrcLat);
     decimalLon = convertVrcToDecimalSingle(vrcLon);
 }
@@ -443,8 +456,7 @@ void GeoUtil::convertDecimalDegsToVrc(double decimalLat, double decimalLon, stri
 double GeoUtilCalculateDirectBearingAfterTurn(AviationCalcUtil::GeoTools::GeoPoint *aircraft,
                                               AviationCalcUtil::GeoTools::GeoPoint *waypoint, double r,
                                               double curBearing) {
-    if (aircraft != NULL && waypoint != NULL)
-    {
+    if (aircraft != NULL && waypoint != NULL) {
         return GeoUtil::calculateDirectBearingAfterTurn(*aircraft, *waypoint, r, curBearing);
     }
     return -1;
@@ -452,9 +464,17 @@ double GeoUtilCalculateDirectBearingAfterTurn(AviationCalcUtil::GeoTools::GeoPoi
 
 double GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, double course, double &requiredCourse,
                                         double &alongTrackDistanceM) {
-    if (aircraft != NULL && waypoint != NULL)
-    {
+    if (aircraft != NULL && waypoint != NULL) {
         return GeoUtil::calculateCrossTrackErrorM(*aircraft, *waypoint, course, requiredCourse, alongTrackDistanceM);
+    }
+    return -1;
+}
+
+double GeoPointCalculateArcCourseInfo(GeoPoint *aircraft, GeoPoint *arcCenter, double startRadial, double endRadial,
+                                      double radiusM, bool clockwise, double &requiredCourse,
+                                      double &alongTrackDistanceM) {
+    if (aircraft != NULL && arcCenter != NULL){
+        return GeoUtil::calculateArcCourseInfo(*aircraft, *arcCenter, startRadial, endRadial, radiusM, clockwise, requiredCourse, alongTrackDistanceM);
     }
     return -1;
 }
@@ -462,17 +482,17 @@ double GeoUtilCalculateCrossTrackErrorM(GeoPoint *aircraft, GeoPoint *waypoint, 
 double GeoUtilCalculateTurnLeadInDistance(GeoPoint *ptr, double theta, double r) {
     if (ptr != NULL) {
         return GeoUtil::calculateTurnLeadDistance(*ptr, theta, r);
-   }
+    }
     return -1;
 }
 
 double GeoUtilCalculateTurnLeadDistance(GeoPoint *pos, GeoPoint *wp, double trueTrack, double tas, double course,
                                         double trueWindDir, double windSpd, double &radiusOfTurn,
                                         GeoPoint *&intersection) {
-    if (pos != NULL && wp != NULL)
-    {
+    if (pos != NULL && wp != NULL) {
         auto nat_int = std::make_unique<GeoPoint>();
-        double toReturn = GeoUtil::calculateTurnLeadDistance(*pos, *wp, trueTrack, tas, course, trueWindDir, windSpd, radiusOfTurn, nat_int);
+        double toReturn = GeoUtil::calculateTurnLeadDistance(*pos, *wp, trueTrack, tas, course, trueWindDir, windSpd,
+                                                             radiusOfTurn, nat_int);
         intersection = nat_int.release();
         return toReturn;
     }
@@ -480,8 +500,7 @@ double GeoUtilCalculateTurnLeadDistance(GeoPoint *pos, GeoPoint *wp, double true
 }
 
 GeoPoint *GeoUtilFindIntersection(GeoPoint *position, GeoPoint *wp, double trueTrack, double course) {
-    if (position != NULL && wp != NULL)
-    {
+    if (position != NULL && wp != NULL) {
         return GeoUtil::findIntersection(*position, *wp, trueTrack, course).release();
     }
     return NULL;
@@ -530,13 +549,18 @@ double GeoUtilCalculateEndHeading(double startHeading, double degreesTurned, boo
 
 void GeoUtilCalculateChordHeadingAndDistance(double startHeading, double degreesTurned, double radiusOfTurnNMi,
                                              bool isRightTurn, double &chordHeading, double &chordDistance) {
-    tuple<double, double> answer = GeoUtil::calculateChordHeadingAndDistance(startHeading, degreesTurned, radiusOfTurnNMi, isRightTurn);
+    tuple<double, double> answer = GeoUtil::calculateChordHeadingAndDistance(startHeading, degreesTurned,
+                                                                             radiusOfTurnNMi, isRightTurn);
     chordHeading = std::get<0>(answer);
     chordDistance = std::get<1>(answer);
 }
 
 double GeoUtilCalculateTurnAmount(double currentHeading, double desiredHeading) {
     return GeoUtil::calculateTurnAmount(currentHeading, desiredHeading);
+}
+
+double GeoUtilCalculateDeltaToHeading(double currentHeading, double desiredHeading, bool isRightTurn){
+    return GeoUtil::calculateDeltaToHeading(currentHeading, desiredHeading, isRightTurn);
 }
 
 double GeoUtilGetEarthRadiusM() {

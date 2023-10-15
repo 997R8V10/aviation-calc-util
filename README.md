@@ -46,20 +46,25 @@ _**Note:** Building the NuGet package will automatically build for all configura
 1. Create a `build` folder.
 2. Install dependencies via Conan.
     ```
-    conan install <source-folder> -if <build-folder> --build=missing
+    conan install <source-folder> -of <build-folder> --build=missing
     ```
     1. Pass in any platform/configuration settings here
     2. For example: `-s build_type=Debug -s arch=x86`
 3. Generate CMake files.
    ```
-   cmake -S <source-folder> -B <build-folder>
+   cmake -S <source-folder> -B <build-folder> -DCMAKE_TOOLCHAIN_FILE=<build-folder>/conan_toolchain.cmake
     ```
     1. Pass in the same platform/configuration settings from before
     2. For example: `-DCMAKE_BUILD_TYPE=Debug -A Win32`
+    3. `-DCREATE_NUGET_PACKAGE=1` will create the files for a NuGet package
+    4. `-DCOPY_NUGET_DEFS=1` will create the `*.nuspec` and `*.targets` files.
+    5. `-DNUGET_ARCH=win-x86` sets the NuGet runtime suffix.
+    6. `-DCMAKE_POLICY_DEFAULT_CMP0091="NEW"` may be required on Windows sytems.
 4. Build the project.
     ```
     cmake --build <build-folder> --target aviationcalc
     ```
+   1. `--config <Release|Debug>` may be required for multi-config generators.
 
 ### Conan Package
 

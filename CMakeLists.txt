@@ -82,12 +82,7 @@ endif ()
 
 add_subdirectory(src)
 
-add_executable(test_atmos test_package/test_atmos.cpp)
-target_link_libraries(test_atmos aviationcalc)
-
-
-add_executable(test_geopoint test_package/test_geopoint.cpp)
-target_link_libraries(test_geopoint aviationcalc)
+add_subdirectory(test_package)
 
 # Install
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)

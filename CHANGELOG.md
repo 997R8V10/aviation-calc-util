@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2023-10-15
 ### Added
 - Radius to Fix (Arc) course calculations.
+- Calculate delta to heading with turn direction function.
 
 ## [1.0.20] - 2023-10-14
 ### Added
