@@ -35,9 +35,14 @@ on:
         default: false
         required: false
         type: boolean
+      copy-nuget-defs:
+        description: 'Should NuGet Defs be copied'
+        default: false
+        required: false
+        type: boolean
 
 env:
-  CONAN_USER_HOME: "${{ github.workspace }}/conan/"
+  CONAN_HOME: "${{ github.workspace }}/conan/"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan/short"
   CONAN_VERBOSE_TRACEBACK: 1
 
@@ -50,48 +55,64 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - uses: nuget/setup-nuget@v1
-        with:
-          nuget-version: 'latest'
+#      - uses: nuget/setup-nuget@v1
+#        with:
+#          nuget-version: 'latest'
       - name: Install Conan
         id: conan
         uses: turtlebrowser/get-conan@main
+        with:
+          version: 2.0.13
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: '3.21.x'
       - name: Conan Cache
         if: ${{ inputs.os != 'windows-latest' }}
         id: cache-conan
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/conan
-          key: ${{ runner.os }}-conan-cache
+          key: ${{ inputs.short-os }}-${{ inputs.arch }}-conan2-cache
+      - name: Build Default Conan Profile
+        run: conan profile detect --force
       - name: Export ecCodes
         run: conan export eccodes
       - name: Export Conan Package
         run: conan export .
       - name: Install Conan Packages
-        run: conan install . -if ${{github.workspace}}/build -s arch=${{ inputs.conan-arch }} -s build_type=${{ inputs.configuration }} --build=missing
+        run: conan install . -of ${{github.workspace}}/build -s arch=${{ inputs.conan-arch }} -s build_type=${{ inputs.configuration }} --build=missing
       - name: Configure CMake
-        run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ inputs.configuration }} -DNUGET_ARCH=${{ inputs.short-os }}-${{ inputs.arch }}${{ inputs.cmake-win-flag }}
+        run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/build/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ inputs.configuration }} -DCREATE_NUGET_PACKAGE=${{ inputs.create-nuget-package && 1 || 0 }} -DCOPY_NUGET_DEFS=${{ inputs.copy-nuget-defs && 1 || 0 }} -DNUGET_ARCH=${{ inputs.short-os }}-${{ inputs.arch }}${{ inputs.cmake-win-flag }}
       - name: Build
         run: cmake --build ${{github.workspace}}/build --target aviationcalc --config ${{ inputs.configuration }}
-      - name: Create NuGet Package
-        if: ${{ inputs.create-nuget-package }}
-        run: |
-          cd ${{ github.workspace }}/out/nuget/${{ inputs.short-os }}-${{ inputs.arch }}
-          nuget pack .
+#      - name: Create NuGet Package
+#        if: ${{ inputs.create-nuget-package }}
+#        run: |
+#          cd ${{ github.workspace }}/out/nuget/${{ inputs.short-os }}-${{ inputs.arch }}
+#          nuget pack .
       - name: Archive Binary Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: AviationCalcUtil-bin-${{ inputs.short-os }}-${{ inputs.arch }}-${{ inputs.configuration }}
           path: |
-            ${{ github.workspace }}/build/*/*.dll
-            ${{ github.workspace }}/build/*/*.pdb
-            ${{ github.workspace }}/build/*/*.so*
-            ${{ github.workspace }}/build/*/*.dylib*
-      - name: Archive NuGet Packages
+            ${{ github.workspace }}/build/**/*.dll
+            ${{ github.workspace }}/build/**/*.pdb
+            ${{ github.workspace }}/build/**/*.so*
+            ${{ github.workspace }}/build/**/*.dylib*
+      - name: Tar Binaries
+        if: ${{ inputs.create-nuget-package }}
+        run: tar -czvf ${{ github.workspace}}/out/AviationCalcUtil-bin-${{ inputs.short-os }}-${{ inputs.arch }}.tar.gz ${{ github.workspace }}/out/nuget/runtimes/${{ inputs.short-os }}-${{ inputs.arch }}/*.*
+      - name: Archive Tar Binaries
         if: ${{ inputs.create-nuget-package }}
         uses: actions/upload-artifact@v3
         with:
-          name: AviationCalcUtil-NuGet-${{ inputs.short-os }}-${{ inputs.arch }}
+          name: AviationCalcUtil-bins
+          path: ${{ github.workspace }}/out/AviationCalcUtil-bin-${{ inputs.short-os }}-${{ inputs.arch }}.tar.gz
+      - name: Archive NuGet Files
+        if: ${{ inputs.create-nuget-package }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: AviationCalcUtil-NuGet
           path: |
-            ${{ github.workspace }}/**/*.nupkg
-            ${{ github.workspace }}/**/*.snupkg
+            ${{ github.workspace }}/out/nuget/*

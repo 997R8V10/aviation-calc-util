@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <PlatId Condition="'$(PlatId)' == ''">$(PlatformTarget)</PlatId>
+        <PlatId Condition="'$(PlatId)' == ''">$(Platform)</PlatId>
+        <PlatId Condition="'$(PlatId)' == '' Or '$(PlatId)' == 'AnyCPU'">x64</PlatId>
+        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Windows'))">win-$(PlatId)</RunId>
+        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('Linux'))">linux-$(PlatId)</RunId>
+        <RunId Condition="'$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('OSX'))">osx-$(PlatId)</RunId>
+        <RunId Condition="'$(RunId)' == ''">$(RuntimeIdentifier)</RunId>
+    </PropertyGroup>
     <ItemGroup>
-        <Content Include="$(MSBuildThisFileDirectory)..\..\lib\native\**\*.*">
+        <None Include="$(MSBuildThisFileDirectory)/../runtimes/$(RunId)/**/*.*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>%(FileName)%(Extension)</Link>
-        </Content>
+        </None>
     </ItemGroup>
-	<Target Name="AfterBuild">
-		<ItemGroup>
-			<_Definitions Include="$(MSBuildThisFileDirectory)..\..\lib\native\**\*.*" />
-		</ItemGroup>
-		<Copy SourceFiles="@(_Definitions)"
-		  DestinationFiles="@(_Definitions->'$(TargetDir)%(RecursiveDir)%(Filename)%(Extension)')"
-		  UseHardlinksIfPossible="true"
-		  SkipUnchangedFiles="true" />
-	</Target>
+    <ItemGroup>
+        <NativeDepFiles Include="$(MSBuildThisFileDirectory)/../runtimes/$(RunId)/**/*.*" />
+    </ItemGroup>
+    <Target Name="CopyNativeDepFiles" AfterTargets="Build">
+        <Copy SourceFiles="@(NativeDepFiles)" DestinationFolder="$(TargetDir)" />
+    </Target>
 </Project>

@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata minClientVersion="2.5">
-    <id>${NUGET_PACKAGE_NAME}.${NUGET_ARCH}</id>
+    <id>${NUGET_PACKAGE_NAME}</id>
     <version>${CMAKE_PROJECT_VERSION}</version>
     <authors>Prithvi Shivaraman</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <readme>README.md</readme>
     <license type="file">LICENSE.txt</license>
-    <!--
+    <repository type="git" url="https://github.com/997R8V10/aviation-calc-util" />
     <projectUrl>${CMAKE_PROJECT_HOMEPAGE_URL}</projectUrl>
+    <!--
     <iconUrl></iconUrl>
     -->
     <description>${CMAKE_PROJECT_DESCRIPTION}</description>
     <copyright>None</copyright>
     <tags>aviationcalc</tags>
-    <dependencies>
-      <group targetFramework="native" />
-      <group targetFramework="netstandard2.0" />
-    </dependencies>
+<!--     <dependencies> -->
+<!--       <group targetFramework="native" /> -->
+<!--       <group targetFramework="netstandard2.0" /> -->
+<!--     </dependencies> -->
   </metadata>
   <files>
     <file src="build\**" target="build" />
-    <file src="lib\**" target="lib" />
+<!--     <file src="lib\**" target="lib" /> -->
+    <file src="runtimes\**" target="runtimes" />
     <file src="README.md" target="" />
     <file src="LICENSE.txt" target="" />
   </files>

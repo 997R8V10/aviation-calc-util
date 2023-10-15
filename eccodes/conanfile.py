@@ -1,9 +1,11 @@
-from conans import ConanFile, CMake, tools
-from conan.tools.files import rename
+from conan import ConanFile
+from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+from conan.tools import files
+import os
 
 class EccodesConan(ConanFile):
 	name = "eccodes"
-	version = "2.22.1.p1"
+	version = "2.22.1.p3"
 	license = "Apache Licence Version 2.0"
 	author = "ecwmf"
 	url = "https://github.com/ecmwf/eccodes"
@@ -56,28 +58,71 @@ class EccodesConan(ConanFile):
 		"enable_python2": False,
 		"enable_extra_tests": False
 	}
-	build_requires = []
-	generators = ["cmake", "txt"]
+	tool_requires = []
 	build_policy = "missing"
 
 	def config_options(self):
 		if self.settings.os == "Windows":
 			del self.options.fPIC
-			self.build_requires.append("strawberryperl/5.28.1.1")
+			self.tool_requires.append("strawberryperl/5.28.1.1")
 
 	def source(self):
 		url = "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz"
-		tools.download(url, "eccodes.tar.gz")
-		tools.untargz("eccodes.tar.gz")
+		files.download(self, url, "eccodes.tar.gz")
+		files.unzip(self, "eccodes.tar.gz")
 		#rename(self, "eccodes-2.22.1-Source", "eccodes")
 		
 		# This small hack might be useful to guarantee proper /MT /MD linkage
 		# in MSVC if the packaged project doesn't have variables to set it
 		# properly
-		tools.replace_in_file("eccodes-2.22.1-Source/CMakeLists.txt", "project( eccodes VERSION 2.22.1 LANGUAGES C )",
-							  '''project( eccodes VERSION 2.22.1 LANGUAGES C )
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(KEEP_RPATHS)''')
+		files.replace_in_file(self, "eccodes-2.22.1-Source/CMakeLists.txt", "project( eccodes VERSION 2.22.1 LANGUAGES C )",
+							  '''set(CMAKE_CONFIGURATION_TYPES Release)
+project( eccodes VERSION 2.22.1 LANGUAGES C )
+#include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+#conan_basic_setup(KEEP_RPATHS)''')
+
+	def generate(self):
+		tc = CMakeToolchain(self)
+
+		# Configure options
+		if self.options.multithreading:
+			tc.cache_variables["ENABLE_ECCODES_THREADS"] = "OFF" if self.settings.os == "Windows" else "ON"
+			tc.cache_variables["ENABLE_ECCODES_OMP_THREADS"] = "ON" if self.settings.os == "Windows" else "OFF"
+		else:
+			tc.cache_variables["ENABLE_ECCODES_THREADS"] = "OFF"
+			tc.cache_variables["ENABLE_ECCODES_OMP_THREADS"] = "OFF"
+
+		tc.cache_variables["ENABLE_NETCDF"] = "ON" if self.options.enable_netcdf else "OFF"
+		tc.cache_variables["ENABLE_JPG"] = "ON" if self.options.enable_jpg else "OFF"
+		tc.cache_variables["ENABLE_FORTRAN"] = "ON" if self.options.enable_fortran else "OFF"
+		tc.cache_variables["ENABLE_PRODUCT_BUFR"] = "ON" if self.options.enable_product_bufr else "OFF"
+		tc.cache_variables["ENABLE_BUILD_TOOLS"] = "ON" if self.options.enable_build_tools else "OFF"
+		tc.cache_variables["ENABLE_EXAMPLES"] = "ON" if self.options.enable_examples else "OFF"
+		tc.cache_variables["ENABLE_TESTS"] = "ON" if self.options.enable_tests else "OFF"
+		tc.cache_variables["ENABLE_INSTALL_ECCODES_DEFINITIONS"] = "ON" if self.options.enable_install_eccodes_definitions else "OFF"
+		tc.cache_variables["ENABLE_INSTALL_ECCODES_SAMPLES"] = "ON" if self.options.enable_install_eccodes_samples else "OFF"
+		tc.cache_variables["ENABLE_MEMFS"] = "ON" if self.options.enable_memfs else "OFF"
+		tc.cache_variables["ENABLE_AEC"] = "ON" if self.options.enable_aec else "OFF"
+		tc.cache_variables["ENABLE_PYTHON2"] = "ON" if self.options.enable_python2 else "OFF"
+		tc.cache_variables["ENABLE_EXTRA_TESTS"] = "ON" if self.options.enable_extra_tests else "OFF"
+
+		# RPath Setup
+		if self.settings.os == "Macos":
+			tc.cache_variables["CMAKE_BUILD_WITH_INSTALL_RPATH"] = "1"
+			tc.cache_variables["CMAKE_INSTALL_RPATH"] = "@loader_path"
+		elif self.settings.os == "Linux":
+			tc.cache_variables["CMAKE_BUILD_WITH_INSTALL_RPATH"] = "1"
+			tc.cache_variables["CMAKE_INSTALL_RPATH"] = "$ORIGIN"
+
+		# LE Check
+		tc.cache_variables["IEEE_LE"] = 1
+
+		# Build Type
+		tc.cache_variables["CMAKE_BUILD_TYPE"] = "Release"
+
+		tc.generate()
+		deps = CMakeDeps(self)
+		deps.generate()
 
 	def build(self):
 		# Replace some files on windows builds
@@ -178,9 +223,9 @@ conan_basic_setup(KEEP_RPATHS)''')
  endif()
  
 """
-			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=definitions_cmake_patch, fuzz=True)
-			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=ifssamples_cmake_path, fuzz=True)
-			tools.patch(base_path="eccodes-2.22.1-Source", patch_string=check_os_patch, fuzz=True)
+			files.patch(self, base_path="eccodes-2.22.1-Source", patch_string=definitions_cmake_patch, fuzz=True)
+			files.patch(self, base_path="eccodes-2.22.1-Source", patch_string=ifssamples_cmake_path, fuzz=True)
+			files.patch(self, base_path="eccodes-2.22.1-Source", patch_string=check_os_patch, fuzz=True)
 		# Add RPath Patch
 		ecbuild_declare_project_patch = """--- cmake/ecbuild_declare_project.cmake	Tue May 11 08:42:16 2021
 +++ cmake/ecbuild_declare_project.cmake	Fri Feb 17 00:44:46 2023
@@ -217,69 +262,36 @@ conan_basic_setup(KEEP_RPATHS)''')
  
    # make sure nothing breaks if INSTALL_LIB_DIR is not lib
 """
-		tools.patch(base_path="eccodes-2.22.1-Source", patch_string=ecbuild_declare_project_patch, fuzz=True)
+		files.patch(self, base_path="eccodes-2.22.1-Source", patch_string=ecbuild_declare_project_patch, fuzz=True)
 
 		cmake = CMake(self)
 
-		# Configure options
-		if self.options.multithreading:
-			cmake.definitions["ENABLE_ECCODES_THREADS"] = "OFF" if self.settings.os == "Windows" else "ON"
-			cmake.definitions["ENABLE_ECCODES_OMP_THREADS"] = "ON" if self.settings.os == "Windows" else "OFF"
-		else:
-			cmake.definitions["ENABLE_ECCODES_THREADS"] = "OFF"
-			cmake.definitions["ENABLE_ECCODES_OMP_THREADS"] = "OFF"
+		cmake.configure(build_script_folder="eccodes-2.22.1-Source")
 
-		cmake.definitions["ENABLE_NETCDF"] = "ON" if self.options.enable_netcdf else "OFF"
-		cmake.definitions["ENABLE_JPG"] = "ON" if self.options.enable_jpg else "OFF"
-		cmake.definitions["ENABLE_FORTRAN"] = "ON" if self.options.enable_fortran else "OFF"
-		cmake.definitions["ENABLE_PRODUCT_BUFR"] = "ON" if self.options.enable_product_bufr else "OFF"
-		cmake.definitions["ENABLE_BUILD_TOOLS"] = "ON" if self.options.enable_build_tools else "OFF"
-		cmake.definitions["ENABLE_EXAMPLES"] = "ON" if self.options.enable_examples else "OFF"
-		cmake.definitions["ENABLE_TESTS"] = "ON" if self.options.enable_tests else "OFF"
-		cmake.definitions["ENABLE_INSTALL_ECCODES_DEFINITIONS"] = "ON" if self.options.enable_install_eccodes_definitions else "OFF"
-		cmake.definitions["ENABLE_INSTALL_ECCODES_SAMPLES"] = "ON" if self.options.enable_install_eccodes_samples else "OFF"
-		cmake.definitions["ENABLE_MEMFS"] = "ON" if self.options.enable_memfs else "OFF"
-		cmake.definitions["ENABLE_AEC"] = "ON" if self.options.enable_aec else "OFF"
-		cmake.definitions["ENABLE_PYTHON2"] = "ON" if self.options.enable_python2 else "OFF"
-		cmake.definitions["ENABLE_EXTRA_TESTS"] = "ON" if self.options.enable_extra_tests else "OFF"
-
-		# RPath Setup
-		if self.settings.os == "Macos":
-			cmake.definitions["CMAKE_BUILD_WITH_INSTALL_RPATH"] = "1"
-			cmake.definitions["CMAKE_INSTALL_RPATH"] = "@loader_path"
-		elif self.settings.os == "Linux":
-			cmake.definitions["CMAKE_BUILD_WITH_INSTALL_RPATH"] = "1"
-			cmake.definitions["CMAKE_INSTALL_RPATH"] = "$ORIGIN"
-
-		# LE Check
-		cmake.definitions["IEEE_LE"] = 1
-
-		cmake.configure(source_folder="eccodes-2.22.1-Source")
-
-		if cmake.is_multi_configuration:
-			cmake.build(target="eccodes", args=["--config %s" % self.settings.build_type])
-		else:
-			cmake.build(target="eccodes")
+		#if cmake.is_multi_configuration:
+		#	cmake.build(target="eccodes", args=["--config %s" % self.settings.build_type])
+		#else:
+		cmake.build(target="eccodes", build_type="Release")
 
 	def package(self):
-		self.copy("*.h", dst="include", keep_path=False)
-		self.copy("*.lib", dst="lib", keep_path=False)
-		self.copy("*.exp", dst="lib", keep_path=False)
-		self.copy("*.dll", dst="bin", keep_path=False)
-		self.copy("*.pdb", dst="bin", keep_path=False)
-		self.copy("*.ilk", dst="bin", keep_path=False)
-		self.copy("*.dylib*", dst="lib", keep_path=False)
-		self.copy("*.so", dst="lib", keep_path=False)
-		self.copy("*.a", dst="lib", keep_path=False)
+		files.copy(self, "*.h", dst=os.path.join(self.package_folder, "include"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.lib", dst=os.path.join(self.package_folder, "lib"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.exp", dst=os.path.join(self.package_folder, "lib"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.dll", dst=os.path.join(self.package_folder, "bin"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.pdb", dst=os.path.join(self.package_folder, "bin"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.ilk", dst=os.path.join(self.package_folder, "bin"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.dylib*", dst=os.path.join(self.package_folder, "lib"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.so", dst=os.path.join(self.package_folder, "lib"), src=self.build_folder, keep_path=False)
+		files.copy(self, "*.a", dst=os.path.join(self.package_folder, "lib"), src=self.build_folder, keep_path=False)
 
 		if not self.options.enable_memfs:
-			self.copy("*.def", dst="data/eccodes/definitions", src="eccodes-2.22.1-Source/definitions")
-			self.copy("*.table", dst="data/eccodes/definitions", src="eccodes-2.22.1-Source/definitions")
-			self.copy("*.pl", dst="data/eccodes/ifs_samples", src="eccodes-2.22.1-Source/ifs_samples")
-			self.copy("*.tmpl", dst="data/eccodes/ifs_samples", src="eccodes-2.22.1-Source/ifs_samples")
+			files.copy(self, "*.def", dst=os.path.join(self.package_folder, "data/eccodes/definitions"), src=os.path.join(self.build_folder, "eccodes-2.22.1-Source/definitions"))
+			files.copy(self, "*.table", dst=os.path.join(self.package_folder, "data/eccodes/definitions"), src=os.path.join(self.build_folder, "eccodes-2.22.1-Source/definitions"))
+			files.copy(self, "*.pl", dst=os.path.join(self.package_folder, "data/eccodes/ifs_samples"), src=os.path.join(self.build_folder, "eccodes-2.22.1-Source/ifs_samples"))
+			files.copy(self, "*.tmpl", dst=os.path.join(self.package_folder, "data/eccodes/ifs_samples"), src=os.path.join(self.build_folder, "eccodes-2.22.1-Source/ifs_samples"))
 
 		if self.options.enable_examples:
-			self.copy("*.sh", dst="data/eccodes/examples", src="eccodes-2.22.1-Source/examples")
+			files.copy(self, "*.sh", dst=os.path.join(self.package_folder, "data/eccodes/examples"), src=os.path.join(self.build_folder, "eccodes-2.22.1-Source/examples"))
 
 	def package_info(self):
 		self.cpp_info.libs = ["eccodes"]
