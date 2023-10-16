@@ -228,20 +228,25 @@ double GeoUtil::calculateCrossTrackErrorM(const GeoPoint &aircraft, const GeoPoi
 double GeoUtil::calculateArcCourseInfo(const GeoPoint &aircraft, const GeoPoint &arcCenter, double startRadial,
                                        double endRadial, double radiusM, bool clockwise, double &requiredCourse,
                                        double &alongTrackDistanceM) {
-    // Set waypoint's altitude to aircraft's altitude to minimize error
-    GeoPoint tempWp(arcCenter.getLat(), arcCenter.getLon(), aircraft.getAlt());
+    double curRadial = GeoPoint::initialBearing(arcCenter, aircraft);
+
+    // Create final bearing waypoints
+    GeoPoint curPoint(arcCenter.getLat(), arcCenter.getLon(), 0);
+    curPoint.moveByM(curRadial, radiusM);
+
+    // Calculate final radials
+    double curRadialFinal = GeoPoint::finalBearing(arcCenter, curPoint);
 
     // Calculate required course
-    double radial = GeoPoint::initialBearing(tempWp, aircraft);
-    requiredCourse = GeoUtil::normalizeHeading(clockwise ? radial + 90 : radial - 90);
+    requiredCourse = GeoUtil::normalizeHeading(clockwise ? curRadialFinal + 90 : curRadialFinal - 90);
 
     // Calculate Cross Track Error
-    double curRadiusM = GeoPoint::flatDistanceM(tempWp, aircraft);
+    double curRadiusM = GeoPoint::flatDistanceM(arcCenter, aircraft);
     double xTrackM = clockwise ? radiusM - curRadiusM : curRadiusM - radiusM;
 
     // Calculate Along Track Distance
     double deltaStartToEndRadial = GeoUtil::calculateDeltaToHeading(startRadial, endRadial, clockwise);
-    double deltaPposToEndRadial = GeoUtil::calculateDeltaToHeading(radial, endRadial, clockwise);
+    double deltaPposToEndRadial = GeoUtil::calculateDeltaToHeading(curRadial, endRadial, clockwise);
 
     // Calculate crossover amount to divide up the rest of the circle
     double minDistance = deltaStartToEndRadial + 0.5 * (360 - deltaStartToEndRadial);
