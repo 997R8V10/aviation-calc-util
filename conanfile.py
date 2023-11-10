@@ -8,7 +8,7 @@ from conan.tools import files
 
 class AviationcalcConan(ConanFile):
     name = "aviationcalc"
-    version = "1.1.2"
+    version = "1.2.0"
     license = "None"
     author = "Prithvi Shivaraman prithvisagar.shivaraman@gmail.com"
     url = "https://github.com/997R8V10/aviation-calc-util"
@@ -64,7 +64,7 @@ class AviationcalcConan(ConanFile):
         "eccodes/*:enable_install_eccodes_samples": False,
         "eccodes/*:enable_memfs": True
     }
-    requires = ["boost/1.76.0", "eccodes/2.22.1.p3"]
+    requires = ["boost/1.76.0", "eccodes/2.22.1.p4"]
     no_copy_source = True
     exports_sources = ["src/*", "include/*", "cmakescripts/*", "CMakeLists.txt"]
     build_policy = "missing"

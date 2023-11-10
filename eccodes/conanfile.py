@@ -5,7 +5,7 @@ import os
 
 class EccodesConan(ConanFile):
 	name = "eccodes"
-	version = "2.22.1.p3"
+	version = "2.22.1.p4"
 	license = "Apache Licence Version 2.0"
 	author = "ecwmf"
 	url = "https://github.com/ecmwf/eccodes"
@@ -58,13 +58,15 @@ class EccodesConan(ConanFile):
 		"enable_python2": False,
 		"enable_extra_tests": False
 	}
-	tool_requires = []
 	build_policy = "missing"
+
+	def build_requirements(self):
+		if self.settings.os == "Windows":
+			self.tool_requires("strawberryperl/5.28.1.1")
 
 	def config_options(self):
 		if self.settings.os == "Windows":
 			del self.options.fPIC
-			self.tool_requires.append("strawberryperl/5.28.1.1")
 
 	def source(self):
 		url = "https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.22.1-Source.tar.gz"

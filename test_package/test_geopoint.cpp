@@ -27,6 +27,28 @@ void test_distanceM_1(){
     cout << endl;
 }
 
+void test_distanceM_2() {
+    cout << "Test Distance(M) 002:" << endl;
+    cout << "\t{-54.732690528309909, 173.66679109972142, 0}\t=>\t{54.732690543659544, -6.33320892249435, 0}" << endl;
+    cout << "\tExpected:\tA large number" << endl;
+    GeoPoint pt1(-54.732690528309909, 173.66679109972142, 0);
+    GeoPoint pt2(54.732690543659544, -6.33320892249435, 0);
+    double distanceM = GeoPoint::flatDistanceM(pt1, pt2);
+    cout << "\tCalculated:\t" << distanceM << "m" << endl;
+    cout << endl;
+}
+
+void test_distanceM_3() {
+    cout << "Test Distance(M) 003:" << endl;
+    cout << "\t{-45, 170, 0}\t=>\t{45, -10, 0}" << endl;
+    cout << "\tExpected:\tA large number" << endl;
+    GeoPoint pt1(-45, 170, 0);
+    GeoPoint pt2(45, -10, 0);
+    double distanceM = GeoPoint::distanceM(pt1, pt2);
+    cout << "\tCalculated:\t" << distanceM << "m" << endl;
+    cout << endl;
+}
+
 void test_intersection_1(){
     cout << "Test Intersection 001:" << endl;
     cout << "\t{0, 0, 0} 045\t=>\t{1, 0, 0} 315" << endl;
@@ -86,6 +108,8 @@ void test_fetchGrib(){
 int main(){
     cout << "GeoPoint Tests" << endl;
     test_distanceM_1();
+    test_distanceM_2();
+    test_distanceM_3();
     test_intersection_1();
     test_intersection_2();
 

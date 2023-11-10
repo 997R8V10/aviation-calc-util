@@ -297,8 +297,7 @@ std::unique_ptr<GeoPoint> GeoUtil::findIntersection(const GeoPoint &position, co
 
     // Try both radials and see which one works
     std::unique_ptr<GeoPoint> intersection1 = std::move(GeoPoint::intersection(point1, trueTrack, wp, course));
-    std::unique_ptr<GeoPoint> intersection2 = std::move(
-            GeoPoint::intersection(point1, trueTrack, wp, std::fmod(course + 180, 360)));
+    std::unique_ptr<GeoPoint> intersection2 = std::move(GeoPoint::intersection(point1, trueTrack, wp, std::fmod(course + 180, 360)));
 
     if (intersection1 == nullptr) {
         return intersection2;

@@ -56,6 +56,12 @@ double GeoPoint::flatDistanceM(const GeoPoint &point1, const GeoPoint &point2) {
                std::cos(phi1) * std::cos(phi2) *
                std::pow(std::sin(deltaLambda / 2), 2);
 
+    // Check for opposite end of planet
+    if (1 - a <= 0) {
+        // Return half circumference
+        return GeoUtil::EARTH_RADIUS_M * M_PI;
+    }
+
     double c = 2 * std::atan2(std::sqrt(a), std::sqrt(1 - a));
 
     double d = GeoUtil::EARTH_RADIUS_M * c;
@@ -76,6 +82,51 @@ double GeoPoint::distanceM(const GeoPoint &point1, const GeoPoint &point2) {
 
 double GeoPoint::distanceNMi(const GeoPoint &point1, const GeoPoint &point2) {
     return MathUtil::convertMetersToNauticalMiles(distanceM(point1, point2));
+}
+
+std::unique_ptr<GeoPoint> GeoPoint::findClosestIntersection(const GeoPoint& point1, double radial1, const GeoPoint& point2, double radial2) {
+    // Try all possible radials
+    std::unique_ptr<GeoPoint> intersection1 = std::move(GeoPoint::intersection(point1, radial1, point2, radial2));
+    std::unique_ptr<GeoPoint> intersection2 = std::move(GeoPoint::intersection(point1, radial1, point2, std::fmod(radial2 + 180, 360)));
+    std::unique_ptr<GeoPoint> intersection3 = std::move(GeoPoint::intersection(point1, std::fmod(radial1 + 180, 360), point2, radial2));
+    std::unique_ptr<GeoPoint> intersection4 = std::move(GeoPoint::intersection(point1, std::fmod(radial1 + 180, 360), point2, std::fmod(radial2 + 180, 360)));
+
+    double closestDist = std::numeric_limits<double>::max();
+    std::unique_ptr<GeoPoint> closestIntersection = nullptr;
+
+    if (intersection1 != nullptr) {
+        closestIntersection = std::move(intersection1);
+        closestDist = GeoPoint::flatDistanceM(point1, *closestIntersection);
+    }
+
+    if (intersection2 != nullptr) {
+        double dist = GeoPoint::flatDistanceM(point1, *intersection2);
+
+        if (dist < closestDist) {
+            closestIntersection = std::move(intersection2);
+            closestDist = dist;
+        }
+    }
+
+    if (intersection3 != nullptr) {
+        double dist = GeoPoint::flatDistanceM(point1, *intersection3);
+
+        if (dist < closestDist) {
+            closestIntersection = std::move(intersection3);
+            closestDist = dist;
+        }
+    }
+
+    if (intersection4 != nullptr) {
+        double dist = GeoPoint::flatDistanceM(point1, *intersection4);
+
+        if (dist < closestDist) {
+            closestIntersection = std::move(intersection4);
+            closestDist = dist;
+        }
+    }
+
+    return closestIntersection;
 }
 
 std::unique_ptr<GeoPoint>
@@ -260,6 +311,13 @@ GeoPointIntersection(AviationCalcUtil::GeoTools::GeoPoint *ptr1, double bearing1
     if (ptr1 != NULL && ptr2 != NULL)
     {
         return GeoPoint::intersection(*ptr1, bearing1, *ptr2, bearing2).release();
+    }
+    return NULL;
+}
+
+AviationCalcUtil::GeoTools::GeoPoint* GeoPointFindClosestIntersection(AviationCalcUtil::GeoTools::GeoPoint* ptr1, double radial1, AviationCalcUtil::GeoTools::GeoPoint* ptr2, double radial2) {
+    if (ptr1 != NULL && ptr2 != NULL) {
+        return GeoPoint::findClosestIntersection(*ptr1, radial1, *ptr2, radial2).release();
     }
     return NULL;
 }

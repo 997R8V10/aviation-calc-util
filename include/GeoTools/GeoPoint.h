@@ -37,6 +37,8 @@ namespace AviationCalcUtil::GeoTools {
         static std::unique_ptr<GeoPoint>
         intersection(const GeoPoint &point1, double bearing1, const GeoPoint &point2, double bearing2);
 
+        static std::unique_ptr<GeoPoint> findClosestIntersection(const GeoPoint& point1, double radial1, const GeoPoint& point2, double radial2);
+
         double operator-(const GeoPoint &point) const;
 
         static double initialBearing(const GeoPoint &point1, const GeoPoint &point2);
@@ -73,6 +75,7 @@ extern AVIATIONCALC_EXPORT double GeoPointFlatDistanceM(GeoPoint* ptr1, GeoPoint
 extern AVIATIONCALC_EXPORT double GeoPointFlatDistanceNMi(GeoPoint* ptr1, GeoPoint* ptr2);
 extern AVIATIONCALC_EXPORT double GeoPointDistanceM(GeoPoint* ptr1, GeoPoint* ptr2);
 extern AVIATIONCALC_EXPORT double GeoPointDistanceNMi(GeoPoint* ptr1, GeoPoint* ptr2);
+extern AVIATIONCALC_EXPORT GeoPoint* GeoPointFindClosestIntersection(GeoPoint* ptr1, double radial1, GeoPoint* ptr2, double radial2);
 extern AVIATIONCALC_EXPORT GeoPoint* GeoPointIntersection(GeoPoint* ptr1, double bearing1, GeoPoint* ptr2, double bearing2);
 extern AVIATIONCALC_EXPORT double GeoPointInitialBearing(GeoPoint* ptr1, GeoPoint* ptr2);
 extern AVIATIONCALC_EXPORT double GeoPointFinalBearing(GeoPoint* ptr1, GeoPoint* ptr2);
