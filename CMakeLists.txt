@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(aviation-calc-util
-        VERSION 1.2.0
+        VERSION 1.2.1
         DESCRIPTION "A library to assist with aviation related calculations."
         HOMEPAGE_URL "https://github.com/997R8V10/aviation-calc-util"
         LANGUAGES CXX
