@@ -17,7 +17,6 @@ jobs:
         #arch: [x64, x86, arm, arm64]
         arch: [x64, x86, arm64]
         os: [macos-latest, windows-latest, ubuntu-latest]
-        configuration: [Debug, Release]
         include:
           - arch: x64
             conan-arch: x86_64
@@ -62,8 +61,8 @@ jobs:
       os: ${{ matrix.os }}
       short-os: ${{ matrix.short-os }}
       cmake-win-flag: ${{ matrix.cmake-win-flag }}
-      configuration: ${{ matrix.configuration }}
-      create-nuget-package: ${{ matrix.configuration == 'Release' }}
+      configuration: "Release"
+      create-nuget-package: ${{ true }}
       copy-nuget-defs: ${{ matrix.short-os == 'win' && matrix.arch == 'x64' }}
   upload-nuget-package:
     if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')}}
