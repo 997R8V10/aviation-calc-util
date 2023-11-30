@@ -1,98 +1,18 @@
-# Aviation Calc Util
+# Aviation Calc Util &emsp; [![Build Status]][actions] [![Latest Version]][crates.io]
+[Build Status]: https://img.shields.io/github/actions/workflow/status/997R8V10/aviation-calc-util/build-and-test.yml?branch=master
+[actions]: https://github.com/997R8V10/aviation-calc-util/actions?query=branch%3Amaster
+[Latest Version]: https://img.shields.io/crates/v/aviation_calc_util.svg
+[crates.io]: https://crates.io/crates/aviation_calc_util
 
-A library to assist with complex aviation-related calculations. Primarily used for the VATSIM ATC Training Simulator
-Project. The library is written in C++ 17 standard and requires a compiler that is capable of building to this standard.
+A library to assist with complex aviation-related calculations. Primarily used for the [SaunaSim](https://github.com/Sauna-ATC-Training-Simulator) Project. The library is written in Rust.
+
+The library contains utilities to handle unit conversions, geographical calculations, magnetic calculations, and some math utilties.
+
+---
+Quick Links:
+- [Changelog](CHANGELOG.md)
+- [Documentation](https://docs.rs/aviation_calc_util)
 
 ## Overview
 
-The library contains utilities to handle geographical calculations, magnetic calculations, and some math utilties.
-
-## Dependencies
-
-The project depends on the following libraries and tools:
-
-- **C & C++ 17 Compiler**
-- **[CMake 3.14+](https://cmake.org/download/)**
-    - C++ Build Automation Tool
-- **[Conan 2.00+](https://conan.io/downloads.html)**
-    - C++ Dependency Manager
-- **[Python 3.0+](https://www.python.org/downloads/)**
-    - Required for ecCodes build.
-- **[Boost 1.76.0+](https://www.boost.org/)**
-    - No Download Required
-    - Fetched through Conan
-- **[ecCodes 2.22.1](https://confluence.ecmwf.int/display/ECC)**
-    - No Download or manual build required.
-    - See [below](#eccodes)
-- **Curl (_Linux/MacOS Only_)**
-    - No Download Required
-    - Fetched through Conan
-
-### ecCodes
-
-As ecCodes has no Conan or NuGet package, it must be built manually. Fortunately, a `conanfile.py` has been included in
-the `eccodes` directory.
-
-To install the package data, simply run `conan export` in the `eccodes` directory.
-
-_**Note:** Building the NuGet package will automatically export ecCodes_
-
-## Building
-
-Below are the steps to build the code manually.
-
-_**Note:** Building the NuGet package will automatically build for all configurations_
-
-1. Create a `build` folder.
-2. Install dependencies via Conan.
-    ```
-    conan install <source-folder> -of <build-folder> --build=missing
-    ```
-    1. Pass in any platform/configuration settings here
-    2. For example: `-s build_type=Debug -s arch=x86`
-3. Generate CMake files.
-   ```
-   cmake -S <source-folder> -B <build-folder> -DCMAKE_TOOLCHAIN_FILE=<build-folder>/conan_toolchain.cmake
-    ```
-    1. Pass in the same platform/configuration settings from before
-    2. For example: `-DCMAKE_BUILD_TYPE=Debug -A Win32`
-    3. `-DCREATE_NUGET_PACKAGE=1` will create the files for a NuGet package
-    4. `-DCOPY_NUGET_DEFS=1` will create the `*.nuspec` and `*.targets` files.
-    5. `-DNUGET_ARCH=win-x86` sets the NuGet runtime suffix.
-    6. `-DCMAKE_POLICY_DEFAULT_CMP0091="NEW"` may be required on Windows sytems.
-4. Build the project.
-    ```
-    cmake --build <build-folder> --target aviationcalc
-    ```
-   1. `--config <Release|Debug>` may be required for multi-config generators.
-
-### Conan Package
-
-To generate the Conan package, simply run `conan export` in the source folder.
-
-_**Note:** ecCodes **MUST** be built prior to building the main package_
-
-### NuGet Package
-To create a NuGet package, simply follow the instructions depending on your operating system below.
-
-Then add your local NuGet feed to Visual Studio.
-
-The project will be available in Visual Studio as a NuGet package under the name `PShivaraman.AviationCalcUtil`
-
-#### Windows
-Simply run `create-nuget-package.bat` to generate a NuGet package. The default feed is set
-to `%USERPROFILE%\.nuget\feed`.
-
-Overriding default feed can be accomplished by passing your desired feed in as an argument: \
-`create-nuget-package.bat S:\data\nugetfeed`
-
-#### Unix (Mono)
-[Mono](https://www.mono-project.com/download/stable/) is required to build nuget packages on Unix systems.
-
-**MacOS**: Install wget through brew.
-
-Simply run `create-nuget-package-dotnet.sh` to generate a NuGet package. The default feed is set
-to `$HOME/.nuget/feed`.
-
-Overriding default feed can be accomplished by passing your desired feed in as an argument: \
-`create-nuget-package-dotnet.sh ~/data/nugetfeed`
+## Examples

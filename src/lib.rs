@@ -1,8 +1,8 @@
 #![allow(unused_parens)]
 
 pub mod macros;
-pub mod math_tools;
-pub mod geo_tools;
+pub mod math;
+pub mod geo;
 
 #[allow(non_snake_case)]
 pub mod units;
@@ -13,7 +13,7 @@ pub fn add(left: usize, right: usize) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use crate::{geo_tools::geo_util, units::{velocity::Velocity, angle::Angle, angular_velocity::AngularVelocity}};
+    use crate::{geo::geo_util, units::{velocity::Velocity, angle::Angle, angular_velocity::AngularVelocity}};
 
     #[test]
     fn it_works() {
