@@ -1,55 +1,13 @@
+use crate::units::{length::Length, angular_velocity::AngularVelocity, velocity::Velocity, angle::Angle};
+
 // Constants
-pub const EARTH_RADIUS_M: f64 = 6371e3;
+pub const EARTH_RADIUS: Length = Length(6371e3);
+pub const GRAVITY_ACCEL: f64 = 9.81;
 
-pub trait GeoTrait {
-    fn normalize_longitude(self) -> Self;
-    fn normalize_heading(self) -> Self;
+pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_rate: AngularVelocity) -> Angle {
+    // bank angle = atan(rate of turn * v / g)
+    let bank_angle = Angle(f64::atan2(turn_rate.as_radians_per_second() * ground_speed.as_meters_per_second(), GRAVITY_ACCEL));
+
+    return if bank_angle > bank_limit {bank_limit} else {bank_angle};
 }
 
-impl GeoTrait for f64 {
-    fn normalize_longitude(self) -> Self {
-        return normalize_longitude(self);
-    }
-
-    fn normalize_heading(self) -> Self {
-        return normalize_heading(self);
-    }
-}
-
-/// Normalizes Longitude between -180 and +180 degrees.
-/// 
-/// **Parameters:**
-/// - `lon` - Input Longitude (degrees)
-/// 
-/// **Returns:** \
-/// Normalized Longitude (degrees)
-/// 
-/// ## Example
-///
-/// ```
-/// use aviation_calc_util::geo_tools::geo_util;
-///
-/// assert_eq!(geo_util::normalize_longitude(-190.0), 170.0);
-/// ```
-pub fn normalize_longitude(lon: f64) -> f64 {
-    return ((lon + 540.0) % 360.0) - 180.0;
-}
-
-/// Normalizes Heading between 0 and 360 degrees.
-/// 
-/// **Parameters:**
-/// - `hdg` - Input Heading (degrees)
-/// 
-/// **Returns:** \
-/// Normalized Heading (degrees)
-/// 
-/// ## Example
-///
-/// ```
-/// use aviation_calc_util::geo_tools::geo_util;
-///
-/// assert_eq!(geo_util::normalize_heading(370.0), 10.0);
-/// ```
-pub fn normalize_heading(hdg: f64) -> f64 {
-    return (hdg + 360.0) % 360.0;
-}
