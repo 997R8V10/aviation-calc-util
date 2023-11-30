@@ -51,6 +51,22 @@ impl Pressure {
         return Pressure(val);
     }
 
+    /// Creates a new Pressure.
+    ///
+    /// **Parameters:**
+    /// - `hectopascals` - Value in hPa (hectopascals).
+    pub fn from_hectopascals(hectopascals: f64) -> Pressure {
+        return Pressure(hectopascals * 100.0);
+    }
+
+    /// Creates a new Pressure.
+    ///
+    /// **Parameters:**
+    /// - `inches_of_mercury` - Value in inHg (inches of mercury).
+    pub fn from_inches_of_mercury(inches_of_mercury: f64) -> Pressure {
+        return Pressure(convert_inHg_to_Pa(inches_of_mercury));
+    }
+
     /// Gets the pressure in Pa (pascals).
     pub fn as_pascals(self) -> f64 {
         return self.0;
@@ -64,21 +80,6 @@ impl Pressure {
     /// Gets the pressure in hPa (hectopascals).
     pub fn as_hectopascals(self) -> f64 {
         return self.0 / 100.0;
-    }
-
-    /// Sets the pressure in Pa (pascals).
-    pub fn set_pascals(&mut self, pascals: f64) {
-        self.0 = pascals;
-    }
-
-    /// Sets the pressure in hPa (hectopascals).
-    pub fn set_hectopascals(&mut self, hectopascals: f64) {
-        self.0 = hectopascals * 100.0;
-    }
-
-    /// Sets the pressure in inHg (inches of mercury).
-    pub fn set_inches_of_mercury(&mut self, inches_of_mercury: f64) {
-        self.0 = convert_inHg_to_Pa(inches_of_mercury);
     }
 
     impl_num_methods!();

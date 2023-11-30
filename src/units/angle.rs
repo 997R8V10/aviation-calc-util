@@ -15,6 +15,8 @@ use crate::impl_num_methods;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
+use super::angular_velocity::AngularVelocity;
+
 /// Represents a angle quantity.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Angle(pub(crate) f64);
@@ -38,6 +40,14 @@ impl_assign_op_for_number!(Angle, RemAssign, rem_assign, %=);
 impl std::fmt::Display for Angle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(f, "{}rads", self.0);
+    }
+}
+
+impl Div<std::time::Duration> for Angle {
+    type Output = AngularVelocity;
+
+    fn div(self, rhs: std::time::Duration) -> Self::Output {
+        return AngularVelocity::new(self.0 / rhs.as_secs_f64());
     }
 }
 
@@ -67,16 +77,6 @@ impl Angle {
     /// Gets the angle in ° (degrees).
     pub fn as_degrees(self) -> f64 {
         return self.0.to_degrees();
-    }
-
-    /// Sets the angle in rads (radians).
-    pub fn set_radians(&mut self, val: f64) {
-        self.0 = val;
-    }
-
-    /// Sets the angle in ° (degrees).
-    pub fn set_degrees(&mut self, val: f64) {
-        self.0 = val.to_radians();
     }
 
     impl_num_methods!();

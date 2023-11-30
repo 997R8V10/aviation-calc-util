@@ -9,13 +9,13 @@ use crate::units::angle::Angle;
 
 /// Represents a bearing from 0 to 2pi rads (radians) or 0 to 360° (degrees).
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
-pub struct Bearing(pub(crate) Angle);
+pub struct Bearing(Angle);
 
 impl Neg for Bearing {
     type Output = Bearing;
 
     fn neg(self) -> Self::Output {
-        return Bearing(Angle((self.as_radians() + 180.0) % 360.0));
+        return Bearing((self.0 + PI) % (2.0 * PI));
     }
 }
 
@@ -89,6 +89,16 @@ impl Bearing {
         return Bearing(normalize_bearing(val));
     }
 
+    /// Create a new bearing from rads (radians).
+    pub fn from_radians(val: f64) -> Bearing {
+        return Self::new(Angle::new(val));
+    }
+
+    /// Create a new bearing from ° (degrees).
+    pub fn from_degrees(val: f64) -> Bearing {
+        return Self::new(Angle::from_degrees(val));
+    }
+
     /// Gets the bearing as an Angle
     pub fn as_angle(self) -> Angle {
         return self.0;
@@ -102,11 +112,6 @@ impl Bearing {
     /// Gets the bearing in ° (degrees).
     pub fn as_degrees(self) -> f64 {
         return self.0.as_degrees();
-    }
-
-    /// Sets the bearing
-    pub fn set_angle(&mut self, val: Angle) {
-        self.0 = normalize_bearing(val);
     }
 }
 

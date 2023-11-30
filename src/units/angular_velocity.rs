@@ -47,7 +47,7 @@ impl Mul<std::time::Duration> for AngularVelocity {
     type Output = Angle;
 
     fn mul(self, rhs: std::time::Duration) -> Self::Output {
-        return Angle(self.0 * rhs.as_secs_f64());
+        return Angle::new(self.0 * rhs.as_secs_f64());
     }
 }
 
@@ -61,6 +61,14 @@ impl AngularVelocity {
         return AngularVelocity(val);
     }
 
+    /// Creates a new Angular Velocity.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in °/s (degrees per second)
+    pub fn from_degrees_per_second(val: f64) -> AngularVelocity {
+        return AngularVelocity(val.to_radians());
+    }
+
     /// Gets the angular velocity in rad/s (radians per second).
     pub fn as_radians_per_second(self) -> f64 {
         return self.0;
@@ -69,16 +77,6 @@ impl AngularVelocity {
     /// Gets the angular velocity in °/s (degrees per second).
     pub fn as_degrees_per_second(self) -> f64 {
         return self.0.to_degrees();
-    }
-
-    /// Sets the angular velocity in rad/s (radians per second).
-    pub fn set_radians_per_second(&mut self, val: f64) {
-        self.0 = val;
-    }
-
-    /// Sets the angular velocity in °/s (degrees per second).
-    pub fn set_degrees_per_second(&mut self, val: f64) {
-        self.0 = val.to_radians();
     }
 
     impl_num_methods!();

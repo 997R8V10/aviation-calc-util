@@ -43,8 +43,8 @@ impl GeoPoint {
                 f64::cos((distance / r).as_meters()) - f64::sin(lat1) * f64::sin(lat2),
             );
 
-        self.lat = Latitude(Angle(lat2));
-        self.lon = Longitude(Angle(lon2));
+        self.lat = Latitude::from_radians(lat2);
+        self.lon = Longitude::from_radians(lon2);
     }
 
     /// Calculates the flat distance between two GeoPoints
@@ -146,7 +146,7 @@ impl GeoPoint {
 
         let lambda_3 = lambda_1 + delta_lambda_1_3;
 
-        return Some(GeoPoint::new(Latitude(Angle(phi_3)), Longitude(Angle(lambda_3)), Length(0.0)));
+        return Some(GeoPoint::new(Latitude::from_radians(phi_3), Longitude::from_radians(lambda_3), Length::new(0.0)));
     }
 
     /// Find closest intersection between two points and two radials.
@@ -160,7 +160,7 @@ impl GeoPoint {
         intersections.push(GeoPoint::intersection(&self, -radial_1, other, radial_2));
         intersections.push(GeoPoint::intersection(&self, -radial_1, other, -radial_2));
 
-        let mut closest_dist = Length(f64::MAX);
+        let mut closest_dist = Length::new(f64::MAX);
         let mut closest_intersection = None;
 
         for (_i, arg) in intersections.iter().enumerate() {
@@ -192,7 +192,7 @@ impl GeoPoint {
         let theta = f64::atan2(y, x);
 
         // Convert from -180, +180 to 0, 359
-        return Bearing(Angle(theta));
+        return Bearing::from_radians(theta);
     }
 
     /// Calculates final bearing from one GeoPoint to other

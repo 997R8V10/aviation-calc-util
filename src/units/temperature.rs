@@ -51,6 +51,14 @@ impl Temperature {
         return Temperature(val);
     }
 
+    /// Creates a new Temperature.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in °C (degrees celsius).
+    pub fn from_celsius(val: f64) -> Temperature {
+        return Temperature(convert_celsius_to_kelvin(val));
+    }
+
     /// Gets the temperature in K (kelvin).
     pub fn as_kelvin(self) -> f64 {
         return self.0;
@@ -59,16 +67,6 @@ impl Temperature {
     /// Gets the temperature in °C (degrees celsius).
     pub fn as_celsius(self) -> f64 {
         return convert_kelvin_to_celsius(self.0);
-    }
-
-    /// Sets the temperature in K (kelvin).
-    pub fn set_kelvin(&mut self, val: f64) {
-        self.0 = val;
-    }
-
-    /// Sets the temperature in °C (degrees celsius).
-    pub fn set_celsius(&mut self, val: f64) {
-        self.0 = convert_celsius_to_kelvin(val);
     }
 
     impl_num_methods!();

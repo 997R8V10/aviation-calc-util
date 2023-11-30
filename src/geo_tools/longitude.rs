@@ -5,7 +5,7 @@ use crate::units::angle::Angle;
 
 /// Represents a longitude on a globe
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
-pub struct Longitude(pub(crate) Angle);
+pub struct Longitude(Angle);
 
 // Display
 impl std::fmt::Display for Longitude {
@@ -19,6 +19,16 @@ impl Longitude {
     /// Creates a new longitude.
     pub fn new(val: Angle) -> Longitude {
         return Longitude(normalize_longitude(val));
+    }
+
+    /// Creates a new longitude from rads (radians).
+    pub fn from_radians(val: f64) -> Longitude {
+        return Self::new(Angle::new(val));
+    }
+
+    /// Creates a new longitude from ° (degrees).
+    pub fn from_degrees(val: f64) -> Longitude {
+        return Self::new(Angle::from_degrees(val));
     }
     
     /// Gets the longitude in rads (radians).
@@ -34,11 +44,6 @@ impl Longitude {
     /// Gets the longitude as an Angle
     pub fn as_angle(self) -> Angle {
         return self.0;
-    }
-
-    /// Sets the longitude
-    pub fn set_angle(&mut self, val: Angle) {
-        self.0 = normalize_longitude(val);
     }
 }
 

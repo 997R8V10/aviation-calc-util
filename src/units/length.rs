@@ -47,7 +47,7 @@ impl Div<std::time::Duration> for Length {
     type Output = Velocity;
 
     fn div(self, rhs: std::time::Duration) -> Self::Output {
-        return Velocity(self.0 / rhs.as_secs_f64());
+        return Velocity::new(self.0 / rhs.as_secs_f64());
     }
 }
 
@@ -59,6 +59,30 @@ impl Length {
     /// - `val` - Value in m (meters)
     pub fn new(val: f64) -> Length {
         return Length(val);
+    }
+
+    /// Creates a new Length.
+    ///
+    /// **Parameters:**
+    /// - `val_feet` - Value in ft (feet)
+    pub fn from_feet(val_feet: f64) -> Length {
+        return Length(convert_feet_to_meters(val_feet));
+    }
+
+    /// Creates a new Length.
+    ///
+    /// **Parameters:**
+    /// - `val_nautical_miles` - Value in nmi (nautical miles)
+    pub fn from_nautical_miles(val_nautical_miles: f64) -> Length {
+        return Length(convert_nautical_miles_to_meters(val_nautical_miles));
+    }
+
+    /// Creates a new Length.
+    ///
+    /// **Parameters:**
+    /// - `val_statute_miles` - Value in mi (statute miles)
+    pub fn from_statute_miles(val_statute_miles: f64) -> Length {
+        return Length(convert_statute_miles_to_meters(val_statute_miles));
     }
 
     /// Gets the length in m (meters).
@@ -73,32 +97,12 @@ impl Length {
 
     /// Gets the length in mi (statute miles).
     pub fn as_statute_miles(self) -> f64 {
-        return 0.0;
+        return convert_meters_to_statute_miles(self.0);
     }
 
     /// Gets the length in nmi (nautical miles).
     pub fn as_nautical_miles(self) -> f64 {
         return convert_meters_to_nautical_miles(self.0);
-    }
-
-    /// Sets the length in m (meters).
-    pub fn set_meters(&mut self, val_meters: f64) {
-        self.0 = val_meters;
-    }
-
-    /// Sets the length in ft (feet).
-    pub fn set_feet(&mut self, val_feet: f64) {
-        self.0 = convert_feet_to_meters(val_feet);
-    }
-
-    /// Sets the length in nmi (nautical miles).
-    pub fn set_nautical_miles(&mut self, val_nautical_miles: f64) {
-        self.0 = convert_nautical_miles_to_meters(val_nautical_miles);
-    }
-
-    /// Sets the length in nmi (nautical miles).
-    pub fn set_statute_miles(&mut self, val_statute_miles: f64) {
-        self.0 = convert_statute_miles_to_meters(val_statute_miles);
     }
 
     impl_num_methods!();

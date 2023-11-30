@@ -5,7 +5,7 @@ use crate::units::angle::Angle;
 
 /// Represents a latitude on a globe
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
-pub struct Latitude(pub(crate) Angle);
+pub struct Latitude(Angle);
 
 // Display
 impl std::fmt::Display for Latitude {
@@ -18,7 +18,17 @@ impl std::fmt::Display for Latitude {
 impl Latitude {
     /// Creates a new latitude.
     pub fn new(val: Angle) -> Latitude {
-        return Latitude(Angle(f64::min(f64::max(val.0, -FRAC_PI_2), FRAC_PI_2)));
+        return Latitude(Angle::new(f64::min(f64::max(val.as_radians(), -FRAC_PI_2), FRAC_PI_2)));
+    }
+
+    /// Creates a new latitude from rads (radians).
+    pub fn from_radians(val: f64) -> Latitude {
+        return Self::new(Angle::new(val));
+    }
+
+    /// Creates a new latitude from ° (degrees).
+    pub fn from_degrees(val: f64) -> Latitude {
+        return Self::new(Angle::from_degrees(val));
     }
 
     /// Gets the latitude as an Angle
@@ -34,10 +44,5 @@ impl Latitude {
     /// Gets the latitude in ° (degrees).
     pub fn as_degrees(self) -> f64 {
         return self.0.as_degrees();
-    }
-
-    /// Sets the latitude
-    pub fn set_angle(&mut self, val: Angle) {
-        self.0 = Angle(f64::min(f64::max(val.0, -FRAC_PI_2), FRAC_PI_2));
     }
 }

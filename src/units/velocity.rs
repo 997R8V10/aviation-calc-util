@@ -49,7 +49,7 @@ impl Mul<std::time::Duration> for Velocity {
     type Output = Length;
 
     fn mul(self, rhs: std::time::Duration) -> Self::Output {
-        return Length(self.0 * rhs.as_secs_f64());
+        return Length::new(self.0 * rhs.as_secs_f64());
     }
 }
 
@@ -61,6 +61,22 @@ impl Velocity {
     /// - `val` - Value in m/s (meters per second)
     pub fn new(val: f64) -> Velocity {
         return Velocity(val);
+    }
+
+    /// Creates a new Velocity.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in kts (knots, nautical miles per hour)
+    pub fn from_knots(val: f64) -> Velocity {
+        return Velocity(convert_kts_to_mpers(val));
+    }
+
+    /// Creates a new Velocity.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in ft/min (feet per minute)
+    pub fn from_feet_per_minute(val: f64) -> Velocity {
+        return Velocity(convert_ftpermin_to_mpers(val));
     }
 
     /// Gets the velocity in m/s (meters per second).
@@ -76,21 +92,6 @@ impl Velocity {
     /// Gets the velocity in ft/min (feet per minute)
     pub fn as_feet_per_minute(self) -> f64 {
         return convert_mpers_to_ftpermin(self.0);
-    }
-
-    /// Sets the velocity in m/s (meters per second).
-    pub fn set_meters_per_second(&mut self, val: f64) {
-        self.0 = val;
-    }
-
-    /// Sets the velocity in kts (knots, nautical miles per hour)
-    pub fn set_knots(&mut self, val: f64) {
-        self.0 = convert_kts_to_mpers(val);
-    }
-
-    /// Sets the velocity in ft/min (feet per minute)
-    pub fn set_feet_per_minute(&mut self, val: f64) {
-        self.0 = convert_ftpermin_to_mpers(val);
     }
 
     impl_num_methods!();
