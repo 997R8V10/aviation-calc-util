@@ -2,11 +2,10 @@ use std::f64::consts::PI;
 
 use crate::units::angle::Angle;
 
-use super::{convert_vrc_to_decimal_deg_single, convert_nats_to_decimal_single, convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single};
-
+use super::{convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single, convert_nats_to_decimal_single, convert_vrc_to_decimal_deg_single};
 
 /// Represents a longitude on a globe
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Longitude(Angle);
 
 // Display
@@ -52,7 +51,7 @@ impl Longitude {
 
         return None;
     }
-    
+
     /// Gets the longitude in rads (radians).
     pub fn as_radians(self) -> f64 {
         return self.0.as_radians();
@@ -66,7 +65,7 @@ impl Longitude {
     /// Gets the longitude as an Angle
     pub fn as_angle(self) -> Angle {
         return self.0;
-    }    
+    }
 
     pub fn as_deg_min_sec(&self) -> (i32, u32, f64) {
         return self.0.as_deg_min_sec();
@@ -82,13 +81,13 @@ impl Longitude {
 }
 
 /// Normalizes Longitude.
-/// 
+///
 /// **Parameters:**
 /// - `lon` - Input Longitude
-/// 
+///
 /// **Returns:** \
 /// Normalized Longitude
-/// 
+///
 /// ## Example
 ///
 /// ```

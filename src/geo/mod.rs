@@ -4,10 +4,14 @@ pub mod bearing;
 pub mod geo_point;
 pub mod latitude;
 pub mod longitude;
+pub mod geo_tile;
 
 // Constants
+/// Average radius of the Earth
 pub const EARTH_RADIUS: Length = Length(6371e3);
-pub const GRAVITY_ACCEL: f64 = 9.81;
+
+/// Earth Surface Gravitational Acceleration (m/s^2)
+pub const EARTH_GRAVITY: f64 = 9.80665;
 
 // Coordinate conversions
 fn convert_nats_to_decimal_single(nats_coord: &str, is_latitude: bool) -> Option<Angle> {

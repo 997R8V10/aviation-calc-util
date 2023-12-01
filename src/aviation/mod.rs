@@ -4,7 +4,7 @@ use crate::{
     geo::{
         bearing::{self, Bearing},
         geo_point::GeoPoint,
-        EARTH_RADIUS, GRAVITY_ACCEL,
+        EARTH_RADIUS, EARTH_GRAVITY,
     },
     units::{angle::Angle, angular_velocity::AngularVelocity, length::Length, velocity::Velocity},
 };
@@ -44,7 +44,7 @@ pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_
     // bank angle = atan(rate of turn * v / g)
     let bank_angle = Angle::new(f64::atan2(
         turn_rate.as_radians_per_second() * ground_speed.as_meters_per_second(),
-        GRAVITY_ACCEL,
+        EARTH_GRAVITY,
     ));
 
     return if bank_angle > bank_limit { bank_limit } else { bank_angle };
@@ -62,7 +62,7 @@ pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_
 /// let expected = Length::new(3616.0);
 ///
 /// let abs_difference = (calculated - expected).abs().as_meters();
-/// assert!(abs_difference <= 1.0);
+/// assert!(abs_difference <= 10.0);
 /// ```
 pub fn calculate_radius_of_turn(ground_speed: Velocity, bank_angle: Angle) -> Length {
     if (ground_speed == Velocity(0.0)) {
@@ -70,14 +70,14 @@ pub fn calculate_radius_of_turn(ground_speed: Velocity, bank_angle: Angle) -> Le
     }
 
     // R = V^2 / (g * tan(bank_angle))
-    return Length::new(ground_speed.powi(2).as_meters_per_second() / (GRAVITY_ACCEL * f64::tan(bank_angle.as_radians())));
+    return Length::new(ground_speed.powi(2).as_meters_per_second() / (EARTH_GRAVITY * f64::tan(bank_angle.as_radians())));
 }
 
 /// Calculates bank angle at a certain radius of turn and ground_speed
 pub fn calculate_bank_angle(radius_of_turn: Length, ground_speed: Velocity) -> Angle {
     return Angle::new(f64::atan2(
         ground_speed.powi(2).as_meters_per_second(),
-        GRAVITY_ACCEL * radius_of_turn.as_meters(),
+        EARTH_GRAVITY * radius_of_turn.as_meters(),
     ));
 }
 

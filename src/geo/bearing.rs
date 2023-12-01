@@ -8,7 +8,7 @@ use std::ops::SubAssign;
 use crate::units::angle::Angle;
 
 /// Represents a bearing from 0 to 2pi rads (radians) or 0 to 360° (degrees).
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Bearing(Angle);
 
 impl Neg for Bearing {
@@ -111,9 +111,9 @@ impl Bearing {
 ///
 /// let expected = Angle::from_degrees(10.0);
 /// let calculated = bearing::normalize_bearing(Angle::from_degrees(370.0));
-/// 
+///
 /// let abs_diff = f64::abs(expected.as_radians() - calculated.as_radians());
-/// 
+///
 /// assert!(abs_diff < 1.0);
 /// ```
 pub fn normalize_bearing(angle: Angle) -> Angle {
@@ -129,10 +129,10 @@ pub fn normalize_bearing(angle: Angle) -> Angle {
 /// ```
 /// use aviation_calc_util::geo::bearing::calculate_bearing_delta;
 /// use aviation_calc_util::{geo::bearing::Bearing, units::angle::Angle};
-/// 
+///
 /// let expected = Angle::from_degrees(-20.0);
 /// let calculated = calculate_bearing_delta(Bearing::from_degrees(10.0), Bearing::from_degrees(350.0));
-/// 
+///
 /// let abs_diff = f64::abs(expected.as_radians() - calculated.as_radians());
 ///
 /// assert!(abs_diff < 1.0);
@@ -173,7 +173,7 @@ pub fn calculate_bearing_delta_with_dir(bearing_1: Bearing, bearing_2: Bearing, 
 }
 
 /// Calculates the end bearing given start bearing and turn amount
-/// 
+///
 /// A negative bearing_delta indicates a left turn.
 pub fn calculate_end_bearing(start_bearing: Bearing, bearing_delta: Angle) -> Bearing {
     return start_bearing + bearing_delta;

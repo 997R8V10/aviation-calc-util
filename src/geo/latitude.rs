@@ -6,7 +6,7 @@ use super::{convert_vrc_to_decimal_deg_single, convert_nats_to_decimal_single, c
 
 
 /// Represents a latitude on a globe
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Latitude(Angle);
 
 // Display
@@ -33,10 +33,14 @@ impl Latitude {
         return Self::new(Angle::from_degrees(val));
     }
 
+    /// Creates a new latitude from degrees mins and secs
     pub fn from_deg_min_sec(deg: i32, mins: u32, secs: f64) -> Latitude {
         return Latitude::new(Angle::from_deg_min_sec(deg, mins, secs));
     }
 
+    /// Creates a new latitude from SCT format
+    /// 
+    /// String should be formatted like `N049.52.27.771`
     pub fn from_vrc(vrc_coord: &str) -> Option<Latitude> {
         if let Some(angle) = convert_vrc_to_decimal_deg_single(vrc_coord) {
             return Some(Latitude::new(angle));
@@ -45,6 +49,7 @@ impl Latitude {
         return None;
     }
 
+    /// Creates a new latitude from the NATS format used in AIPs.
     pub fn from_nats(nats_coord: &str) -> Option<Latitude> {
         if let Some(angle) = convert_nats_to_decimal_single(nats_coord, true) {
             return Some(Latitude::new(angle));
@@ -68,14 +73,17 @@ impl Latitude {
         return self.0.as_degrees();
     }
 
+    /// Gets the latitude in degrees, mins, secs
     pub fn as_deg_min_sec(&self) -> (i32, u32, f64) {
         return self.0.as_deg_min_sec();
     }
 
+    /// Gets the latitude as a SCT string
     pub fn as_vrc(&self) -> String {
         return convert_decimal_deg_to_vrc_single(self.0, true);
     }
 
+    /// Gets the latitude as a NATS string
     pub fn as_nats(&self) -> String {
         return convert_decimal_to_nats_single(self.0, true);
     }
