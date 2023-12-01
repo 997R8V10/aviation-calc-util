@@ -2,6 +2,8 @@ use std::f64::consts::PI;
 
 use crate::units::angle::Angle;
 
+use super::{convert_vrc_to_decimal_deg_single, convert_nats_to_decimal_single, convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single};
+
 
 /// Represents a longitude on a globe
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
@@ -30,6 +32,26 @@ impl Longitude {
     pub fn from_degrees(val: f64) -> Longitude {
         return Self::new(Angle::from_degrees(val));
     }
+
+    pub fn from_deg_min_sec(deg: i32, mins: u32, secs: f64) -> Longitude {
+        return Longitude::new(Angle::from_deg_min_sec(deg, mins, secs));
+    }
+
+    pub fn from_vrc(vrc_coord: &str) -> Option<Longitude> {
+        if let Some(angle) = convert_vrc_to_decimal_deg_single(vrc_coord) {
+            return Some(Longitude::new(angle));
+        }
+
+        return None;
+    }
+
+    pub fn from_nats(nats_coord: &str) -> Option<Longitude> {
+        if let Some(angle) = convert_nats_to_decimal_single(nats_coord, true) {
+            return Some(Longitude::new(angle));
+        }
+
+        return None;
+    }
     
     /// Gets the longitude in rads (radians).
     pub fn as_radians(self) -> f64 {
@@ -44,6 +66,18 @@ impl Longitude {
     /// Gets the longitude as an Angle
     pub fn as_angle(self) -> Angle {
         return self.0;
+    }    
+
+    pub fn as_deg_min_sec(&self) -> (i32, u32, f64) {
+        return self.0.as_deg_min_sec();
+    }
+
+    pub fn as_vrc(&self) -> String {
+        return convert_decimal_deg_to_vrc_single(self.0, false);
+    }
+
+    pub fn as_nats(&self) -> String {
+        return convert_decimal_to_nats_single(self.0, false);
     }
 }
 

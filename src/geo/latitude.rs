@@ -2,6 +2,8 @@ use std::f64::consts::FRAC_PI_2;
 
 use crate::units::angle::Angle;
 
+use super::{convert_vrc_to_decimal_deg_single, convert_nats_to_decimal_single, convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single};
+
 
 /// Represents a latitude on a globe
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
@@ -31,6 +33,26 @@ impl Latitude {
         return Self::new(Angle::from_degrees(val));
     }
 
+    pub fn from_deg_min_sec(deg: i32, mins: u32, secs: f64) -> Latitude {
+        return Latitude::new(Angle::from_deg_min_sec(deg, mins, secs));
+    }
+
+    pub fn from_vrc(vrc_coord: &str) -> Option<Latitude> {
+        if let Some(angle) = convert_vrc_to_decimal_deg_single(vrc_coord) {
+            return Some(Latitude::new(angle));
+        }
+
+        return None;
+    }
+
+    pub fn from_nats(nats_coord: &str) -> Option<Latitude> {
+        if let Some(angle) = convert_nats_to_decimal_single(nats_coord, true) {
+            return Some(Latitude::new(angle));
+        }
+
+        return None;
+    }
+
     /// Gets the latitude as an Angle
     pub fn as_angle(self) -> Angle {
         return self.0;
@@ -44,5 +66,17 @@ impl Latitude {
     /// Gets the latitude in ° (degrees).
     pub fn as_degrees(self) -> f64 {
         return self.0.as_degrees();
+    }
+
+    pub fn as_deg_min_sec(&self) -> (i32, u32, f64) {
+        return self.0.as_deg_min_sec();
+    }
+
+    pub fn as_vrc(&self) -> String {
+        return convert_decimal_deg_to_vrc_single(self.0, true);
+    }
+
+    pub fn as_nats(&self) -> String {
+        return convert_decimal_to_nats_single(self.0, true);
     }
 }

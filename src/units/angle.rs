@@ -69,6 +69,15 @@ impl Angle {
         return Angle(val.to_radians());
     }
 
+    /// Creates a new Angle from degrees, mins, secs
+    pub fn from_deg_min_sec(degrees: i32, mins: u32, secs: f64) -> Angle {
+        let sign = if degrees < 0 { -1.0 } else { 1.0 };
+        let new_degrees = degrees as f64 * sign;
+        let decimal_degs = sign * (new_degrees + (mins as f64 / 60.0) + (secs / 3600.0));
+
+        return Angle::from_degrees(decimal_degs);
+    }
+
     /// Gets the angle in rads (radians).
     pub fn as_radians(self) -> f64 {
         return self.0;
@@ -77,6 +86,20 @@ impl Angle {
     /// Gets the angle in ° (degrees).
     pub fn as_degrees(self) -> f64 {
         return self.0.to_degrees();
+    }
+
+    /// Gets the angle in degrees, mins, secs
+    pub fn as_deg_min_sec(self) -> (i32, u32, f64) {
+        let sign = if self.0 < 0.0  {-1.0} else {1.0};
+        let new_degs = self.as_degrees() * sign;
+
+        let mut degrees = new_degs.trunc();
+        let mins = ((new_degs - degrees) * 60.0).trunc();
+        let secs = (new_degs - degrees - (mins / 60.0)) * 3600.0;
+
+        degrees *= sign;
+
+        return (degrees as i32, mins as u32, secs);
     }
 
     impl_num_methods!();
