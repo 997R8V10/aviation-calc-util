@@ -1,8 +1,8 @@
 use std::{f64::consts::PI, ops::Sub};
 
-use crate::units::{angle::Angle, length::Length};
+use crate::units::length::Length;
 
-use super::{bearing::Bearing, geo_util, latitude::Latitude, longitude::Longitude};
+use super::{bearing::Bearing, latitude::Latitude, longitude::Longitude, EARTH_RADIUS};
 
 /// Represents a 3D Coordinate Point on the globe.
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
@@ -28,7 +28,7 @@ impl GeoPoint {
 
     /// Moves the GeoPoint on a bearing by a distance
     pub fn move_by(&mut self, bearing: Bearing, distance: Length) {
-        let r = geo_util::EARTH_RADIUS + self.alt;
+        let r = EARTH_RADIUS + self.alt;
         let bearing_rads = bearing.as_radians();
         let lat1 = self.lat.as_radians();
         let lon1 = self.lon.as_radians();
@@ -59,12 +59,12 @@ impl GeoPoint {
         // Check for opposite end of planet
         if (1.0 - a <= 0.0) {
             // Return half circumference
-            return geo_util::EARTH_RADIUS * PI;
+            return EARTH_RADIUS * PI;
         }
 
         let c = 2.0 * f64::atan2(f64::sqrt(a), f64::sqrt(1.0 - a));
 
-        let d = geo_util::EARTH_RADIUS * c;
+        let d = EARTH_RADIUS * c;
 
         return d;
     }

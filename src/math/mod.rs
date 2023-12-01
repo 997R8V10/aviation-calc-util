@@ -1,3 +1,6 @@
+pub mod polynomial;
+pub mod legendre;
+
 pub fn factorial(n: i32) -> i64 {
     let mut result: i64 = 1;
 

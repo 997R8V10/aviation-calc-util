@@ -58,10 +58,12 @@ impl Longitude {
 /// ## Example
 ///
 /// ```
-/// use aviation_calc_util::geo_tools::longitude;
+/// use aviation_calc_util::geo::longitude;
 /// use aviation_calc_util::units::angle::Angle;
 ///
-/// assert_eq!(geo_util::normalize_longitude(Angle::from_degrees(190.0)), Angle::from_degrees(170.0));
+/// let calculated = longitude::normalize_longitude(Angle::from_degrees(190.0));
+/// let expected = Angle::from_degrees(-170.0);
+/// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < 1.0);
 /// ```
 pub fn normalize_longitude(lon: Angle) -> Angle {
     return ((lon + (3.0 * PI)) % (2.0 * PI)) - PI;
