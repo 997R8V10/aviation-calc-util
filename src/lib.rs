@@ -1,6 +1,8 @@
 #![allow(unused_parens)]
 #![allow(non_snake_case)]
 
+pub use chrono::NaiveDate;
+
 pub mod macros;
 pub mod math;
 pub mod geo;

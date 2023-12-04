@@ -1,7 +1,7 @@
 use crate::math::factorial;
 use std::{collections::HashMap, sync::Mutex};
 
-use super::polynomial::Polynomial;
+use super::{polynomial::Polynomial, factorial_ratio};
 
 pub struct LegendreManager {
     legendre_cache: Mutex<HashMap<(i32, i32), Polynomial>>,
@@ -31,14 +31,6 @@ impl LegendreManager {
 
         return (1.0 - x.powi(2)).powf(m as f64 / 2.0) * p.evaluate(x);
     }
-}
-
-pub fn factorial_ratio(n: i32, m: i32) -> f64 {
-    if (n > m) {
-        return n as f64 * factorial_ratio(n - 1, m);
-    }
-
-    return 1.0;
 }
 
 pub fn legendre_polynomial(n: i32) -> Polynomial {

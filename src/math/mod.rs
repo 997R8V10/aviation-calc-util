@@ -14,3 +14,11 @@ pub fn factorial(n: i32) -> i64 {
 
     return result;
 }
+
+pub fn factorial_ratio(n: i32, m: i32) -> f64 {
+    if (n > m) {
+        return n as f64 * factorial_ratio(n - 1, m);
+    }
+
+    return 1.0;
+}

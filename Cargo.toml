@@ -10,4 +10,5 @@ keywords = ["aviation", "calculations"]
 categories = ["aerospace::simulation", "mathematics", "science::geo"]
 
 [dependencies]
-time = "0.3.30"
+anyhow = "1.0.75"
+chrono = "0.4.31"
