@@ -8,7 +8,7 @@ use anyhow::Context;
 use chrono::{NaiveDate, Utc};
 
 use crate::{
-    geo::geo_point::GeoPoint,
+    geo::{geo_point::GeoPoint, bearing::Bearing},
     math::{factorial_ratio, legendre::LegendreManager},
     units::angle::Angle,
 };
@@ -303,4 +303,14 @@ pub struct MagneticFieldElements {
 pub struct MagneticField {
     pub field_elements: MagneticFieldElements,
     pub sec_elements: MagneticFieldElements,
+}
+
+impl MagneticField {
+    pub fn true_to_magnetic(&self, true_bearing: Bearing) -> Bearing {
+        return true_bearing - self.field_elements.decl;
+    }
+
+    pub fn magnetic_to_true(&self, magnetic_bearing: Bearing) -> Bearing {
+        return magnetic_bearing + self.field_elements.decl;
+    }
 }

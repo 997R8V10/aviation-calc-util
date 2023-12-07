@@ -12,3 +12,5 @@ categories = ["aerospace::simulation", "mathematics", "science::geo"]
 [dependencies]
 anyhow = "1.0.75"
 chrono = "0.4.31"
+crossbeam = "0.8.2"
+reqwest = "0.11.22"

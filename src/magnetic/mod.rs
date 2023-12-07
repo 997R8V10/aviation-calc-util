@@ -1,6 +1,7 @@
 use chrono::{NaiveDate, Datelike};
 
 pub mod magnetic_model;
+pub mod magnetic_tile;
 
 pub fn get_epoch_year(date: &NaiveDate) -> f64 {
     let year = date.year();

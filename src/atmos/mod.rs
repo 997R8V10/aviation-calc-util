@@ -5,6 +5,8 @@ use crate::{
     units::{length::Length, pressure::Pressure, temperature::Temperature, velocity::Velocity},
 };
 
+pub mod grib;
+
 /// Specific Gas Constant for dry air (J/(kg*K))
 pub const R_DRY_AIR: f64 = 287.058;
 
