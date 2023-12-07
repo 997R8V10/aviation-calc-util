@@ -5,12 +5,12 @@ edition = "2021"
 description = "A library to assist with aviation related calculations."
 readme = "README.md"
 repository = "https://github.com/997R8V10/aviation-calc-util"
-license-file = "LICENSE"
+license = "Apache-2.0 OR MIT"
 keywords = ["aviation", "calculations"]
 categories = ["aerospace::simulation", "mathematics", "science::geo"]
 
 [dependencies]
 anyhow = "1.0.75"
 chrono = "0.4.31"
-crossbeam = "0.8.2"
-reqwest = "0.11.22"
+grib = "0.8.0"
+ureq = "2.9.1"

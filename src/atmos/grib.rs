@@ -1,12 +1,14 @@
 use std::{
-    env::temp_dir,
     fmt::Display,
-    fs::{remove_file, create_dir_all},
-    path::{Path, PathBuf},
-    sync::Mutex, thread::{self, JoinHandle},
+    fs::{create_dir_all, remove_file, File},
+    io::{self, BufReader},
+    path::PathBuf,
+    sync::Mutex,
+    thread::{self, JoinHandle},
 };
 
 use chrono::{DateTime, Duration, Timelike, Utc};
+use grib::Grib2SubmessageDecoder;
 
 use crate::{
     geo::{
@@ -25,10 +27,9 @@ use super::ISA_STD_PRES;
 pub struct GribTile {
     bounds: GeoTileBounds,
     data_points: Mutex<Vec<GribDataPoint>>,
-    downloaded: bool,
     forecast_date_utc: DateTime<Utc>,
     download_path: PathBuf,
-    download_thread_handle: Option<JoinHandle<()>>
+    download_thread_handle: Option<JoinHandle<anyhow::Result<Vec<GribDataPoint>>>>,
 }
 
 impl GeoTile for GribTile {
@@ -51,10 +52,13 @@ impl GeoTile for GribTile {
 
 impl Drop for GribTile {
     fn drop(&mut self) {
-        if (self.downloaded) {
-            // Remove file
-            remove_file(self.grib_file_name()).ok();
+        if let Some(dl_handle) = self.download_thread_handle.take() {
+            // Join the thread
+            dl_handle.join().ok();
         }
+
+        // Remove file
+        remove_file(self.grib_file_name()).ok();
     }
 }
 
@@ -65,19 +69,20 @@ impl GribTile {
 
         // Create tile
         let mut new_tile = GribTile {
-            downloaded: false,
             bounds: GeoTileBounds::new_from_point(point, Angle::from_degrees(1.0)),
             data_points: Mutex::new(Vec::new()),
             forecast_date_utc: date_time.clone(),
             download_path: download_path.clone(),
-            download_thread_handle: None
+            download_thread_handle: None,
         };
 
+        let filename = new_tile.grib_file_name();
+        let download_url = new_tile.download_url();
+        let download_path_new = download_path.clone();
+
         // Start download asynchronously
-        let dl_handle = thread::spawn(move || {
-            new_tile.download();
-        });
-        //new_tile.download_thread_handle = Some(dl_handle);
+        let dl_handle = thread::spawn(move || GribTile::download_and_extract_data(&download_path_new, &filename, &download_url));
+        new_tile.download_thread_handle = Some(dl_handle);
 
         return new_tile;
     }
@@ -138,9 +143,21 @@ impl GribTile {
         );
     }
 
-    pub fn closest_point(&self, point: &GeoPoint) -> Option<GribDataPoint> {
-        if (!self.downloaded) {
-            return None;
+    pub fn closest_point(&mut self, point: &GeoPoint) -> Option<GribDataPoint> {
+        // Check if download has finished
+        if let Some(dl_handle) = self.download_thread_handle.as_mut() {
+            if (!dl_handle.is_finished()) {
+                return None;
+            }
+        }
+
+        // Take download handle
+        if let Some(thread_handle) = self.download_thread_handle.take() {
+            if let Ok(data_points) = thread_handle.join().unwrap() {
+                let mut lock_guard = self.data_points.lock().unwrap();
+
+                *lock_guard = data_points;
+            }
         }
 
         let mut min_dist = Length::new(f64::MAX);
@@ -165,24 +182,134 @@ impl GribTile {
         return td.abs().num_hours() < td_c.num_hours();
     }
 
-    fn download(&mut self) {
-        if (!self.downloaded) {
-            let filename = self.grib_file_name();
+    /// Downloads a grib tile, then extracts the GribDataPoints
+    ///
+    /// **Parameters:**
+    /// - `download_path`: Download directory
+    /// - `filename`: Target full file name
+    /// - `url`: Grib File URL
+    fn download_and_extract_data(download_path: &PathBuf, filename: &PathBuf, url: &String) -> anyhow::Result<Vec<GribDataPoint>> {
+        // Make sure file doesnt exist or remove it
+        remove_file(filename).ok();
 
-            // Make sure file doesnt exist or remove it
-            remove_file(filename).ok();
+        // Create folder if it doesn't exist
+        create_dir_all(download_path)?;
 
-            // Generate url
-            let url = self.download_url();
+        // Download GRIB file
+        let mut resp = ureq::get(url).call()?.into_reader();
+        let mut out = File::create(filename)?;
+        io::copy(&mut resp, &mut out)?;
 
-            // Create folder if it doesn't exist
-            create_dir_all(self.download_path);
+        // Extract Data
+        // Open File
+        let file_reader = BufReader::new(File::open(filename)?);
+
+        // Get grib
+        let grib2 = grib::from_reader(file_reader)?;
+
+        // Create return list
+        let mut ret_list: Vec<GribDataPoint> = Vec::new();
+        let mut sfc_values: Vec<GribDataPoint> = Vec::new();
+
+        // GRIB specific values
+        let missing_value = 1e+20;
+
+        // Loop through all messages in a file
+        for (_index, submessage) in grib2.iter() {
+            // Check level type
+            if let Some(lvl_types) = submessage.prod_def().fixed_surfaces() {
+                // Get level
+                let level_type = lvl_types.0.surface_type;
+                let level = Pressure::new(lvl_types.0.scaled_value as f64);
+                let mut is_sfc_msg = false;
+                let mut is_isobaric_msg = false;
+
+                if (level_type == 100) {
+                    // Isobaric
+                    is_isobaric_msg = true;
+                } else if (level_type == 101 || level_type == 1) {
+                    // MSL or PRMSL
+                    is_sfc_msg = true;
+                }
+
+                if (is_isobaric_msg || is_sfc_msg) {
+                    // Get parameter
+                    if let Some(param_category) = submessage.prod_def().parameter_category() {
+                        if let Some(param_num) = submessage.prod_def().parameter_number() {
+                            // Loop through values
+                            let latlons = submessage.latlons()?;
+                            let decoder = Grib2SubmessageDecoder::from(submessage)?;
+                            let values = decoder.dispatch()?;
+
+                            for ((lat, lon), value) in latlons.zip(values) {
+                                // Ignore missing values
+                                if (value == missing_value as f32) {
+                                    continue;
+                                }
+
+                                let latitude = Latitude::from_degrees(lat as f64);
+                                let longitude = Longitude::from_degrees(lon as f64);
+
+                                // Get grid point if it exists
+                                let found_point = {
+                                    let search_list = if is_isobaric_msg { &mut ret_list } else { &mut sfc_values };
+                                    let mut list_iter = search_list.iter_mut();
+
+                                    loop {
+                                        if let Some(point) = list_iter.next() {
+                                            if point.lat == latitude && point.lon == longitude && point.level_pressure == level {
+                                                break point;
+                                            }
+                                        } else {
+                                            search_list.push(GribDataPoint::new(latitude, longitude, level));
+
+                                            break search_list.last_mut().unwrap();
+                                        }
+                                    }
+                                };
+
+                                // Set Values
+                                if (is_isobaric_msg) {
+                                    match (param_category, param_num) {
+                                        // u (wind)
+                                        (2, 2) => found_point.u = Velocity::new(value as f64),
+                                        // v (wind)
+                                        (2, 3) => found_point.v = Velocity::new(value as f64),
+                                        // t (temperature)
+                                        (0, 0) => found_point.temp = Temperature::new(value as f64),
+                                        // gh (geopotential height)
+                                        (3, 5) => found_point.geo_pot_height = Length::new(value as f64),
+                                        _ => {}
+                                    }
+                                } else {
+                                    match (param_category, param_num) {
+                                        // pressure
+                                        (3, 0) => found_point.sfc_press = Pressure::new(value as f64),
+                                        _ => {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+        // Add Surface pressures back in
+        for point in ret_list.iter_mut() {
+            for sfc_point in sfc_values.iter() {
+                if (sfc_point.lat == point.lat && sfc_point.lon == point.lon) {
+                    point.sfc_press = sfc_point.sfc_press;
+                }
+            }
+        }
+
+        return Ok(ret_list);
     }
 }
 
 /// Data Point containing Grib information
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, PartialEq)]
 pub struct GribDataPoint {
     pub lat: Latitude,
     pub lon: Longitude,
@@ -200,9 +327,9 @@ impl Display for GribDataPoint {
         let wind = self.wind();
         return write!(
             f,
-            "Lat: {} Lon: {} Level: {}hPa Height: {}ft Temp: {}C Wind: {}@{}KT RH: {}",
-            self.lat,
-            self.lon,
+            "Lat: {:.3} Lon: {:.3} Level: {:.0}hPa Height: {:.0}ft Temp: {:.1}C Wind: {:03.0}@{:.0}KT RH: {}",
+            self.lat.as_degrees(),
+            self.lon.as_degrees(),
             self.level_pressure.as_hectopascals(),
             self.geo_pot_height.as_feet(),
             self.temp.as_celsius(),
@@ -210,6 +337,12 @@ impl Display for GribDataPoint {
             wind.1.as_knots(),
             self.rh
         );
+    }
+}
+
+impl std::fmt::Debug for GribDataPoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return std::fmt::Display::fmt(&self, f);
     }
 }
 

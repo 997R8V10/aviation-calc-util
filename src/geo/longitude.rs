@@ -5,13 +5,19 @@ use crate::units::angle::Angle;
 use super::{convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single, convert_nats_to_decimal_single, convert_vrc_to_decimal_deg_single};
 
 /// Represents a longitude on a globe
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct Longitude(Angle);
 
 // Display
 impl std::fmt::Display for Longitude {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(f, "{}°", self.0.as_degrees());
+    }
+}
+
+impl std::fmt::Debug for Longitude {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return std::fmt::Display::fmt(&self, f);
     }
 }
 

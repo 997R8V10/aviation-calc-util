@@ -6,13 +6,19 @@ use super::{convert_vrc_to_decimal_deg_single, convert_nats_to_decimal_single, c
 
 
 /// Represents a latitude on a globe
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct Latitude(Angle);
 
 // Display
 impl std::fmt::Display for Latitude {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(f, "{}°", self.0.as_degrees());
+    }
+}
+
+impl std::fmt::Debug for Latitude {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return std::fmt::Display::fmt(&self, f);
     }
 }
 

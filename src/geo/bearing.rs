@@ -8,7 +8,7 @@ use std::ops::SubAssign;
 use crate::units::angle::Angle;
 
 /// Represents a bearing from 0 to 2pi rads (radians) or 0 to 360° (degrees).
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
 pub struct Bearing(Angle);
 
 impl Neg for Bearing {
@@ -59,6 +59,12 @@ impl SubAssign<Angle> for Bearing {
 impl std::fmt::Display for Bearing {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(f, "{}°", self.0.as_degrees());
+    }
+}
+
+impl std::fmt::Debug for Bearing {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return std::fmt::Display::fmt(&self, f);
     }
 }
 
