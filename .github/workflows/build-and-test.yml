@@ -7,18 +7,12 @@ on:
     branches: [ "release/*", "dev", "master" ]
 
 env:
-  CONAN_HOME: "${{ github.workspace }}/conan/"
-  CONAN_VERBOSE_TRACEBACK: 1
+  CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    uses: ./.github/workflows/BuildCMakeReusable.yml
-    with:
-      arch: x64
-      conan-arch: x86_64
-      os: ubuntu-latest
-      short-os: linux
-      cmake-win-flag: ""
-      configuration: "Debug"
-      create-nuget-package: False
-      copy-nuget-defs: False
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test
+        run: cargo test --verbose

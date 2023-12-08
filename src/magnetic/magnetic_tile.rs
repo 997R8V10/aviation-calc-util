@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::sync::{Mutex, Arc};
 
 use chrono::NaiveDate;
 
@@ -12,31 +12,31 @@ pub const MAG_TILE_RES: Angle = Angle(0.1);
 /// 
 /// This increases performance by caching magnetic calculations
 pub struct MagneticTileManager {
-    tiles: Mutex<Vec<MagneticTile>>,
+    tiles: Mutex<Vec<Arc<MagneticTile>>>,
     model: MagneticModel
 }
 
 impl MagneticTileManager {
     pub fn new(model: MagneticModel) -> MagneticTileManager {
-        return MagneticTileManager { tiles: Mutex::new(Vec::new()), model: model };
+        return MagneticTileManager { tiles: Mutex::new(Vec::new()), model };
     }
 
-    pub fn find_or_create_tile(&self, point: &GeoPoint, date: &NaiveDate) -> MagneticTile {
+    pub fn find_or_create_tile(&self, point: &GeoPoint, date: &NaiveDate) -> Arc<MagneticTile> {
         // Get mutex guard
         let mut mutex_guard = self.tiles.lock().unwrap();
 
         // Look for tile
-        for (_i, tile) in mutex_guard.iter().enumerate() {
+        for tile in mutex_guard.iter() {
             if tile.is_valid(point, date) {
-                return tile.clone();
+                return Arc::clone(tile);
             }
         }
 
         // Create if not found
-        let tile = MagneticTile::new(point, date, &self.model);
-        mutex_guard.push(tile);
+        let tile = Arc::new(MagneticTile::new(point, date, &self.model));
+        mutex_guard.push(Arc::clone(&tile));
 
-        return tile.clone();
+        return tile;
     }
 
     pub fn true_to_magnetic(&self, point: &GeoPoint, date: &NaiveDate, true_bearing: Bearing) -> Bearing {

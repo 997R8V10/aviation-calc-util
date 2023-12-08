@@ -3,7 +3,7 @@ use std::{
     fs::{create_dir_all, remove_file, File},
     io::{self, BufReader},
     path::PathBuf,
-    sync::Mutex,
+    sync::{Mutex, Arc},
     thread::{self, JoinHandle},
 };
 
@@ -23,6 +23,36 @@ use crate::{
 };
 
 use super::ISA_STD_PRES;
+
+/// A Thread-Safe Manager for Grib Data access.
+pub struct GribTileManager {
+    tiles: Mutex<Vec<Arc<GribTile>>>,
+    download_path: PathBuf
+}
+
+impl GribTileManager {
+    pub fn new(download_path: &PathBuf) -> GribTileManager {
+        return GribTileManager { tiles: Mutex::new(Vec::new()), download_path: download_path.clone() };
+    }
+
+    pub fn find_or_create_tile(&self, point: &GeoPoint, date: &DateTime<Utc>) -> Arc<GribTile> {
+        // Get mutex guard
+        let mut mutex_guard = self.tiles.lock().unwrap();
+
+        // Look for tile
+        for tile in mutex_guard.iter() {
+            if tile.is_valid(date) && tile.is_point_in_tile(point) {
+                return Arc::clone(tile);
+            }
+        }
+
+        // Create if not found
+        let tile = Arc::new(GribTile::new(point, date, &self.download_path));
+        mutex_guard.push(Arc::clone(&tile));
+
+        return tile;
+    }
+}
 
 pub struct GribTile {
     bounds: GeoTileBounds,

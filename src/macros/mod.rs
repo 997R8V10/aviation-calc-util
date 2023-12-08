@@ -1,4 +1,4 @@
-
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_one_part_op_for_number {
     ($number_type: ident, $op_type: ident, $method: ident, $opr: tt) => {
@@ -12,6 +12,7 @@ macro_rules! impl_one_part_op_for_number {
     }
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_two_part_op_for_number {
     ($number_type: ident, $op_type: ident, $method: ident, $opr: tt) => {
@@ -57,6 +58,7 @@ macro_rules! impl_two_part_op_for_number {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_assign_op_for_number {
     ($number_type: ident, $op_type: ident, $method: ident, $opr: tt) => {
@@ -92,6 +94,7 @@ macro_rules! impl_assign_op_for_number {
     };
 }
 
+#[doc(hidden)]
 #[macro_export]
 macro_rules! impl_num_methods {
     () => {
