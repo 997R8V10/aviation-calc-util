@@ -1,8 +1,13 @@
 .idea/
 .vs/
+.vscode/
 
 # CMake Build Outputs
 out/
 build/
 cmake-build-*/
 CMakeUserPresets.json
+
+# Added by cargo
+/target
+/Cargo.lock
