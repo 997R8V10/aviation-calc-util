@@ -1,19 +1,14 @@
 use std::ops::Add;
-use std::ops::AddAssign;
 use std::ops::Div;
-use std::ops::DivAssign;
 use std::ops::Mul;
-use std::ops::MulAssign;
 use std::ops::Neg;
 use std::ops::Rem;
-use std::ops::RemAssign;
 use std::ops::Sub;
-use std::ops::SubAssign;
 
-use crate::impl_assign_op_for_number;
-use crate::impl_num_methods;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
+
+use super::unit::Unit;
 
 /// Represents a temperature quantity.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
@@ -27,17 +22,25 @@ impl_two_part_op_for_number!(Temperature, Mul, mul, *);
 impl_two_part_op_for_number!(Temperature, Div, div, /);
 impl_two_part_op_for_number!(Temperature, Rem, rem, %);
 
-// Assignment Operator implementations
-impl_assign_op_for_number!(Temperature, AddAssign, add_assign, +=);
-impl_assign_op_for_number!(Temperature, SubAssign, sub_assign, -=);
-impl_assign_op_for_number!(Temperature, MulAssign, mul_assign, *=);
-impl_assign_op_for_number!(Temperature, DivAssign, div_assign, /=);
-impl_assign_op_for_number!(Temperature, RemAssign, rem_assign, %=);
-
 // Display
 impl std::fmt::Display for Temperature {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(f, "{}K", self.0);
+    }
+}
+
+impl Unit for Temperature {
+    /// Creates a new Temperature.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in K (kelvin)
+    fn new(val: f64) -> Temperature {
+        return Temperature(val);
+    }
+
+    /// Gets the temperature in K (kelvin).
+    fn value(&self) -> f64 {
+        return self.0;
     }
 }
 
@@ -47,7 +50,7 @@ impl Temperature {
     ///
     /// **Parameters:**
     /// - `val` - Value in K (kelvin)
-    pub fn new(val: f64) -> Temperature {
+    pub fn from_kelvin(val: f64) -> Temperature {
         return Temperature(val);
     }
 
@@ -68,8 +71,6 @@ impl Temperature {
     pub fn as_celsius(self) -> f64 {
         return convert_kelvin_to_celsius(self.0);
     }
-
-    impl_num_methods!();
 }
 
 // Constants

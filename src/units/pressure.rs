@@ -1,19 +1,14 @@
 use std::ops::Add;
-use std::ops::AddAssign;
 use std::ops::Div;
-use std::ops::DivAssign;
 use std::ops::Mul;
-use std::ops::MulAssign;
 use std::ops::Neg;
 use std::ops::Rem;
-use std::ops::RemAssign;
 use std::ops::Sub;
-use std::ops::SubAssign;
 
-use crate::impl_assign_op_for_number;
-use crate::impl_num_methods;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
+
+use super::unit::Unit;
 
 /// Represents a pressure quantity.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
@@ -27,17 +22,25 @@ impl_two_part_op_for_number!(Pressure, Mul, mul, *);
 impl_two_part_op_for_number!(Pressure, Div, div, /);
 impl_two_part_op_for_number!(Pressure, Rem, rem, %);
 
-// Assignment Operator implementations
-impl_assign_op_for_number!(Pressure, AddAssign, add_assign, +=);
-impl_assign_op_for_number!(Pressure, SubAssign, sub_assign, -=);
-impl_assign_op_for_number!(Pressure, MulAssign, mul_assign, *=);
-impl_assign_op_for_number!(Pressure, DivAssign, div_assign, /=);
-impl_assign_op_for_number!(Pressure, RemAssign, rem_assign, %=);
-
 // Display
 impl std::fmt::Display for Pressure {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         return write!(f, "{}Pa", self.0);
+    }
+}
+
+impl Unit for Pressure {
+    /// Creates a new Pressure.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in Pa (pascals)
+    fn new(val: f64) -> Pressure {
+        return Pressure(val);
+    }
+
+    /// Gets the pressure in Pa (pascals).
+    fn value(&self) -> f64 {
+        return self.0;
     }
 }
 
@@ -47,7 +50,7 @@ impl Pressure {
     ///
     /// **Parameters:**
     /// - `val` - Value in Pa (pascals)
-    pub fn new(val: f64) -> Pressure {
+    pub fn from_pascals(val: f64) -> Pressure {
         return Pressure(val);
     }
 
@@ -81,8 +84,6 @@ impl Pressure {
     pub fn as_hectopascals(self) -> f64 {
         return self.0 / 100.0;
     }
-
-    impl_num_methods!();
 }
 
 // Constants

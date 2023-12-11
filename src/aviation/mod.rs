@@ -6,7 +6,7 @@ use crate::{
         geo_point::GeoPoint,
         EARTH_RADIUS, EARTH_GRAVITY,
     },
-    units::{angle::Angle, angular_velocity::AngularVelocity, length::Length, velocity::Velocity},
+    units::{angle::Angle, angular_velocity::AngularVelocity, length::Length, velocity::Velocity, unit::Unit},
 };
 
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
@@ -56,7 +56,7 @@ pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_
 ///
 /// ```
 /// use aviation_calc_util::aviation::calculate_radius_of_turn;
-/// use aviation_calc_util::units::{angle::Angle, velocity::Velocity, length::Length};
+/// use aviation_calc_util::units::{angle::Angle, velocity::Velocity, length::Length, unit::Unit};
 ///
 /// let calculated = calculate_radius_of_turn(Velocity::from_knots(250.0), Angle::from_degrees(25.0));
 /// let expected = Length::new(3616.0);

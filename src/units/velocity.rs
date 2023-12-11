@@ -1,23 +1,17 @@
 use std::ops::Add;
-use std::ops::AddAssign;
 use std::ops::Div;
-use std::ops::DivAssign;
 use std::ops::Mul;
-use std::ops::MulAssign;
 use std::ops::Neg;
 use std::ops::Rem;
-use std::ops::RemAssign;
 use std::ops::Sub;
-use std::ops::SubAssign;
 
-use crate::impl_assign_op_for_number;
-use crate::impl_num_methods;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
 use super::length::convert_feet_to_meters;
 use super::length::convert_meters_to_feet;
 use super::length::Length;
+use super::unit::Unit;
 
 /// Represents a velocity quantity.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
@@ -30,13 +24,6 @@ impl_two_part_op_for_number!(Velocity, Sub, sub, -);
 impl_two_part_op_for_number!(Velocity, Mul, mul, *);
 impl_two_part_op_for_number!(Velocity, Div, div, /);
 impl_two_part_op_for_number!(Velocity, Rem, rem, %);
-
-// Assignment Operator implementations
-impl_assign_op_for_number!(Velocity, AddAssign, add_assign, +=);
-impl_assign_op_for_number!(Velocity, SubAssign, sub_assign, -=);
-impl_assign_op_for_number!(Velocity, MulAssign, mul_assign, *=);
-impl_assign_op_for_number!(Velocity, DivAssign, div_assign, /=);
-impl_assign_op_for_number!(Velocity, RemAssign, rem_assign, %=);
 
 // Display
 impl std::fmt::Display for Velocity {
@@ -53,13 +40,28 @@ impl Mul<std::time::Duration> for Velocity {
     }
 }
 
+impl Unit for Velocity {
+    /// Creates a new Velocity.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in m/s (meters per second)
+    fn new(val: f64) -> Velocity {
+        return Velocity(val);
+    }
+
+    /// Gets the velocity in m/s (meters per second).
+    fn value(&self) -> f64 {
+        return self.0;
+    }
+}
+
 // Custom functions
 impl Velocity {
     /// Creates a new Velocity.
     ///
     /// **Parameters:**
     /// - `val` - Value in m/s (meters per second)
-    pub fn new(val: f64) -> Velocity {
+    pub fn from_meters_per_second(val: f64) -> Velocity {
         return Velocity(val);
     }
 
@@ -93,8 +95,6 @@ impl Velocity {
     pub fn as_feet_per_minute(self) -> f64 {
         return convert_mpers_to_ftpermin(self.0);
     }
-
-    impl_num_methods!();
 }
 
 // Constants

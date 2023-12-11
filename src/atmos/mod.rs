@@ -2,7 +2,7 @@ use std::f64::consts::E;
 
 use crate::{
     geo::EARTH_GRAVITY,
-    units::{length::Length, pressure::Pressure, temperature::Temperature, velocity::Velocity},
+    units::{length::Length, pressure::Pressure, temperature::Temperature, velocity::Velocity, unit::Unit},
 };
 
 pub mod grib;

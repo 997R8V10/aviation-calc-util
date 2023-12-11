@@ -1,11 +1,10 @@
 use std::f64::consts::PI;
 use std::ops::Add;
-use std::ops::AddAssign;
 use std::ops::Neg;
 use std::ops::Sub;
-use std::ops::SubAssign;
 
 use crate::units::angle::Angle;
+use crate::units::unit::Unit;
 
 /// Represents a bearing from 0 to 2pi rads (radians) or 0 to 360° (degrees).
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
@@ -27,12 +26,6 @@ impl Add<Angle> for Bearing {
     }
 }
 
-impl AddAssign<Angle> for Bearing {
-    fn add_assign(&mut self, rhs: Angle) {
-        self.0 = normalize_bearing(self.0 + rhs);
-    }
-}
-
 impl Sub for Bearing {
     type Output = Angle;
 
@@ -46,12 +39,6 @@ impl Sub<Angle> for Bearing {
 
     fn sub(self, rhs: Angle) -> Self::Output {
         return Bearing(normalize_bearing(self.0 - rhs));
-    }
-}
-
-impl SubAssign<Angle> for Bearing {
-    fn sub_assign(&mut self, rhs: Angle) {
-        self.0 = normalize_bearing(self.0 - rhs);
     }
 }
 

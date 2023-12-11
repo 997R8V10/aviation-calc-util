@@ -1,20 +1,14 @@
 use std::ops::Add;
-use std::ops::AddAssign;
 use std::ops::Div;
-use std::ops::DivAssign;
 use std::ops::Mul;
-use std::ops::MulAssign;
 use std::ops::Neg;
 use std::ops::Rem;
-use std::ops::RemAssign;
 use std::ops::Sub;
-use std::ops::SubAssign;
 
-use crate::impl_assign_op_for_number;
-use crate::impl_num_methods;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
+use super::unit::Unit;
 use super::velocity::Velocity;
 
 /// Represents a length quantity.
@@ -28,13 +22,6 @@ impl_two_part_op_for_number!(Length, Sub, sub, -);
 impl_two_part_op_for_number!(Length, Mul, mul, *);
 impl_two_part_op_for_number!(Length, Div, div, /);
 impl_two_part_op_for_number!(Length, Rem, rem, %);
-
-// Assignment Operator implementations
-impl_assign_op_for_number!(Length, AddAssign, add_assign, +=);
-impl_assign_op_for_number!(Length, SubAssign, sub_assign, -=);
-impl_assign_op_for_number!(Length, MulAssign, mul_assign, *=);
-impl_assign_op_for_number!(Length, DivAssign, div_assign, /=);
-impl_assign_op_for_number!(Length, RemAssign, rem_assign, %=);
 
 // Display
 impl std::fmt::Display for Length {
@@ -51,13 +38,28 @@ impl Div<std::time::Duration> for Length {
     }
 }
 
+impl Unit for Length {
+    /// Creates a new Length.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in m (meters)
+    fn new(val: f64) -> Length {
+        return Length(val);
+    }
+
+    /// Gets the length in m (meters).
+    fn value(&self) -> f64 {
+        return self.0;
+    }
+}
+
 // Custom functions
 impl Length {
     /// Creates a new Length.
     ///
     /// **Parameters:**
     /// - `val` - Value in m (meters)
-    pub fn new(val: f64) -> Length {
+    pub fn from_meters(val: f64) -> Length {
         return Length(val);
     }
 
@@ -104,8 +106,6 @@ impl Length {
     pub fn as_nautical_miles(self) -> f64 {
         return convert_meters_to_nautical_miles(self.0);
     }
-
-    impl_num_methods!();
 }
 
 // Constants

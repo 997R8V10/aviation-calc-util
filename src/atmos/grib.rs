@@ -19,7 +19,7 @@ use crate::{
         longitude::Longitude,
         EARTH_RADIUS,
     },
-    units::{angle::Angle, length::Length, pressure::Pressure, temperature::Temperature, velocity::Velocity},
+    units::{angle::Angle, length::Length, pressure::Pressure, temperature::Temperature, velocity::Velocity, unit::Unit},
 };
 
 use super::ISA_STD_PRES;

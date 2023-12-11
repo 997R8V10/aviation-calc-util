@@ -1,21 +1,15 @@
 use std::ops::Add;
-use std::ops::AddAssign;
 use std::ops::Div;
-use std::ops::DivAssign;
 use std::ops::Mul;
-use std::ops::MulAssign;
 use std::ops::Neg;
 use std::ops::Rem;
-use std::ops::RemAssign;
 use std::ops::Sub;
-use std::ops::SubAssign;
 
-use crate::impl_assign_op_for_number;
-use crate::impl_num_methods;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
 use super::angle::Angle;
+use super::unit::Unit;
 
 /// Represents a velocity quantity.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
@@ -28,13 +22,6 @@ impl_two_part_op_for_number!(AngularVelocity, Sub, sub, -);
 impl_two_part_op_for_number!(AngularVelocity, Mul, mul, *);
 impl_two_part_op_for_number!(AngularVelocity, Div, div, /);
 impl_two_part_op_for_number!(AngularVelocity, Rem, rem, %);
-
-// Assignment Operator implementations
-impl_assign_op_for_number!(AngularVelocity, AddAssign, add_assign, +=);
-impl_assign_op_for_number!(AngularVelocity, SubAssign, sub_assign, -=);
-impl_assign_op_for_number!(AngularVelocity, MulAssign, mul_assign, *=);
-impl_assign_op_for_number!(AngularVelocity, DivAssign, div_assign, /=);
-impl_assign_op_for_number!(AngularVelocity, RemAssign, rem_assign, %=);
 
 // Display
 impl std::fmt::Display for AngularVelocity {
@@ -51,13 +38,28 @@ impl Mul<std::time::Duration> for AngularVelocity {
     }
 }
 
+impl Unit for AngularVelocity {
+    /// Creates a new Angular Velocity.
+    ///
+    /// **Parameters:**
+    /// - `val` - Value in rad/s (radians per second)
+    fn new(val: f64) -> AngularVelocity {
+        return AngularVelocity(val);
+    }
+
+    /// Gets the angular velocity in rad/s (radians per second).
+    fn value(&self) -> f64 {
+        return self.0;
+    }
+}
+
 // Custom functions
 impl AngularVelocity {
     /// Creates a new Angular Velocity.
     ///
     /// **Parameters:**
     /// - `val` - Value in rad/s (radians per second)
-    pub fn new(val: f64) -> AngularVelocity {
+    pub fn from_radians_per_second(val: f64) -> AngularVelocity {
         return AngularVelocity(val);
     }
 
@@ -78,6 +80,4 @@ impl AngularVelocity {
     pub fn as_degrees_per_second(self) -> f64 {
         return self.0.to_degrees();
     }
-
-    impl_num_methods!();
 }

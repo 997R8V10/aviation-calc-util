@@ -10,7 +10,7 @@ use chrono::{NaiveDate, Utc};
 use crate::{
     geo::{geo_point::GeoPoint, bearing::Bearing},
     math::{factorial_ratio, legendre::LegendreManager},
-    units::angle::Angle,
+    units::{angle::Angle, unit::Unit},
 };
 
 use super::get_epoch_year;
