@@ -1,6 +1,6 @@
 use std::f64::consts::PI;
 
-use crate::units::{angle::Angle, unit::Unit};
+use crate::units::{Angle, Unit};
 
 use super::{convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single, convert_nats_to_decimal_single, convert_vrc_to_decimal_deg_single};
 
@@ -25,7 +25,7 @@ impl std::fmt::Debug for Longitude {
 impl Longitude {
     /// Creates a new longitude.
     pub fn new(val: Angle) -> Longitude {
-        return Longitude(normalize_longitude(val));
+        return Longitude(Self::normalize_longitude(val));
     }
 
     /// Creates a new longitude from rads (radians).
@@ -84,26 +84,28 @@ impl Longitude {
     pub fn as_nats(&self) -> String {
         return convert_decimal_to_nats_single(self.0, false);
     }
+
+    /// Normalizes Longitude.
+    ///
+    /// **Parameters:**
+    /// - `lon` - Input Longitude
+    ///
+    /// **Returns:** \
+    /// Normalized Longitude
+    ///
+    /// ## Example
+    ///
+    /// ```
+    /// use aviation_calc_util::geo::Longitude;
+    /// use aviation_calc_util::units::Angle;
+    ///
+    /// let calculated = Longitude::normalize_longitude(Angle::from_degrees(190.0));
+    /// let expected = Angle::from_degrees(-170.0);
+    /// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < 1.0);
+    /// ```
+    pub fn normalize_longitude(lon: Angle) -> Angle {
+        return ((lon + (3.0 * PI)) % (2.0 * PI)) - PI;
+    }
 }
 
-/// Normalizes Longitude.
-///
-/// **Parameters:**
-/// - `lon` - Input Longitude
-///
-/// **Returns:** \
-/// Normalized Longitude
-///
-/// ## Example
-///
-/// ```
-/// use aviation_calc_util::geo::longitude;
-/// use aviation_calc_util::units::angle::Angle;
-///
-/// let calculated = longitude::normalize_longitude(Angle::from_degrees(190.0));
-/// let expected = Angle::from_degrees(-170.0);
-/// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < 1.0);
-/// ```
-pub fn normalize_longitude(lon: Angle) -> Angle {
-    return ((lon + (3.0 * PI)) % (2.0 * PI)) - PI;
-}
+

@@ -1,6 +1,6 @@
 use std::{f64::consts::PI, ops::Sub};
 
-use crate::units::{length::Length, unit::Unit};
+use crate::units::{Length, Unit};
 
 use super::{bearing::Bearing, latitude::Latitude, longitude::Longitude, EARTH_RADIUS};
 

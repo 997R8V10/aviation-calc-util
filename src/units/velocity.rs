@@ -8,8 +8,6 @@ use std::ops::Sub;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
-use super::length::convert_feet_to_meters;
-use super::length::convert_meters_to_feet;
 use super::length::Length;
 use super::unit::Unit;
 
@@ -70,7 +68,7 @@ impl Velocity {
     /// **Parameters:**
     /// - `val` - Value in kts (knots, nautical miles per hour)
     pub fn from_knots(val: f64) -> Velocity {
-        return Velocity(convert_kts_to_mpers(val));
+        return Velocity(Self::convert_kts_to_mpers(val));
     }
 
     /// Creates a new Velocity.
@@ -78,7 +76,7 @@ impl Velocity {
     /// **Parameters:**
     /// - `val` - Value in ft/min (feet per minute)
     pub fn from_feet_per_minute(val: f64) -> Velocity {
-        return Velocity(convert_ftpermin_to_mpers(val));
+        return Velocity(Self::convert_ftpermin_to_mpers(val));
     }
 
     /// Gets the velocity in m/s (meters per second).
@@ -88,36 +86,36 @@ impl Velocity {
 
     /// Gets the velocity in kts (knots, nautical miles per hour)
     pub fn as_knots(self) -> f64 {
-        return convert_mpers_to_kts(self.0);
+        return Self::convert_mpers_to_kts(self.0);
     }
 
     /// Gets the velocity in ft/min (feet per minute)
     pub fn as_feet_per_minute(self) -> f64 {
-        return convert_mpers_to_ftpermin(self.0);
+        return Self::convert_mpers_to_ftpermin(self.0);
     }
-}
 
-// Constants
-/// Conversion factor from m/s (meters per second) to kts (knots, nautical miles per hour)
-pub const CONV_FACTOR_MPERS_KTS: f64 = 1.943844;
+    // Constants
+    /// Conversion factor from m/s (meters per second) to kts (knots, nautical miles per hour)
+    pub const CONV_FACTOR_MPERS_KTS: f64 = 1.943844;
 
-// Conversion Functions
-/// Convert m/s (meters per second) to kts (knots, nautical miles per hour)
-pub fn convert_mpers_to_kts(mpers: f64) -> f64 {
-    return mpers * CONV_FACTOR_MPERS_KTS;
-}
+    // Conversion Functions
+    /// Convert m/s (meters per second) to kts (knots, nautical miles per hour)
+    pub fn convert_mpers_to_kts(mpers: f64) -> f64 {
+        return mpers * Self::CONV_FACTOR_MPERS_KTS;
+    }
 
-/// Convert kts (knots, nautical miles per hour) to m/s (meters per second)
-pub fn convert_kts_to_mpers(kts: f64) -> f64 {
-    return kts / CONV_FACTOR_MPERS_KTS;
-}
+    /// Convert kts (knots, nautical miles per hour) to m/s (meters per second)
+    pub fn convert_kts_to_mpers(kts: f64) -> f64 {
+        return kts / Self::CONV_FACTOR_MPERS_KTS;
+    }
 
-/// Convert m/s (meters per second) to ft/min (feet per minute)
-pub fn convert_mpers_to_ftpermin(mpers: f64) -> f64 {
-    return convert_meters_to_feet(60.0 * mpers);
-}
+    /// Convert m/s (meters per second) to ft/min (feet per minute)
+    pub fn convert_mpers_to_ftpermin(mpers: f64) -> f64 {
+        return Length::convert_meters_to_feet(60.0 * mpers);
+    }
 
-/// Convert ft/min (feet per minute) to m/s (meters per second)
-pub fn convert_ftpermin_to_mpers(ftpermin: f64) -> f64 {
-    return convert_feet_to_meters(ftpermin) / 60.0;
+    /// Convert ft/min (feet per minute) to m/s (meters per second)
+    pub fn convert_ftpermin_to_mpers(ftpermin: f64) -> f64 {
+        return Length::convert_feet_to_meters(ftpermin) / 60.0;
+    }
 }

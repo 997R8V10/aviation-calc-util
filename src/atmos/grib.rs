@@ -3,7 +3,7 @@ use std::{
     fs::{create_dir_all, remove_file, File},
     io::{self, BufReader},
     path::PathBuf,
-    sync::{Mutex, Arc},
+    sync::{Arc, Mutex},
     thread::{self, JoinHandle},
 };
 
@@ -11,15 +11,8 @@ use chrono::{DateTime, Duration, Timelike, Utc};
 use grib::Grib2SubmessageDecoder;
 
 use crate::{
-    geo::{
-        bearing::Bearing,
-        geo_point::GeoPoint,
-        geo_tile::{GeoTile, GeoTileBounds},
-        latitude::Latitude,
-        longitude::Longitude,
-        EARTH_RADIUS,
-    },
-    units::{angle::Angle, length::Length, pressure::Pressure, temperature::Temperature, velocity::Velocity, unit::Unit},
+    geo::{Bearing, GeoPoint, GeoTile, GeoTileBounds, Latitude, Longitude, EARTH_RADIUS},
+    units::{Angle, Length, Pressure, Temperature, Unit, Velocity},
 };
 
 use super::ISA_STD_PRES;
@@ -27,12 +20,15 @@ use super::ISA_STD_PRES;
 /// A Thread-Safe Manager for Grib Data access.
 pub struct GribTileManager {
     tiles: Mutex<Vec<Arc<GribTile>>>,
-    download_path: PathBuf
+    download_path: PathBuf,
 }
 
 impl GribTileManager {
     pub fn new(download_path: &PathBuf) -> GribTileManager {
-        return GribTileManager { tiles: Mutex::new(Vec::new()), download_path: download_path.clone() };
+        return GribTileManager {
+            tiles: Mutex::new(Vec::new()),
+            download_path: download_path.clone(),
+        };
     }
 
     pub fn find_or_create_tile(&self, point: &GeoPoint, date: &DateTime<Utc>) -> Arc<GribTile> {

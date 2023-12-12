@@ -2,11 +2,9 @@ use std::sync::{Mutex, Arc};
 
 use chrono::NaiveDate;
 
-use crate::{geo::{geo_tile::{GeoTile, GeoTileBounds}, geo_point::GeoPoint, bearing::Bearing}, units::angle::Angle};
+use crate::{geo::{GeoTile, GeoTileBounds, GeoPoint, Bearing}, units::Angle};
 
-use super::magnetic_model::{MagneticField, MagneticModel};
-
-pub const MAG_TILE_RES: Angle = Angle(0.1);
+use super::{MagneticModel, MagneticField};
 
 /// A Thread-Safe Manager for Magnetic Conversions.
 /// 
@@ -60,26 +58,28 @@ pub struct MagneticTile {
 }
 
 impl GeoTile for MagneticTile {
-    fn bottom_lat(&self) -> crate::geo::latitude::Latitude {
+    fn bottom_lat(&self) -> crate::geo::Latitude {
         return self.bounds.bottom_lat();
     }
 
-    fn top_lat(&self) -> crate::geo::latitude::Latitude {
+    fn top_lat(&self) -> crate::geo::Latitude {
         return self.bounds.top_lat();
     }
 
-    fn left_lon(&self) -> crate::geo::longitude::Longitude {
+    fn left_lon(&self) -> crate::geo::Longitude {
         return self.bounds.left_lon();
     }
 
-    fn right_lon(&self) -> crate::geo::longitude::Longitude {
+    fn right_lon(&self) -> crate::geo::Longitude {
         return self.bounds.right_lon();
     }
 }
 
 impl MagneticTile {
+    pub const MAG_TILE_RES: Angle = Angle(0.1);
+    
     pub fn new(point: &GeoPoint, date: &NaiveDate, model: &MagneticModel) -> MagneticTile {
-        let bounds = GeoTileBounds::new_from_point(point, MAG_TILE_RES);
+        let bounds = GeoTileBounds::new_from_point(point, Self::MAG_TILE_RES);
         return MagneticTile {
             bounds: bounds,
             date: date.clone(),

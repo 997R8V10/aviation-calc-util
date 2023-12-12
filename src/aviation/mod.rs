@@ -2,11 +2,11 @@ use std::{f64::consts::FRAC_PI_2, f64::consts::PI};
 
 use crate::{
     geo::{
-        bearing::{self, Bearing},
-        geo_point::GeoPoint,
+        Bearing,
+        GeoPoint,
         EARTH_RADIUS, EARTH_GRAVITY,
     },
-    units::{angle::Angle, angular_velocity::AngularVelocity, length::Length, velocity::Velocity, unit::Unit},
+    units::{Angle, AngularVelocity, Length, Velocity, Unit},
 };
 
 #[derive(Clone, Copy, Default, PartialEq, Debug)]
@@ -35,7 +35,7 @@ impl std::fmt::Display for CourseInterceptInfo {
 ///
 /// ```
 /// use aviation_calc_util::aviation::calculate_max_bank_angle;
-/// use aviation_calc_util::units::{angle::Angle, angular_velocity::AngularVelocity, velocity::Velocity};
+/// use aviation_calc_util::units::{Angle, AngularVelocity, Velocity};
 ///
 /// let result = calculate_max_bank_angle(Velocity::from_knots(250.0), Angle::from_degrees(25.0), AngularVelocity::from_degrees_per_second(3.0));
 /// assert_eq!(result, Angle::from_degrees(25.0));
@@ -56,7 +56,7 @@ pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_
 ///
 /// ```
 /// use aviation_calc_util::aviation::calculate_radius_of_turn;
-/// use aviation_calc_util::units::{angle::Angle, velocity::Velocity, length::Length, unit::Unit};
+/// use aviation_calc_util::units::{Angle, Velocity, Length, Unit};
 ///
 /// let calculated = calculate_radius_of_turn(Velocity::from_knots(250.0), Angle::from_degrees(25.0));
 /// let expected = Length::new(3616.0);
@@ -163,7 +163,7 @@ pub fn calculate_chord_for_turn(start_bearing: Bearing, turn_amount: Angle, radi
 ///
 /// i.e. An aircraft turning direct a waypoint
 ///
-/// Returns an Option<Bearing>. If a bearing cannot be calculated, None is returned.
+/// Returns an `Option<Bearing>`. If a bearing cannot be calculated, `None` is returned.
 pub fn calculate_direct_bearing_after_turn(
     start_point: &GeoPoint,
     end_point: &GeoPoint,
@@ -310,8 +310,8 @@ pub fn calculate_arc_course_intercept(
     let cross_track_error = if is_clockwise { radius - cur_radius } else { cur_radius - radius };
 
     // Calculate along track distance
-    let delta_start_to_end_radial = bearing::calculate_bearing_delta_with_dir(start_radial, end_radial, is_clockwise);
-    let delta_ppos_to_end_radial = bearing::calculate_bearing_delta_with_dir(cur_radial, end_radial, is_clockwise);
+    let delta_start_to_end_radial = Bearing::calculate_bearing_delta_with_dir(start_radial, end_radial, is_clockwise);
+    let delta_ppos_to_end_radial = Bearing::calculate_bearing_delta_with_dir(cur_radial, end_radial, is_clockwise);
 
     // Calculate crossover amount to divide up the rest of the circle
     let min_distance = delta_start_to_end_radial + Angle::new(0.5 * (2.0 * PI - delta_start_to_end_radial.as_radians()));

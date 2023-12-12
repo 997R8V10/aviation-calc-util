@@ -8,17 +8,15 @@ use anyhow::Context;
 use chrono::{NaiveDate, Utc};
 
 use crate::{
-    geo::{geo_point::GeoPoint, bearing::Bearing},
+    geo::GeoPoint,
     math::{factorial_ratio, legendre::LegendreManager},
-    units::{angle::Angle, unit::Unit},
+    units::{Angle, Unit},
 };
 
-use super::get_epoch_year;
-
-pub const EARTH_WGS84_SEMI_MAJOR_AXIS: f64 = 6378137.0;
-pub const EARTH_WGS84_RECIPROCAL_FLATTENING: f64 = 298.257223563;
-pub const WMM_EXPANSION: usize = 12;
-pub const GEOMAGNETIC_REFERENCE_RADIUS: f64 = 6371200.0;
+use super::{
+    MagneticField, MagneticFieldElements, MagneticModelCoefficients, EARTH_WGS84_RECIPROCAL_FLATTENING, EARTH_WGS84_SEMI_MAJOR_AXIS,
+    GEOMAGNETIC_REFERENCE_RADIUS, WMM_EXPANSION,
+};
 
 /// Represents a Magnetic Model
 pub struct MagneticModel {
@@ -258,59 +256,5 @@ impl MagneticModel {
             field_elements: field_elems,
             sec_elements: sec_elems,
         };
-    }
-}
-
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
-pub struct MagneticModelCoefficients {
-    pub n: usize,
-    pub m: usize,
-    pub g_nm: f64,
-    pub h_nm: f64,
-    pub g_dot_nm: f64,
-    pub h_dot_nm: f64,
-}
-
-impl MagneticModelCoefficients {
-    pub fn get_point_on_date(&self, model_epoch: f64, date: &NaiveDate) -> MagneticModelCoefficients {
-        let date_model_epoch = get_epoch_year(date);
-        let g_nm_t = self.g_nm + (date_model_epoch - model_epoch) * self.g_dot_nm;
-        let h_nm_t = self.h_nm + (date_model_epoch - model_epoch) * self.h_dot_nm;
-
-        return MagneticModelCoefficients {
-            n: self.n,
-            m: self.m,
-            g_nm: g_nm_t,
-            h_nm: h_nm_t,
-            g_dot_nm: self.g_dot_nm,
-            h_dot_nm: self.h_dot_nm,
-        };
-    }
-}
-
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
-pub struct MagneticFieldElements {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
-    pub h: f64,
-    pub f: f64,
-    pub incl: Angle,
-    pub decl: Angle,
-}
-
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
-pub struct MagneticField {
-    pub field_elements: MagneticFieldElements,
-    pub sec_elements: MagneticFieldElements,
-}
-
-impl MagneticField {
-    pub fn true_to_magnetic(&self, true_bearing: Bearing) -> Bearing {
-        return true_bearing - self.field_elements.decl;
-    }
-
-    pub fn magnetic_to_true(&self, magnetic_bearing: Bearing) -> Bearing {
-        return magnetic_bearing + self.field_elements.decl;
     }
 }

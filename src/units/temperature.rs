@@ -59,7 +59,7 @@ impl Temperature {
     /// **Parameters:**
     /// - `val` - Value in °C (degrees celsius).
     pub fn from_celsius(val: f64) -> Temperature {
-        return Temperature(convert_celsius_to_kelvin(val));
+        return Temperature(Self::convert_celsius_to_kelvin(val));
     }
 
     /// Gets the temperature in K (kelvin).
@@ -69,21 +69,21 @@ impl Temperature {
 
     /// Gets the temperature in °C (degrees celsius).
     pub fn as_celsius(self) -> f64 {
-        return convert_kelvin_to_celsius(self.0);
+        return Self::convert_kelvin_to_celsius(self.0);
     }
-}
 
-// Constants
-/// Conversion factor from K (kelvin) to °C (degrees celsius)
-pub const CONV_FACTOR_KELVIN_C: f64 = 273.15;
-
-// Unit conversion functions
-/// Convert K (kelvin) to °C (degrees celsius)
-pub fn convert_kelvin_to_celsius(kelvin: f64) -> f64 {
-    return kelvin - CONV_FACTOR_KELVIN_C;
-}
-
-/// Convert °C (degrees celsius) to K (kelvin)
-pub fn convert_celsius_to_kelvin(celsius: f64) -> f64 {
-    return celsius + CONV_FACTOR_KELVIN_C;
+    // Constants
+    /// Conversion factor from K (kelvin) to °C (degrees celsius)
+    pub const CONV_FACTOR_KELVIN_C: f64 = 273.15;
+    
+    // Unit conversion functions
+    /// Convert K (kelvin) to °C (degrees celsius)
+    pub fn convert_kelvin_to_celsius(kelvin: f64) -> f64 {
+        return kelvin - Self::CONV_FACTOR_KELVIN_C;
+    }
+    
+    /// Convert °C (degrees celsius) to K (kelvin)
+    pub fn convert_celsius_to_kelvin(celsius: f64) -> f64 {
+        return celsius + Self::CONV_FACTOR_KELVIN_C;
+    }
 }

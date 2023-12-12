@@ -1,4 +1,7 @@
-pub mod polynomial;
+mod polynomial;
+pub use polynomial::Polynomial;
+
+/// Legendre Polynomial helper utilities
 pub mod legendre;
 
 pub fn factorial(n: i32) -> i64 {

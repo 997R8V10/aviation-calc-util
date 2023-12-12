@@ -5,8 +5,8 @@ use chrono::Utc;
 use crate::{
     atmos::grib::GribTile,
     aviation,
-    geo::{geo_point::GeoPoint, latitude::Latitude, longitude::Longitude},
-    units::{angle::Angle, angular_velocity::AngularVelocity, length::Length, velocity::Velocity, unit::Unit},
+    geo::{GeoPoint, Latitude, Longitude},
+    units::{Angle, AngularVelocity, Length, Velocity, Unit},
 };
 
 #[test]

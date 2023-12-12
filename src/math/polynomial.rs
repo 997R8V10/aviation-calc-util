@@ -1,4 +1,5 @@
 
+/// Representaion of a polynomial
 #[derive(Clone, Default, PartialEq, Debug)]
 pub struct Polynomial{
     coefficients: Vec<f64>

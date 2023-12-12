@@ -1,10 +1,16 @@
-use crate::units::{angle::Angle, length::Length};
+use crate::units::{Angle, Length};
 
-pub mod bearing;
-pub mod geo_point;
-pub mod latitude;
-pub mod longitude;
-pub mod geo_tile;
+mod bearing;
+pub use bearing::Bearing;
+mod geo_point;
+pub use geo_point::GeoPoint;
+mod latitude;
+pub use latitude::Latitude;
+mod geo_tile;
+mod longitude;
+pub use geo_tile::GeoTile;
+pub use geo_tile::GeoTileBounds;
+pub use longitude::Longitude;
 
 // Constants
 /// Average radius of the Earth
@@ -98,9 +104,17 @@ fn convert_decimal_deg_to_vrc_single(decimal_coord: Angle, is_latitude: bool) ->
 
     // Determin which letter should precede the coordinate
     let dir_letter = if degrees < 0 {
-        if is_latitude {'S'} else {'W'}
+        if is_latitude {
+            'S'
+        } else {
+            'W'
+        }
     } else {
-        if is_latitude {'N'} else {'E'}
+        if is_latitude {
+            'N'
+        } else {
+            'E'
+        }
     };
 
     // Return the string
@@ -110,12 +124,12 @@ fn convert_decimal_deg_to_vrc_single(decimal_coord: Angle, is_latitude: bool) ->
 fn convert_vrc_to_decimal_deg_single(vrc_coord: &str) -> Option<Angle> {
     //W077.52.27.771
     let first = &vrc_coord[0..1];
-    let sign = if first == "N" || first == "E" {1} else {-1};
+    let sign = if first == "N" || first == "E" { 1 } else { -1 };
     if let Ok(mut degrees) = &vrc_coord[1..4].parse::<i32>() {
         degrees *= sign;
         if let Ok(minutes) = &vrc_coord[5..7].parse::<u32>() {
             if let Ok(seconds) = &vrc_coord[8..].parse::<f64>() {
-                return Some(Angle::from_deg_min_sec(degrees,*minutes, *seconds));
+                return Some(Angle::from_deg_min_sec(degrees, *minutes, *seconds));
             }
         }
     }

@@ -1,6 +1,6 @@
 use std::f64::consts::{FRAC_PI_2, PI};
 
-use crate::units::{length::Length, angle::Angle, unit::Unit};
+use crate::units::{Length, Angle, Unit};
 
 use super::{latitude::Latitude, longitude::Longitude, geo_point::GeoPoint};
 

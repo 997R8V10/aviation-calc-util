@@ -2,9 +2,10 @@ use std::f64::consts::E;
 
 use crate::{
     geo::EARTH_GRAVITY,
-    units::{length::Length, pressure::Pressure, temperature::Temperature, velocity::Velocity, unit::Unit},
+    units::{Length, Pressure, Temperature, Velocity, Unit},
 };
 
+/// Atmospheric Grib Data
 pub mod grib;
 
 /// Specific Gas Constant for dry air (J/(kg*K))
@@ -40,7 +41,7 @@ pub const ISA_STD_PRES_DROP_PER_ALT: f64 = 0.09144;
 /// **Returns:**
 /// - rho: Dry air density (kg/m^3)
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/Density_of_air
+/// **Reference:** <https://en.wikipedia.org/wiki/Density_of_air>
 pub fn calculate_dry_air_density(p: f64, t: Temperature) -> f64 {
     return p / (R_DRY_AIR * t.as_kelvin());
 }
@@ -56,7 +57,7 @@ pub fn calculate_dry_air_density(p: f64, t: Temperature) -> f64 {
 /// **Returns:**
 /// - p: Static air pressure at `h`
 ///
-/// **Reference:** https://www.omnicalculator.com/physics/air-pressure-at-altitude
+/// **Reference:** <https://www.omnicalculator.com/physics/air-pressure-at-altitude>
 pub fn calculate_pressure_at_alt(h: Length, h_0: Length, p_0: Pressure, t: Temperature) -> Pressure {
     let e_pow = (-EARTH_GRAVITY * (h - h_0).as_meters()) / (R_DRY_AIR * t.as_kelvin());
 
@@ -85,7 +86,7 @@ pub fn calculate_temp_at_alt(h: Length, h_0: Length, t_0: Temperature) -> Temper
 /// **Returns:**
 /// - Density altitude
 ///
-/// **Reference:** https://www.omnicalculator.com/physics/air-pressure-at-altitude
+/// **Reference:** <https://www.omnicalculator.com/physics/air-pressure-at-altitude>
 pub fn calculate_density_altitude(p: Pressure, t: Temperature) -> Length {
     let pres_ratio = (p / ISA_STD_PRES).as_pascals();
     let temp_ratio = (t / ISA_STD_TEMP).as_kelvin();
@@ -101,7 +102,7 @@ pub fn calculate_density_altitude(p: Pressure, t: Temperature) -> Length {
 /// **Returns:**
 /// - qc: Impact pressure
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/Calibrated_airspeed
+/// **Reference:** <https://en.wikipedia.org/wiki/Calibrated_airspeed>
 pub fn calculate_impact_pressure_at_cas(cas: Velocity) -> Pressure {
     let a0 = calculate_speed_of_sound_dry_air(ISA_STD_TEMP);
 
@@ -122,7 +123,7 @@ pub fn calculate_impact_pressure_at_cas(cas: Velocity) -> Pressure {
 /// **Returns:**
 /// - cas: Calibrated air speed
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/Calibrated_airspeed
+/// **Reference:** <https://en.wikipedia.org/wiki/Calibrated_airspeed>
 pub fn calculate_calibrated_airspeed(qc: Pressure) -> Velocity {
     let a0 = calculate_speed_of_sound_dry_air(ISA_STD_TEMP);
 
@@ -144,7 +145,7 @@ pub fn calculate_calibrated_airspeed(qc: Pressure) -> Velocity {
 /// **Returns:**
 /// - M: Mach number
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/Mach_number
+/// **Reference:** <https://en.wikipedia.org/wiki/Mach_number>
 pub fn calculate_mach_number(qc: Pressure, p: Pressure) -> f64 {
     let x1 = 2.0 / (SPEC_HEAT_RATIO_AIR - 1.0);
     let x2exp = (SPEC_HEAT_RATIO_AIR - 1.0) / SPEC_HEAT_RATIO_AIR;
@@ -162,7 +163,7 @@ pub fn calculate_mach_number(qc: Pressure, p: Pressure) -> f64 {
 /// **Returns:**
 /// - eas: Equivalent air speed
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/Equivalent_airspeed
+/// **Reference:** <https://en.wikipedia.org/wiki/Equivalent_airspeed>
 pub fn calculate_eas(m: f64, p: Pressure) -> Velocity {
     let a0 = calculate_speed_of_sound_dry_air(ISA_STD_TEMP);
 
@@ -177,7 +178,7 @@ pub fn calculate_eas(m: f64, p: Pressure) -> Velocity {
 /// **Returns:**
 /// - Speed of sound
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/Mach_number
+/// **Reference:** <https://en.wikipedia.org/wiki/Mach_number>
 pub fn calculate_speed_of_sound_dry_air(t: Temperature) -> Velocity {
     return Velocity::new(f64::sqrt(SPEC_HEAT_RATIO_AIR * R_DRY_AIR * t.as_kelvin()));
 }
@@ -191,7 +192,7 @@ pub fn calculate_speed_of_sound_dry_air(t: Temperature) -> Velocity {
 /// **Returns:**
 /// - tas: True air speed
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/True_airspeed
+/// **Reference:** <https://en.wikipedia.org/wiki/True_airspeed>
 pub fn convert_mach_to_tas(m: f64, t: Temperature) -> Velocity {
     let a0 = calculate_speed_of_sound_dry_air(ISA_STD_TEMP);
 
@@ -207,7 +208,7 @@ pub fn convert_mach_to_tas(m: f64, t: Temperature) -> Velocity {
 /// **Returns:**
 /// - qc: Impact pressure
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/Impact_pressure
+/// **Reference:** <https://en.wikipedia.org/wiki/Impact_pressure>
 pub fn calculate_impact_pressure(m: f64, p: Pressure) -> Pressure {
     let x1 = (SPEC_HEAT_RATIO_AIR - 1.0) / 2.0;
     let x2exp = SPEC_HEAT_RATIO_AIR / (SPEC_HEAT_RATIO_AIR - 1.0);
@@ -225,7 +226,7 @@ pub fn calculate_impact_pressure(m: f64, p: Pressure) -> Pressure {
 /// **Returns:**
 /// - M: Mach number
 ///
-/// **Reference:** https://en.wikipedia.org/wiki/True_airspeed
+/// **Reference:** <https://en.wikipedia.org/wiki/True_airspeed>
 pub fn convert_tas_to_mach(tas: Velocity, t: Temperature) -> f64 {
     let mut t_kelvin = t.as_kelvin();
 

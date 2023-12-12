@@ -1,6 +1,6 @@
 use std::f64::consts::FRAC_PI_2;
 
-use crate::units::{angle::Angle, unit::Unit};
+use crate::units::{Angle, Unit};
 
 use super::{convert_vrc_to_decimal_deg_single, convert_nats_to_decimal_single, convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single};
 
