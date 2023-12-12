@@ -42,8 +42,8 @@ pub const ISA_STD_PRES_DROP_PER_ALT: f64 = 0.09144;
 /// - rho: Dry air density (kg/m^3)
 ///
 /// **Reference:** <https://en.wikipedia.org/wiki/Density_of_air>
-pub fn calculate_dry_air_density(p: f64, t: Temperature) -> f64 {
-    return p / (R_DRY_AIR * t.as_kelvin());
+pub fn calculate_dry_air_density(p: Pressure, t: Temperature) -> f64 {
+    return p.as_pascals() / (R_DRY_AIR * t.as_kelvin());
 }
 
 /// Calculates static air pressure at a given altitude
