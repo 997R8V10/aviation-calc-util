@@ -4,6 +4,7 @@
 pub use chrono::NaiveDate;
 pub use chrono::DateTime;
 pub use chrono::Utc;
+pub use chrono::Datelike;
 
 mod macros;
 pub mod math;
