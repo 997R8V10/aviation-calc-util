@@ -235,6 +235,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
+[2.1.1]: https://github.com/997R8V10/aviation-calc-util/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/997R8V10/aviation-calc-util/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/997R8V10/aviation-calc-util/compare/v1.1.2...v1.2.0
