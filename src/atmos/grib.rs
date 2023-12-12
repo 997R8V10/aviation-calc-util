@@ -19,7 +19,7 @@ use super::ISA_STD_PRES;
 
 /// A Thread-Safe Manager for Grib Data access.
 pub struct GribTileManager {
-    tiles: Mutex<Vec<Arc<GribTile>>>,
+    tiles: Mutex<Vec<Arc<Mutex<GribTile>>>>,
     download_path: PathBuf,
 }
 
@@ -31,19 +31,20 @@ impl GribTileManager {
         };
     }
 
-    pub fn find_or_create_tile(&self, point: &GeoPoint, date: &DateTime<Utc>) -> Arc<GribTile> {
+    pub fn find_or_create_tile(&self, point: &GeoPoint, date: &DateTime<Utc>) -> Arc<Mutex<GribTile>> {
         // Get mutex guard
         let mut mutex_guard = self.tiles.lock().unwrap();
 
         // Look for tile
         for tile in mutex_guard.iter() {
-            if tile.is_valid(date) && tile.is_point_in_tile(point) {
+            let tile_guard = tile.lock().unwrap();
+            if tile_guard.is_valid(date) && tile_guard.is_point_in_tile(point) {
                 return Arc::clone(tile);
             }
         }
 
         // Create if not found
-        let tile = Arc::new(GribTile::new(point, date, &self.download_path));
+        let tile = Arc::new(Mutex::new(GribTile::new(point, date, &self.download_path)));
         mutex_guard.push(Arc::clone(&tile));
 
         return tile;
@@ -52,7 +53,7 @@ impl GribTileManager {
 
 pub struct GribTile {
     bounds: GeoTileBounds,
-    data_points: Mutex<Vec<GribDataPoint>>,
+    data_points: Vec<GribDataPoint>,
     forecast_date_utc: DateTime<Utc>,
     download_path: PathBuf,
     download_thread_handle: Option<JoinHandle<anyhow::Result<Vec<GribDataPoint>>>>,
@@ -90,13 +91,10 @@ impl Drop for GribTile {
 
 impl GribTile {
     pub fn new(point: &GeoPoint, date_time: &DateTime<Utc>, download_path: &PathBuf) -> GribTile {
-        // Set default download path
-        //let path = temp_dir().join("aviationcalc").join("gribtiles");
-
         // Create tile
         let mut new_tile = GribTile {
             bounds: GeoTileBounds::new_from_point(point, Angle::from_degrees(1.0)),
-            data_points: Mutex::new(Vec::new()),
+            data_points: Vec::new(),
             forecast_date_utc: date_time.clone(),
             download_path: download_path.clone(),
             download_thread_handle: None,
@@ -180,18 +178,14 @@ impl GribTile {
         // Take download handle
         if let Some(thread_handle) = self.download_thread_handle.take() {
             if let Ok(data_points) = thread_handle.join().unwrap() {
-                let mut lock_guard = self.data_points.lock().unwrap();
-
-                *lock_guard = data_points;
+                self.data_points = data_points;
             }
         }
 
         let mut min_dist = Length::new(f64::MAX);
         let mut ret_val = None;
 
-        let mutex_guard = self.data_points.lock().unwrap();
-
-        for (_i, grib_point) in mutex_guard.iter().enumerate() {
+        for (_i, grib_point) in self.data_points.iter().enumerate() {
             let dist = grib_point.distance_from(point);
             if (ret_val.is_none() || dist < min_dist) {
                 ret_val = Some(grib_point.clone());
