@@ -11,7 +11,7 @@ use crate::impl_two_part_op_for_number;
 use super::angle::Angle;
 use super::unit::Unit;
 
-/// Represents a velocity quantity.
+/// Represents a angular velocity quantity.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct AngularVelocity(pub(crate) f64);
 

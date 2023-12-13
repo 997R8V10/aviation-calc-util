@@ -1,55 +1,11 @@
-use std::{
-    fmt::Display,
-    fs::{create_dir_all, remove_file, File},
-    io::{self, BufReader},
-    path::PathBuf,
-    sync::{Arc, Mutex},
-    thread::{self, JoinHandle},
-};
+use std::{fs::{File, create_dir_all, remove_file}, io::{BufReader, self}, path::PathBuf, thread::{self, JoinHandle}};
 
-use chrono::{DateTime, Duration, Timelike, Utc};
+use chrono::{DateTime, Utc, Duration, Timelike};
 use grib::Grib2SubmessageDecoder;
 
-use crate::{
-    geo::{Bearing, GeoPoint, GeoTile, GeoTileBounds, Latitude, Longitude, EARTH_RADIUS},
-    units::{Angle, Length, Pressure, Temperature, Unit, Velocity},
-};
+use crate::{units::{Length, Velocity, Temperature, Pressure, Angle, Unit}, geo::{Latitude, Longitude, GeoPoint, GeoTileBounds, GeoTile}};
 
-use super::ISA_STD_PRES;
-
-/// A Thread-Safe Manager for Grib Data access.
-pub struct GribTileManager {
-    tiles: Mutex<Vec<Arc<Mutex<GribTile>>>>,
-    download_path: PathBuf,
-}
-
-impl GribTileManager {
-    pub fn new(download_path: &PathBuf) -> GribTileManager {
-        return GribTileManager {
-            tiles: Mutex::new(Vec::new()),
-            download_path: download_path.clone(),
-        };
-    }
-
-    pub fn find_or_create_tile(&self, point: &GeoPoint, date: &DateTime<Utc>) -> Arc<Mutex<GribTile>> {
-        // Get mutex guard
-        let mut mutex_guard = self.tiles.lock().unwrap();
-
-        // Look for tile
-        for tile in mutex_guard.iter() {
-            let tile_guard = tile.lock().unwrap();
-            if tile_guard.is_valid(date) && tile_guard.is_point_in_tile(point) {
-                return Arc::clone(tile);
-            }
-        }
-
-        // Create if not found
-        let tile = Arc::new(Mutex::new(GribTile::new(point, date, &self.download_path)));
-        mutex_guard.push(Arc::clone(&tile));
-
-        return tile;
-    }
-}
+use super::GribDataPoint;
 
 pub struct GribTile {
     bounds: GeoTileBounds,
@@ -325,74 +281,5 @@ impl GribTile {
         }
 
         return Ok(ret_list);
-    }
-}
-
-/// Data Point containing Grib information
-#[derive(Clone, Copy, Default, PartialEq)]
-pub struct GribDataPoint {
-    pub lat: Latitude,
-    pub lon: Longitude,
-    pub geo_pot_height: Length,
-    pub level_pressure: Pressure,
-    pub temp: Temperature,
-    pub v: Velocity,
-    pub u: Velocity,
-    pub rh: f64,
-    pub sfc_press: Pressure,
-}
-
-impl Display for GribDataPoint {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let wind = self.wind();
-        return write!(
-            f,
-            "Lat: {:.3} Lon: {:.3} Level: {:.0}hPa Height: {:.0}ft Temp: {:.1}C Wind: {:03.0}@{:.0}KT RH: {}",
-            self.lat.as_degrees(),
-            self.lon.as_degrees(),
-            self.level_pressure.as_hectopascals(),
-            self.geo_pot_height.as_feet(),
-            self.temp.as_celsius(),
-            wind.0.as_degrees(),
-            wind.1.as_knots(),
-            self.rh
-        );
-    }
-}
-
-impl std::fmt::Debug for GribDataPoint {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        return std::fmt::Display::fmt(&self, f);
-    }
-}
-
-impl GribDataPoint {
-    pub fn new(lat: Latitude, lon: Longitude, level_pressure: Pressure) -> GribDataPoint {
-        return GribDataPoint {
-            lat,
-            lon,
-            geo_pot_height: Length::new(0.0),
-            level_pressure,
-            temp: Temperature::from_celsius(15.0),
-            v: Velocity::new(0.0),
-            u: Velocity::new(0.0),
-            rh: 0.0,
-            sfc_press: ISA_STD_PRES,
-        };
-    }
-
-    pub fn wind(&self) -> (Bearing, Velocity) {
-        let wind_dir = Bearing::from_radians(f64::atan2(-self.u.as_meters_per_second(), -self.v.as_meters_per_second()));
-        let wind_spd = Velocity::sqrt(self.u.powi(2) + self.v.powi(2));
-
-        return (wind_dir, wind_spd);
-    }
-
-    pub fn distance_from(&self, point: &GeoPoint) -> Length {
-        let acft_geo_pot_height = EARTH_RADIUS * point.alt / (EARTH_RADIUS + point.alt);
-        let flat_dist = GeoPoint::flat_distance(point, &GeoPoint::new(self.lat, self.lon, point.alt));
-        let alt_dist = (acft_geo_pot_height - self.geo_pot_height).abs();
-
-        return Length::sqrt(flat_dist.powi(2) + alt_dist.powi(2));
     }
 }

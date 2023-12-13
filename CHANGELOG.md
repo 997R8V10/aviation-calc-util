@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.2] - 2023-12-13
+### Changed
+- Moved `atmos`/`grib` structs to their own file.
+
 ## [2.3.0] - 2023-12-12
 ### Changed
 - `atmos`/`grib`
@@ -253,6 +257,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
+[2.3.2]: https://github.com/997R8V10/aviation-calc-util/compare/v2.3.0...v2.3.2
 [2.3.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/997R8V10/aviation-calc-util/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.1.1...v2.2.0
