@@ -321,7 +321,7 @@ pub fn calculate_arc_course_intercept(
         Length::new(-1.0)
     } else {
         // Calculate arc length
-        Length::new(delta_start_to_end_radial.as_radians() * radius.as_meters())
+        Length::new(delta_ppos_to_end_radial.as_radians() * radius.as_meters())
         // theta * r
     };
 

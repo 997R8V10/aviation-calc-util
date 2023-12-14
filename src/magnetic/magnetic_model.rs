@@ -97,7 +97,10 @@ impl MagneticModel {
                     release_date = NaiveDate::parse_from_str(string_date, "%m/%d/%Y")?;
                 } else {
                     let error_context = "Invalid COF Coefficient Line Format";
-                    let n = split.next().context(error_context)?.parse::<usize>()?;
+                    let n = match split.next().context(error_context)?.parse::<usize>() {
+                        Ok(val) => val,
+                        Err(_) => break
+                    };                    
                     let m = split.next().context(error_context)?.parse::<usize>()?;
                     let g_nm = split.next().context(error_context)?.parse::<f64>()?;
                     let h_nm = split.next().context(error_context)?.parse::<f64>()?;

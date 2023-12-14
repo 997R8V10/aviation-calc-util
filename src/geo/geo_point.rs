@@ -183,7 +183,7 @@ impl GeoPoint {
         let phi_1 = self.lat.as_radians();
         let phi_2 = other.lat.as_radians();
         let lambda_1 = self.lon.as_radians();
-        let lambda_2 = self.lon.as_radians();
+        let lambda_2 = other.lon.as_radians();
 
         // Find angle between the two
         let y = f64::sin(lambda_2 - lambda_1) * f64::cos(phi_2);
