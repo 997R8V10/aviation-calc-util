@@ -26,6 +26,20 @@ impl GeoPoint {
         GeoPoint { lat, lon, alt }
     }
 
+    /// Creates a new GeoPoint
+    /// 
+    /// **Parameters:**
+    /// - `lat`: Latitude in ° (degrees)
+    /// - `lon`: Longitude in ° (degrees)
+    /// - `alt`: Altitude in ft (feet)
+    pub fn from_degs_and_ft(lat: f64, lon: f64, alt: f64) -> GeoPoint {
+        GeoPoint {
+            lat: Latitude::from_degrees(lat),
+            lon: Longitude::from_degrees(lon),
+            alt: Length::from_feet(alt),
+        }
+    }
+
     /// Moves the GeoPoint on a bearing by a distance
     pub fn move_by(&mut self, bearing: Bearing, distance: Length) {
         let r = EARTH_RADIUS + self.alt;
@@ -72,13 +86,13 @@ impl GeoPoint {
     /// Calculates the distance including altitude between two GeoPoints
     pub fn distance(&self, other: &GeoPoint) -> Length {
         let flat_dist = self.flat_distance(other);
-        let alt_dist = (other.alt - self.alt).abs();
+        let alt_dist = (other.alt - self.alt).value().abs();
 
-        return Length::sqrt(flat_dist.powi(2) + alt_dist.powi(2));
+        return f64::sqrt(flat_dist.value().powi(2) + alt_dist.powi(2)).into();
     }
 
     /// Calculates the intersection between two points and two courses
-    /// 
+    ///
     /// *Note:* This function will not account for reciprocal of the bearings
     pub fn intersection(&self, bearing_1: Bearing, other: &GeoPoint, bearing_2: Bearing) -> Option<GeoPoint> {
         // Conversions to radians
@@ -146,11 +160,15 @@ impl GeoPoint {
 
         let lambda_3 = lambda_1 + delta_lambda_1_3;
 
-        return Some(GeoPoint::new(Latitude::from_radians(phi_3), Longitude::from_radians(lambda_3), Length::new(0.0)));
+        return Some(GeoPoint::new(
+            Latitude::from_radians(phi_3),
+            Longitude::from_radians(lambda_3),
+            Length::new(0.0),
+        ));
     }
 
     /// Find closest intersection between two points and two radials.
-    /// 
+    ///
     /// This function will try both the radial and the reciprocal
     pub fn closest_intersection(&self, radial_1: Bearing, other: &GeoPoint, radial_2: Bearing) -> Option<GeoPoint> {
         // Try all possible radials

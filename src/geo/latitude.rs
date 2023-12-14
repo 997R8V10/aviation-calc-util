@@ -23,8 +23,28 @@ impl std::fmt::Debug for Latitude {
 }
 
 impl From<f64> for Latitude {
+    /// Creates a new latitude from ° (degrees).
     fn from(value: f64) -> Self {
         return Latitude::from_degrees(value);
+    }
+}
+
+impl From<Latitude> for f64 {
+    /// Gets the latitude in ° (degrees).
+    fn from(value: Latitude) -> Self {
+        return value.as_degrees();
+    }
+}
+
+impl From<Angle> for Latitude {
+    fn from(value: Angle) -> Self {
+        return Latitude::new(value);
+    }
+}
+
+impl From<Latitude> for Angle {
+    fn from(value: Latitude) -> Self {
+        return value.as_angle();
     }
 }
 
@@ -71,17 +91,17 @@ impl Latitude {
     }
 
     /// Gets the latitude as an Angle
-    pub fn as_angle(self) -> Angle {
+    pub fn as_angle(&self) -> Angle {
         return self.0;
     }
 
     /// Gets the latitude in rads (radians).
-    pub fn as_radians(self) -> f64 {
+    pub fn as_radians(&self) -> f64 {
         return self.0.as_radians();
     }
 
     /// Gets the latitude in ° (degrees).
-    pub fn as_degrees(self) -> f64 {
+    pub fn as_degrees(&self) -> f64 {
         return self.0.as_degrees();
     }
 

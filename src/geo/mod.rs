@@ -11,6 +11,8 @@ mod longitude;
 pub use geo_tile::GeoTile;
 pub use geo_tile::GeoTileBounds;
 pub use longitude::Longitude;
+//mod altitude;
+//pub use altitude::Altitude;
 
 // Constants
 /// Average radius of the Earth

@@ -109,7 +109,7 @@ pub fn calculate_impact_pressure_at_cas(cas: Velocity) -> Pressure {
     let coeff1 = 2.0 / (SPEC_HEAT_RATIO_AIR - 1.0);
     let coeff2 = SPEC_HEAT_RATIO_AIR / (SPEC_HEAT_RATIO_AIR - 1.0);
 
-    let x1 = ((cas / a0).powi(2).as_meters_per_second() + coeff1) / coeff1;
+    let x1 = ((cas / a0).as_meters_per_second().powi(2) + coeff1) / coeff1;
     let x2 = x1.powf(coeff2) - 1.0;
 
     return ISA_STD_PRES * x2;
@@ -167,7 +167,7 @@ pub fn calculate_mach_number(qc: Pressure, p: Pressure) -> f64 {
 pub fn calculate_eas(m: f64, p: Pressure) -> Velocity {
     let a0 = calculate_speed_of_sound_dry_air(ISA_STD_TEMP);
 
-    return a0 * m * Pressure::sqrt(p / ISA_STD_PRES).as_pascals();
+    return a0 * m * f64::sqrt((p / ISA_STD_PRES).as_pascals());
 }
 
 /// Calculates the speed of sound in dry air at a given temperature
@@ -196,7 +196,7 @@ pub fn calculate_speed_of_sound_dry_air(t: Temperature) -> Velocity {
 pub fn convert_mach_to_tas(m: f64, t: Temperature) -> Velocity {
     let a0 = calculate_speed_of_sound_dry_air(ISA_STD_TEMP);
 
-    return a0 * m * Temperature::sqrt(t / ISA_STD_TEMP).as_kelvin();
+    return a0 * m * f64::sqrt((t / ISA_STD_TEMP).as_kelvin());
 }
 
 /// Calculates the impact pressure

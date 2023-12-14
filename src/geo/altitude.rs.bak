@@ -1,0 +1,61 @@
+use crate::{units::{Length, Pressure}, atmos};
+
+/// Represents an altitude above the Earth's surface
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+pub struct Altitude(Length);
+
+// Display
+impl std::fmt::Display for Altitude {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return write!(f, "{}ft", self.0.as_feet());
+    }
+}
+
+impl std::fmt::Debug for Altitude {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return std::fmt::Display::fmt(&self, f);
+    }
+}
+
+impl From<f64> for Altitude {
+    /// Creates a new altitude from ft (feet).
+    fn from(value: f64) -> Self {
+        return Altitude::from_true(Length::from_feet(value));
+    }
+}
+
+impl From<Altitude> for f64 {
+    /// Gets the altitude in ft (feet).
+    fn from(value: Altitude) -> Self {
+        return value.as_true().as_feet();
+    }
+}
+
+impl From<Length> for Altitude {
+    fn from(value: Length) -> Self {
+        return Altitude::new(value);
+    }
+}
+
+impl From<Altitude> for Length {
+    fn from(value: Altitude) -> Self {
+        return value.as_true();
+    }
+}
+
+impl Altitude {
+    /// Creates a new Altitude from a true altitude.
+    pub fn new(val: &Length) -> Altitude {
+        return Altitude(*val);
+    }
+
+    /// Creates a new Altitude from a true altitude.
+    pub fn from_true(val: &Length) -> Altitude {
+        return Altitude(*val);
+    }
+
+    /// Creates a new Altitude from an indicated altitude
+    pub fn from_indicated(val: &Length, pres_set: &Pressure, sfc_pres: &Pressure) -> Altitude {
+        return Altitude(atmos::convert_indicated_to_absolute_alt(*val, *pres_set, *sfc_pres));
+    }
+}

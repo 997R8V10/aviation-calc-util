@@ -44,6 +44,18 @@ impl Unit for Pressure {
     }
 }
 
+impl From<f64> for Pressure {
+    fn from(value: f64) -> Self {
+        return Self::new(value);
+    }
+}
+
+impl From<Pressure> for f64 {
+    fn from(value: Pressure) -> Self {
+        return value.value();
+    }
+}
+
 // Custom functions
 impl Pressure {
     /// Creates a new Pressure.
@@ -71,17 +83,17 @@ impl Pressure {
     }
 
     /// Gets the pressure in Pa (pascals).
-    pub fn as_pascals(self) -> f64 {
+    pub fn as_pascals(&self) -> f64 {
         return self.0;
     }
 
     /// Gets the pressure in inHg (inches of mercury).
-    pub fn as_inches_of_mercury(self) -> f64 {
+    pub fn as_inches_of_mercury(&self) -> f64 {
         return Self::convert_Pa_to_inHg(self.0);
     }
 
     /// Gets the pressure in hPa (hectopascals).
-    pub fn as_hectopascals(self) -> f64 {
+    pub fn as_hectopascals(&self) -> f64 {
         return self.0 / 100.0;
     }
 

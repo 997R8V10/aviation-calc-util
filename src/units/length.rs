@@ -53,6 +53,18 @@ impl Unit for Length {
     }
 }
 
+impl From<f64> for Length {
+    fn from(value: f64) -> Self {
+        return Self::new(value);
+    }
+}
+
+impl From<Length> for f64 {
+    fn from(value: Length) -> Self {
+        return value.value();
+    }
+}
+
 // Custom functions
 impl Length {
     /// Creates a new Length.
@@ -88,22 +100,22 @@ impl Length {
     }
 
     /// Gets the length in m (meters).
-    pub fn as_meters(self) -> f64 {
+    pub fn as_meters(&self) -> f64 {
         return self.0;
     }
 
     /// Gets the length in ft (feet).
-    pub fn as_feet(self) -> f64 {
+    pub fn as_feet(&self) -> f64 {
         return Self::convert_meters_to_feet(self.0);
     }
 
     /// Gets the length in mi (statute miles).
-    pub fn as_statute_miles(self) -> f64 {
+    pub fn as_statute_miles(&self) -> f64 {
         return Self::convert_meters_to_statute_miles(self.0);
     }
 
     /// Gets the length in nmi (nautical miles).
-    pub fn as_nautical_miles(self) -> f64 {
+    pub fn as_nautical_miles(&self) -> f64 {
         return Self::convert_meters_to_nautical_miles(self.0);
     }
 

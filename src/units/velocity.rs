@@ -53,6 +53,18 @@ impl Unit for Velocity {
     }
 }
 
+impl From<f64> for Velocity {
+    fn from(value: f64) -> Self {
+        return Self::new(value);
+    }
+}
+
+impl From<Velocity> for f64 {
+    fn from(value: Velocity) -> Self {
+        return value.value();
+    }
+}
+
 // Custom functions
 impl Velocity {
     /// Creates a new Velocity.
@@ -80,17 +92,17 @@ impl Velocity {
     }
 
     /// Gets the velocity in m/s (meters per second).
-    pub fn as_meters_per_second(self) -> f64 {
+    pub fn as_meters_per_second(&self) -> f64 {
         return self.0;
     }
 
     /// Gets the velocity in kts (knots, nautical miles per hour)
-    pub fn as_knots(self) -> f64 {
+    pub fn as_knots(&self) -> f64 {
         return Self::convert_mpers_to_kts(self.0);
     }
 
     /// Gets the velocity in ft/min (feet per minute)
-    pub fn as_feet_per_minute(self) -> f64 {
+    pub fn as_feet_per_minute(&self) -> f64 {
         return Self::convert_mpers_to_ftpermin(self.0);
     }
 

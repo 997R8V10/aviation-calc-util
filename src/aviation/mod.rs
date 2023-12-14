@@ -61,7 +61,7 @@ pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_
 /// let calculated = calculate_radius_of_turn(Velocity::from_knots(250.0), Angle::from_degrees(25.0));
 /// let expected = Length::new(3616.0);
 ///
-/// let abs_difference = (calculated - expected).abs().as_meters();
+/// let abs_difference = (calculated - expected).as_meters().abs();
 /// assert!(abs_difference <= 10.0);
 /// ```
 pub fn calculate_radius_of_turn(ground_speed: Velocity, bank_angle: Angle) -> Length {
@@ -70,13 +70,13 @@ pub fn calculate_radius_of_turn(ground_speed: Velocity, bank_angle: Angle) -> Le
     }
 
     // R = V^2 / (g * tan(bank_angle))
-    return Length::new(ground_speed.powi(2).as_meters_per_second() / (EARTH_GRAVITY * f64::tan(bank_angle.as_radians())));
+    return Length::new(ground_speed.as_meters_per_second().powi(2) / (EARTH_GRAVITY * f64::tan(bank_angle.as_radians())));
 }
 
 /// Calculates bank angle at a certain radius of turn and ground_speed
 pub fn calculate_bank_angle(radius_of_turn: Length, ground_speed: Velocity) -> Angle {
     return Angle::new(f64::atan2(
-        ground_speed.powi(2).as_meters_per_second(),
+        ground_speed.as_meters_per_second().powi(2),
         EARTH_GRAVITY * radius_of_turn.as_meters(),
     ));
 }
@@ -224,7 +224,7 @@ pub fn calculate_linear_course_intercept(aircraft: &GeoPoint, waypoint: &GeoPoin
 
     let turn_amt = final_dir_bearing - course;
 
-    let radial = if turn_amt.abs().as_radians() < FRAC_PI_2 { -course } else { course };
+    let radial = if turn_amt.as_radians().abs() < FRAC_PI_2 { -course } else { course };
 
     // Calculate radius
     let r = (EARTH_RADIUS + aircraft.alt).as_meters();
@@ -250,19 +250,19 @@ pub fn calculate_linear_course_intercept(aircraft: &GeoPoint, waypoint: &GeoPoin
 
     // Calculate required course
     let initial_bearing = GeoPoint::initial_bearing(&a_track_point, &temp_wp);
-    let required_course = if turn_amt.abs().as_radians() < FRAC_PI_2 {
+    let required_course = if turn_amt.as_radians().abs() < FRAC_PI_2 {
         initial_bearing
     } else {
         -initial_bearing
     };
 
-    let along_track_distance = if turn_amt.abs().as_radians() < FRAC_PI_2 {
+    let along_track_distance = if turn_amt.as_radians().abs() < FRAC_PI_2 {
         Length::new(a_track_m)
     } else {
         Length::new(-a_track_m)
     };
 
-    let cross_track_error = if turn_amt.abs().as_radians() < FRAC_PI_2 {
+    let cross_track_error = if turn_amt.as_radians().abs() < FRAC_PI_2 {
         Length::new(-x_track_m)
     } else {
         Length::new(x_track_m)
@@ -365,7 +365,7 @@ pub fn calculate_turn_lead_distance(
     if let Some(intersection) = intersection {
         // Find degrees to turn
         let turn_amt = course - cur_bearing;
-        let theta = turn_amt.abs();
+        let theta = turn_amt.as_radians().abs().into();
 
         // Calculate constant radius of turn
         let r = calculate_constant_radius_turn(cur_bearing, turn_amt, wind_direction, wind_speed, true_airspeed, bank_limit, turn_rate);

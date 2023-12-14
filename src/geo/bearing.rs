@@ -55,6 +55,33 @@ impl std::fmt::Debug for Bearing {
     }
 }
 
+
+impl From<f64> for Bearing {
+    /// Creates a new Bearing from ° (degrees).
+    fn from(value: f64) -> Self {
+        return Bearing::from_degrees(value);
+    }
+}
+
+impl From<Bearing> for f64 {
+    /// Gets the latitude in ° (degrees).
+    fn from(value: Bearing) -> Self {
+        return value.as_degrees();
+    }
+}
+
+impl From<Angle> for Bearing {
+    fn from(value: Angle) -> Self {
+        return Bearing::new(value);
+    }
+}
+
+impl From<Bearing> for Angle {
+    fn from(value: Bearing) -> Self {
+        return value.as_angle();
+    }
+}
+
 // Custom functions
 impl Bearing {
     /// Creates a new bearing.

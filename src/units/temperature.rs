@@ -44,6 +44,18 @@ impl Unit for Temperature {
     }
 }
 
+impl From<f64> for Temperature {
+    fn from(value: f64) -> Self {
+        return Self::new(value);
+    }
+}
+
+impl From<Temperature> for f64 {
+    fn from(value: Temperature) -> Self {
+        return value.value();
+    }
+}
+
 // Custom functions
 impl Temperature {
     /// Creates a new Temperature.
@@ -63,12 +75,12 @@ impl Temperature {
     }
 
     /// Gets the temperature in K (kelvin).
-    pub fn as_kelvin(self) -> f64 {
+    pub fn as_kelvin(&self) -> f64 {
         return self.0;
     }
 
     /// Gets the temperature in °C (degrees celsius).
-    pub fn as_celsius(self) -> f64 {
+    pub fn as_celsius(&self) -> f64 {
         return Self::convert_kelvin_to_celsius(self.0);
     }
 

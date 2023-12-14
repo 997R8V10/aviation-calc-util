@@ -53,6 +53,18 @@ impl Unit for Angle {
     }
 }
 
+impl From<f64> for Angle {
+    fn from(value: f64) -> Self {
+        return Self::new(value);
+    }
+}
+
+impl From<Angle> for f64 {
+    fn from(value: Angle) -> Self {
+        return value.value();
+    }
+}
+
 // Custom functions
 impl Angle {
     /// Creates a new Angle.
@@ -81,17 +93,17 @@ impl Angle {
     }
 
     /// Gets the angle in rads (radians).
-    pub fn as_radians(self) -> f64 {
+    pub fn as_radians(&self) -> f64 {
         return self.0;
     }
 
     /// Gets the angle in ° (degrees).
-    pub fn as_degrees(self) -> f64 {
+    pub fn as_degrees(&self) -> f64 {
         return self.0.to_degrees();
     }
 
     /// Gets the angle in degrees, mins, secs
-    pub fn as_deg_min_sec(self) -> (i32, u32, f64) {
+    pub fn as_deg_min_sec(&self) -> (i32, u32, f64) {
         let sign = if self.0 < 0.0  {-1.0} else {1.0};
         let new_degs = self.as_degrees() * sign;
 

@@ -57,7 +57,7 @@ impl GribDataPoint {
 
     pub fn wind(&self) -> (Bearing, Velocity) {
         let wind_dir = Bearing::from_radians(f64::atan2(-self.u.as_meters_per_second(), -self.v.as_meters_per_second()));
-        let wind_spd = Velocity::sqrt(self.u.powi(2) + self.v.powi(2));
+        let wind_spd = f64::sqrt(self.u.as_meters_per_second().powi(2) + self.v.as_meters_per_second().powi(2)).into();
 
         return (wind_dir, wind_spd);
     }
@@ -65,8 +65,8 @@ impl GribDataPoint {
     pub fn distance_from(&self, point: &GeoPoint) -> Length {
         let acft_geo_pot_height = EARTH_RADIUS * point.alt / (EARTH_RADIUS + point.alt);
         let flat_dist = GeoPoint::flat_distance(point, &GeoPoint::new(self.lat, self.lon, point.alt));
-        let alt_dist = (acft_geo_pot_height - self.geo_pot_height).abs();
+        let alt_dist = (acft_geo_pot_height - self.geo_pot_height).as_meters().abs();
 
-        return Length::sqrt(flat_dist.powi(2) + alt_dist.powi(2));
+        return f64::sqrt(flat_dist.as_meters().powi(2) + alt_dist.powi(2)).into();
     }
 }

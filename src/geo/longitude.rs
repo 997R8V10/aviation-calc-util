@@ -21,6 +21,33 @@ impl std::fmt::Debug for Longitude {
     }
 }
 
+
+impl From<f64> for Longitude {
+    /// Creates a new Longitude from ° (degrees).
+    fn from(value: f64) -> Self {
+        return Longitude::from_degrees(value);
+    }
+}
+
+impl From<Longitude> for f64 {
+    /// Gets the Longitude in ° (degrees).
+    fn from(value: Longitude) -> Self {
+        return value.as_degrees();
+    }
+}
+
+impl From<Angle> for Longitude {
+    fn from(value: Angle) -> Self {
+        return Longitude::new(value);
+    }
+}
+
+impl From<Longitude> for Angle {
+    fn from(value: Longitude) -> Self {
+        return value.as_angle();
+    }
+}
+
 // Custom functions
 impl Longitude {
     /// Creates a new longitude.

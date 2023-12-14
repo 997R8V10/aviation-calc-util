@@ -53,6 +53,18 @@ impl Unit for AngularVelocity {
     }
 }
 
+impl From<f64> for AngularVelocity {
+    fn from(value: f64) -> Self {
+        return Self::new(value);
+    }
+}
+
+impl From<AngularVelocity> for f64 {
+    fn from(value: AngularVelocity) -> Self {
+        return value.value();
+    }
+}
+
 // Custom functions
 impl AngularVelocity {
     /// Creates a new Angular Velocity.
@@ -72,12 +84,12 @@ impl AngularVelocity {
     }
 
     /// Gets the angular velocity in rad/s (radians per second).
-    pub fn as_radians_per_second(self) -> f64 {
+    pub fn as_radians_per_second(&self) -> f64 {
         return self.0;
     }
 
     /// Gets the angular velocity in °/s (degrees per second).
-    pub fn as_degrees_per_second(self) -> f64 {
+    pub fn as_degrees_per_second(&self) -> f64 {
         return self.0.to_degrees();
     }
 }

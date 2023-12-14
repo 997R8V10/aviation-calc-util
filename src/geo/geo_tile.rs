@@ -62,7 +62,7 @@ impl GeoTileBounds {
     }
 
     pub fn new_from_point(point: &GeoPoint, resolution: Angle) -> GeoTileBounds {
-        let res = resolution.abs().as_radians();
+        let res = resolution.as_radians().abs();
 
         // Get indexes for the speciefied resolution and floor it
         let max_lat_index = (FRAC_PI_2 / res).floor() as i32;
