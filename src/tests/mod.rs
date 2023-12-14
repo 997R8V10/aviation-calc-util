@@ -3,14 +3,14 @@ use std::{env::temp_dir, thread, time::Duration};
 use chrono::Utc;
 
 use crate::{
-    atmos::{grib::GribTile, self},
+    atmos::{self, convert_tas_to_ias, grib::GribTile},
     aviation::{self, calculate_arc_course_intercept},
     geo::{Bearing, GeoPoint, Latitude, Longitude},
-    units::{Angle, AngularVelocity, Length, Unit, Velocity, Temperature},
+    units::{Angle, AngularVelocity, Length, Pressure, Temperature, Unit, Velocity},
 };
 
 #[test]
-fn true_airspeed_1(){
+fn true_airspeed_1() {
     let online_tas = Velocity::from_knots(483.0);
 
     let h = Length::from_feet(35_000.0);
@@ -28,6 +28,21 @@ fn true_airspeed_1(){
     println!("\tOnline TAS: \t{}kts", online_tas.as_knots());
     println!("\tAtmos. TAS: \t{}kts", atmos_tas.as_knots());
     println!("\tAtmos. TAS: \t{}kts", atmos_tas2.0.as_knots());
+
+    assert!((atmos_tas.as_knots() - online_tas.as_knots()).abs() <= 5.0);
+}
+
+#[test]
+fn convert_tas_to_ias_1() {
+    let (ias, _mach) = convert_tas_to_ias(
+        Velocity::from_knots(421.0),
+        Pressure::from_hectopascals(250.0),
+        Length::from_feet(35_269.0),
+        Length::from_feet(34_873.0),
+        Temperature::from_kelvin(221.0),
+    );
+
+    assert!((ias.as_knots() - 250.0) <= 1.0);
 }
 
 #[test]
@@ -37,6 +52,7 @@ fn calculate_max_bank_angle_1() {
         Angle::from_degrees(25.0),
         AngularVelocity::from_degrees_per_second(3.0),
     );
+
     assert_eq!(result, Angle::from_degrees(25.0));
 }
 

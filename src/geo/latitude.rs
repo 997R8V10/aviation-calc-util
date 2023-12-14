@@ -22,6 +22,12 @@ impl std::fmt::Debug for Latitude {
     }
 }
 
+impl From<f64> for Latitude {
+    fn from(value: f64) -> Self {
+        return Latitude::from_degrees(value);
+    }
+}
+
 // Custom functions
 impl Latitude {
     /// Creates a new latitude.
