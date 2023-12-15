@@ -11,12 +11,18 @@ use super::{MagneticModel, MagneticField};
 /// This increases performance by caching magnetic calculations
 pub struct MagneticTileManager {
     tiles: Mutex<Vec<Arc<MagneticTile>>>,
-    model: MagneticModel
+    model: Option<MagneticModel>
+}
+
+impl Default for MagneticTileManager {
+    fn default() -> Self {
+        Self { tiles: Mutex::new(Vec::new()), model: None }
+    }
 }
 
 impl MagneticTileManager {
     pub fn new(model: MagneticModel) -> MagneticTileManager {
-        return MagneticTileManager { tiles: Mutex::new(Vec::new()), model };
+        return MagneticTileManager { tiles: Mutex::new(Vec::new()), model: Some(model) };
     }
 
     pub fn find_or_create_tile(&self, point: &GeoPoint, date: &NaiveDate) -> Arc<MagneticTile> {
@@ -78,12 +84,16 @@ impl GeoTile for MagneticTile {
 impl MagneticTile {
     pub const MAG_TILE_RES: Angle = Angle(0.1);
     
-    pub fn new(point: &GeoPoint, date: &NaiveDate, model: &MagneticModel) -> MagneticTile {
+    pub fn new(point: &GeoPoint, date: &NaiveDate, model: &Option<MagneticModel>) -> MagneticTile {
         let bounds = GeoTileBounds::new_from_point(point, Self::MAG_TILE_RES);
+        let field = match model {
+            Some(model_val) => model_val.calculate_field(&bounds.center_point(), date),
+            None => MagneticField::default()
+        };
         return MagneticTile {
             bounds: bounds,
             date: date.clone(),
-            field: model.calculate_field(&bounds.center_point(), date)
+            field
         };
     }
 
