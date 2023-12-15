@@ -37,7 +37,7 @@ impl MagneticTileManager {
         }
 
         // Create if not found
-        let tile = Arc::new(MagneticTile::new(point, date, &self.model));
+        let tile = Arc::new(MagneticTile::new(point, date, self.model.as_ref()));
         mutex_guard.push(Arc::clone(&tile));
 
         return tile;
@@ -84,7 +84,7 @@ impl GeoTile for MagneticTile {
 impl MagneticTile {
     pub const MAG_TILE_RES: Angle = Angle(0.1);
     
-    pub fn new(point: &GeoPoint, date: &NaiveDate, model: &Option<MagneticModel>) -> MagneticTile {
+    pub fn new(point: &GeoPoint, date: &NaiveDate, model: Option<&MagneticModel>) -> MagneticTile {
         let bounds = GeoTileBounds::new_from_point(point, Self::MAG_TILE_RES);
         let field = match model {
             Some(model_val) => model_val.calculate_field(&bounds.center_point(), date),
