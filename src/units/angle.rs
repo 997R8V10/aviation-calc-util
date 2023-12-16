@@ -8,6 +8,7 @@ use std::ops::Sub;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
+use super::Length;
 use super::angular_velocity::AngularVelocity;
 use super::unit::Unit;
 
@@ -114,5 +115,11 @@ impl Angle {
         degrees *= sign;
 
         return (degrees as i32, mins as u32, secs);
+    }
+
+    pub fn calculate_angle_from_arc_length(arc_length: Length, radius: Length) -> Angle {
+        // c = theta * r
+        // theta = c / r
+        return Angle::new((arc_length / radius).into());
     }
 }
