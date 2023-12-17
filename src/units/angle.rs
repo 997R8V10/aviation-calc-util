@@ -117,9 +117,24 @@ impl Angle {
         return (degrees as i32, mins as u32, secs);
     }
 
+    /// Calculates Angle given arc length
+    /// 
+    /// **Parameters:**
+    /// - `arc_length`: Arc Length
+    /// - `radius`: Radius of circle
     pub fn calculate_angle_from_arc_length(arc_length: Length, radius: Length) -> Angle {
         // c = theta * r
         // theta = c / r
         return Angle::new((arc_length / radius).into());
+    }
+
+    ///Calculates Arc Length
+    /// 
+    /// **Parameters:**
+    /// - `angle`: Angle
+    /// - `radius`: Radius of circle
+    pub fn calculate_arc_length(angle: Angle, radius: Length) -> Length {
+        // theta * r
+        return Length::new(angle.as_radians() * radius.as_meters());
     }
 }

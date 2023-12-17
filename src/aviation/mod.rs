@@ -403,3 +403,12 @@ pub fn find_intersection_to_course(position: &GeoPoint, wp: &GeoPoint, cur_beari
 
     return int_2;
 }
+
+/// Calculates Flight Path Angle (FPA)
+pub fn calculate_flight_path_angle(ground_speed: Velocity, vertical_speed: Velocity) -> Angle {
+    return Angle::new(f64::atan2(vertical_speed.as_meters_per_second(), ground_speed.as_meters_per_second()));
+}
+
+pub fn calculate_vertical_speed(ground_speed: Velocity, flight_path_angle: Angle) -> Velocity {
+    return Velocity::new(ground_speed.as_meters_per_second() * f64::tan(flight_path_angle.as_radians()));
+}
