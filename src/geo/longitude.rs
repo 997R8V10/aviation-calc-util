@@ -65,10 +65,14 @@ impl Longitude {
         return Self::new(Angle::from_degrees(val));
     }
 
+    /// Creates a new longitude from degrees mins and secs
     pub fn from_deg_min_sec(deg: i32, mins: u32, secs: f64) -> Longitude {
         return Longitude::new(Angle::from_deg_min_sec(deg, mins, secs));
     }
 
+    /// Creates a new longitude from SCT format
+    /// 
+    /// String should be formatted like `W049.52.27.771`
     pub fn from_vrc(vrc_coord: &str) -> Option<Longitude> {
         if let Some(angle) = convert_vrc_to_decimal_deg_single(vrc_coord) {
             return Some(Longitude::new(angle));
@@ -77,6 +81,17 @@ impl Longitude {
         return None;
     }
 
+    /// Creates a new longitude from the NATS format used in AIPs.
+    /// 
+    /// ## Example
+    ///
+    /// ```
+    /// use aviation_calc_util::geo::Longitude;
+    ///
+    /// let calculated = Longitude::from_nats("0061347W").expect("Could not convert NATS String");
+    /// let expected = Longitude::from_deg_min_sec(-6, 13 as u32, 47 as f64);
+    /// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < 0.1);
+    /// ```
     pub fn from_nats(nats_coord: &str) -> Option<Longitude> {
         if let Some(angle) = convert_nats_to_decimal_single(nats_coord, false) {
             return Some(Longitude::new(angle));
@@ -100,14 +115,17 @@ impl Longitude {
         return self.0;
     }
 
+    /// Gets the longitude in degrees, mins, secs
     pub fn as_deg_min_sec(&self) -> (i32, u32, f64) {
         return self.0.as_deg_min_sec();
     }
 
+    /// Gets the longitude as a SCT string
     pub fn as_vrc(&self) -> String {
         return convert_decimal_deg_to_vrc_single(self.0, false);
     }
 
+    /// Gets the longitude as a NATS string
     pub fn as_nats(&self) -> String {
         return convert_decimal_to_nats_single(self.0, false);
     }

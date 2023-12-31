@@ -82,6 +82,16 @@ impl Latitude {
     }
 
     /// Creates a new latitude from the NATS format used in AIPs.
+    /// 
+    /// ## Example
+    ///
+    /// ```
+    /// use aviation_calc_util::geo::Latitude;
+    ///
+    /// let calculated = Latitude::from_nats("543940N").expect("Could not convert NATS String");
+    /// let expected = Latitude::from_deg_min_sec(54, 39 as u32, 40 as f64);
+    /// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < 0.1);
+    /// ```
     pub fn from_nats(nats_coord: &str) -> Option<Latitude> {
         if let Some(angle) = convert_nats_to_decimal_single(nats_coord, true) {
             return Some(Latitude::new(angle));

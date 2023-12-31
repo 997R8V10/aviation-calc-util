@@ -28,7 +28,7 @@ fn convert_nats_to_decimal_single(nats_coord: &str, is_latitude: bool) -> Option
     let sign = if last_char == "S" || last_char == "W" { -1 } else { 1 };
     let mut current_pos = 0;
     let first_chunk = if is_latitude { 2 } else { 3 };
-    if let Ok(mut degrees) = &nats_coord[current_pos..current_pos + 2].parse::<i32>() {
+    if let Ok(mut degrees) = &nats_coord[current_pos..current_pos + first_chunk].parse::<i32>() {
         degrees *= sign;
         current_pos += first_chunk;
         if let Ok(minutes) = &nats_coord[current_pos..current_pos + 2].parse::<u32>() {
