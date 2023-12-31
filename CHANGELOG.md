@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.1] - 2023-12-31
+### Fixed
+- `geo`
+  - `Longitude`
+    - Fixed NATS conversion functions
+
 ## [2.7.0] - 2023-12-16
 ### Added
 - `units`
@@ -284,6 +290,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
+[2.7.1]: https://github.com/997R8V10/aviation-calc-util/compare/v2.7.0...v2.7.1
+[2.7.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.6.0...v2.7.0
+[2.6.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.3.4...v2.4.0
 [2.3.3]: https://github.com/997R8V10/aviation-calc-util/compare/v2.3.2...v2.3.3

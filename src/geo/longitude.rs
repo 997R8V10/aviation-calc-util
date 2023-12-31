@@ -78,7 +78,7 @@ impl Longitude {
     }
 
     pub fn from_nats(nats_coord: &str) -> Option<Longitude> {
-        if let Some(angle) = convert_nats_to_decimal_single(nats_coord, true) {
+        if let Some(angle) = convert_nats_to_decimal_single(nats_coord, false) {
             return Some(Longitude::new(angle));
         }
 
