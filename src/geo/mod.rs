@@ -1,3 +1,4 @@
+use crate::units::Acceleration;
 use crate::units::{Angle, Length};
 
 mod bearing;
@@ -19,7 +20,7 @@ pub use longitude::Longitude;
 pub const EARTH_RADIUS: Length = Length(6371e3);
 
 /// Earth Surface Gravitational Acceleration (m/s^2)
-pub const EARTH_GRAVITY: f64 = 9.80665;
+pub const EARTH_GRAVITY: Acceleration = Acceleration(9.80665);
 
 // Coordinate conversions
 fn convert_nats_to_decimal_single(nats_coord: &str, is_latitude: bool) -> Option<Angle> {

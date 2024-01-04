@@ -44,7 +44,7 @@ pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_
     // bank angle = atan(rate of turn * v / g)
     let bank_angle = Angle::new(f64::atan2(
         turn_rate.as_radians_per_second() * ground_speed.as_meters_per_second(),
-        EARTH_GRAVITY,
+        EARTH_GRAVITY.as_meters_per_second_squared(),
     ));
 
     return if bank_angle > bank_limit { bank_limit } else { bank_angle };
@@ -70,14 +70,14 @@ pub fn calculate_radius_of_turn(ground_speed: Velocity, bank_angle: Angle) -> Le
     }
 
     // R = V^2 / (g * tan(bank_angle))
-    return Length::new(ground_speed.as_meters_per_second().powi(2) / (EARTH_GRAVITY * f64::tan(bank_angle.as_radians())));
+    return Length::new(ground_speed.as_meters_per_second().powi(2) / (EARTH_GRAVITY.as_meters_per_second_squared() * f64::tan(bank_angle.as_radians())));
 }
 
 /// Calculates bank angle at a certain radius of turn and ground_speed
 pub fn calculate_bank_angle(radius_of_turn: Length, ground_speed: Velocity) -> Angle {
     return Angle::new(f64::atan2(
         ground_speed.as_meters_per_second().powi(2),
-        EARTH_GRAVITY * radius_of_turn.as_meters(),
+        EARTH_GRAVITY.as_meters_per_second_squared() * radius_of_turn.as_meters(),
     ));
 }
 
