@@ -38,6 +38,14 @@ impl Div<std::time::Duration> for Length {
     }
 }
 
+impl Div<Velocity> for Length {
+    type Output = std::time::Duration;
+
+    fn div(self, rhs: Velocity) -> Self::Output {
+        return std::time::Duration::from_secs_f64(self.0 / rhs.0);
+    }
+}
+
 impl Unit for Length {
     /// Creates a new Length.
     ///

@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2024-01-04
+### Added
+- `physics`
+  - Kinematics Equations
+- `math`
+  - Interoplation Function
+  - Line intersections
+- `units`
+  - `acceleration`
+    - New Acceleration Quantity
+  - `length`
+    - Length / Velocity => Time
+  - `velocity`
+    - Velocity / Time => Acceleration
+
 ## [2.7.2] - 2023-12-31
 ### Fixed
 - `geo`
@@ -290,6 +305,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
+[2.8.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.7.2...v2.8.0
 [2.7.2]: https://github.com/997R8V10/aviation-calc-util/compare/v2.7.0...v2.7.2
 [2.7.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.5.0...v2.6.0

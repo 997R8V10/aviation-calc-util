@@ -30,5 +30,8 @@ pub mod magnetic;
 /// Unit Conversions and Handling
 pub mod units;
 
+/// Physics Calculations
+pub mod physics;
+
 #[cfg(test)]
 mod tests;

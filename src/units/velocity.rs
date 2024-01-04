@@ -8,6 +8,7 @@ use std::ops::Sub;
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
+use super::Acceleration;
 use super::length::Length;
 use super::unit::Unit;
 
@@ -35,6 +36,14 @@ impl Mul<std::time::Duration> for Velocity {
 
     fn mul(self, rhs: std::time::Duration) -> Self::Output {
         return Length::new(self.0 * rhs.as_secs_f64());
+    }
+}
+
+impl Div<std::time::Duration> for Velocity {
+    type Output = Acceleration;
+
+    fn div(self, rhs: std::time::Duration) -> Self::Output {
+        return Acceleration::new(self.0 / rhs.as_secs_f64());
     }
 }
 
