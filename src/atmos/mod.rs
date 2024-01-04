@@ -59,7 +59,7 @@ pub fn calculate_dry_air_density(p: Pressure, t: Temperature) -> f64 {
 ///
 /// **Reference:** <https://www.omnicalculator.com/physics/air-pressure-at-altitude>
 pub fn calculate_pressure_at_alt(h: Length, h_0: Length, p_0: Pressure, t: Temperature) -> Pressure {
-    let e_pow = (-EARTH_GRAVITY * (h - h_0).as_meters()) / (R_DRY_AIR * t.as_kelvin());
+    let e_pow = (-EARTH_GRAVITY.as_meters_per_second_squared() * (h - h_0).as_meters()) / (R_DRY_AIR * t.as_kelvin());
 
     return p_0 * E.powf(e_pow);
 }
@@ -90,7 +90,7 @@ pub fn calculate_temp_at_alt(h: Length, h_0: Length, t_0: Temperature) -> Temper
 pub fn calculate_density_altitude(p: Pressure, t: Temperature) -> Length {
     let pres_ratio = (p / ISA_STD_PRES).as_pascals();
     let temp_ratio = (t / ISA_STD_TEMP).as_kelvin();
-    let exp = ((EARTH_GRAVITY / (ISA_STD_LAPSE_RATE * R_DRY_AIR)) - 1.0).powi(-1);
+    let exp = ((EARTH_GRAVITY.as_meters_per_second_squared() / (ISA_STD_LAPSE_RATE * R_DRY_AIR)) - 1.0).powi(-1);
     return Length::new((ISA_STD_TEMP.as_kelvin() / ISA_STD_LAPSE_RATE) * (1.0 - (pres_ratio / temp_ratio).powf(exp)));
 }
 
