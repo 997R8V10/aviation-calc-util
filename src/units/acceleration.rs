@@ -79,7 +79,7 @@ impl Acceleration {
     ///
     /// **Parameters:**
     /// - `val` - Value in kts/s (knots per second, nautical miles per hour per second)
-    pub fn from_knots(val: f64) -> Acceleration {
+    pub fn from_knots_per_second(val: f64) -> Acceleration {
         return Acceleration(super::Velocity::convert_kts_to_mpers(val));
     }
 
