@@ -67,3 +67,17 @@ pub fn kinematics_time_1(displacement: Length, initial_velocity: Velocity, final
 pub fn kinematics_time_1_general(displacement: f64, initial_velocity: f64, final_velocity: f64) -> f64 {
     return displacement * 2.0 / (initial_velocity + final_velocity);
 }
+
+/// Calculates Acceleration from Initial Velocity, Final Velocity, and Time
+/// 
+/// Kinematics Equation = a = (V<sub>f</sub> - V<sub>i</sub>) / t
+pub fn kinematics_acceleration(initial_velocity: Velocity, final_velocity: Velocity, time: Duration) -> Acceleration {
+    return (final_velocity - initial_velocity) / time;
+}
+
+/// Calculates Acceleration from Initial Velocity, Final Velocity, and Time
+/// 
+/// Kinematics Equation = a = (V<sub>f</sub> - V<sub>i</sub>) / t
+pub fn kinematics_acceleration_general(initial_velocity: f64, final_velocity: f64, time: f64) -> f64 {
+    return (final_velocity - initial_velocity) / time;
+}
