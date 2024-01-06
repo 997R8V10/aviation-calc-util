@@ -92,6 +92,25 @@ impl Angle {
 
         return Angle::from_degrees(decimal_degs);
     }
+    
+    /// Creates a new Angle from percentage (percentage is out of 100, that is, 50% is passed as 50, not 0.5)
+    ///
+    /// ## Example
+    ///
+    /// ```
+    /// use aviation_calc_util::units::Angle;
+    ///
+    /// let calculated = Angle::from_percentage(100.0);
+    /// let expected = Angle::from_degrees(45.0);
+    /// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < f64::EPSILON);
+    ///
+    /// let calculated = Angle::from_percentage(60.0);
+    /// let expected = Angle::from_radians(f64::atan2(60.0, 100.0));
+    /// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < f64::EPSILON);
+    /// ```
+    pub fn from_percentage(percentage: f64) -> Angle {
+        return Angle::from_radians(f64::atan2(percentage, 100.0));
+    }
 
     /// Gets the angle in rads (radians).
     pub fn as_radians(&self) -> f64 {
@@ -101,6 +120,11 @@ impl Angle {
     /// Gets the angle in ° (degrees).
     pub fn as_degrees(&self) -> f64 {
         return self.0.to_degrees();
+    }
+
+    /// Gets the angle in % (percentage).
+    pub fn as_percentage(&self) -> f64 {
+        return f64::tan(self.0) * 100.0;
     }
 
     /// Gets the angle in degrees, mins, secs
