@@ -73,6 +73,16 @@ impl Longitude {
     /// Creates a new longitude from SCT format
     /// 
     /// String should be formatted like `W049.52.27.771`
+    /// 
+    /// ## Example
+    ///
+    /// ```
+    /// use aviation_calc_util::geo::Longitude;
+    ///
+    /// let calculated = Longitude::from_vrc("W52.34.12.123").expect("Could not convert VRC String");
+    /// let expected = Longitude::from_deg_min_sec(-52, 34 as u32, 12.123 as f64);
+    /// assert!(f64::abs(calculated.as_radians() - expected.as_radians()) < 0.1);
+    /// ```
     pub fn from_vrc(vrc_coord: &str) -> Option<Longitude> {
         if let Some(angle) = convert_vrc_to_decimal_deg_single(vrc_coord) {
             return Some(Longitude::new(angle));

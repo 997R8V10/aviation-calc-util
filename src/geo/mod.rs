@@ -126,12 +126,23 @@ fn convert_decimal_deg_to_vrc_single(decimal_coord: Angle, is_latitude: bool) ->
 
 fn convert_vrc_to_decimal_deg_single(vrc_coord: &str) -> Option<Angle> {
     //W077.52.27.771
-    let first = &vrc_coord[0..1];
+
+    // Split string by .
+    let split_parts = vrc_coord.split('.').collect::<Vec<&str>>();
+
+    // Check split length
+    if (split_parts.len() < 3){
+        return None;
+    }
+
+    // Get first letter
+    let first = &split_parts[0][0..1];
     let sign = if first == "N" || first == "E" { 1 } else { -1 };
-    if let Ok(mut degrees) = &vrc_coord[1..4].parse::<i32>() {
+    if let Ok(mut degrees) = &split_parts[0][1..].parse::<i32>() {
         degrees *= sign;
-        if let Ok(minutes) = &vrc_coord[5..7].parse::<u32>() {
-            if let Ok(seconds) = &vrc_coord[8..].parse::<f64>() {
+        if let Ok(minutes) = &split_parts[1].parse::<u32>() {
+            let sec_str = &split_parts[2..].join(".");
+            if let Ok(seconds) = &sec_str.parse::<f64>() {
                 return Some(Angle::from_deg_min_sec(degrees, *minutes, *seconds));
             }
         }
