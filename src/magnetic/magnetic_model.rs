@@ -151,7 +151,7 @@ impl MagneticModel {
         let lambda = point.lon.as_radians();
         let h = point.alt.as_meters();
 
-        let sin_phi = f64::cos(phi);
+        let sin_phi = f64::sin(phi);
         let cos_phi = f64::cos(phi);
 
         // Calculate Rc

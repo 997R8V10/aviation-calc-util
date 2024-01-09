@@ -1,13 +1,29 @@
-use std::{env::temp_dir, thread, time::Duration};
+use std::{env::temp_dir, thread, time::{Duration, SystemTime}};
 
-use chrono::Utc;
+use chrono::{Utc, NaiveDate};
 
 use crate::{
     atmos::{self, convert_tas_to_ias, grib::GribTile},
     aviation::{self, calculate_arc_course_intercept},
     geo::{Bearing, GeoPoint, Latitude, Longitude},
-    units::{Angle, AngularVelocity, Length, Pressure, Temperature, Unit, Velocity},
+    units::{Angle, AngularVelocity, Length, Pressure, Temperature, Unit, Velocity}, magnetic::{MagneticTileManager, MagneticModel},
 };
+
+
+
+#[test]
+fn magnetic_to_true_1() {
+    let mag_tile_model = MagneticModel::from_file("D:\\Rust Code\\aviation_calc_util\\src\\tests\\WMM.COF").unwrap();
+    //let mag_tile_manager = MagneticTileManager::new(mag_tile_model);
+
+    let point = GeoPoint::from_degs_and_ft(54.73308421755422, -5.8749563888230085, 4728f64);
+    let date = NaiveDate::from_ymd_opt(2024, 01 as u32, 09 as u32).unwrap();
+    let heading = Bearing::from_degrees(33f64);
+
+    let field = mag_tile_model.calculate_field(&point, &date);
+    let answer = field.magnetic_to_true(heading);
+    println!("{}", answer);
+}
 
 #[test]
 fn true_airspeed_1() {
