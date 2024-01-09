@@ -33,12 +33,12 @@ pub fn factorial_ratio(n: i32, m: i32) -> f64 {
 /// # Examples
 /// Find the number 30% of the way between 10 and 50
 /// ```
-/// use aviation_calc_util::math::interoplate_numbers;
+/// use aviation_calc_util::math::interpolate_numbers;
 ///
-/// let result = interoplate_numbers(10.0, 50.0, 0.3);
+/// let result = interpolate_numbers(10.0, 50.0, 0.3);
 /// assert_eq!(result, 22.0);
 /// ```
-pub fn interoplate_numbers(start: f64, end: f64, multiplier: f64) -> f64 {
+pub fn interpolate_numbers(start: f64, end: f64, multiplier: f64) -> f64 {
     return multiplier * (end - start) + start;
 }
 
