@@ -30,7 +30,7 @@ impl Sub for Bearing {
     type Output = Angle;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        return Self::calculate_bearing_delta(self, rhs);
+        return Self::calculate_bearing_delta(rhs, self);
     }
 }
 

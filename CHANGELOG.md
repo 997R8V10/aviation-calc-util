@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.11.7] - 2024-01-10
+## [2.11.8] - 2024-01-10
 ### Added
 - `tests`
   - Multiple Unit tests
 
 ### Fixed
+- `geo/bearing`
+  - Subtracting two Bearings was wrong
 - `aviation`
   - Chord Line Calculations for left turns
 
@@ -344,7 +346,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
-[2.11.7]: https://github.com/997R8V10/aviation-calc-util/compare/v2.11.5...v2.11.7
+[2.11.8]: https://github.com/997R8V10/aviation-calc-util/compare/v2.11.5...v2.11.8
 [2.11.5]: https://github.com/997R8V10/aviation-calc-util/compare/v2.11.3...v2.11.5
 [2.11.3]: https://github.com/997R8V10/aviation-calc-util/compare/v2.11.1...v2.11.3
 [2.11.1]: https://github.com/997R8V10/aviation-calc-util/compare/v2.11.0...v2.11.1
