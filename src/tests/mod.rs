@@ -1,4 +1,4 @@
-use std::{env::temp_dir, thread, time::{Duration, SystemTime}};
+use std::{env::temp_dir, thread, time::Duration, path::PathBuf};
 
 use chrono::{Utc, NaiveDate};
 
@@ -6,23 +6,27 @@ use crate::{
     atmos::{self, convert_tas_to_ias, grib::GribTile},
     aviation::{self, calculate_arc_course_intercept},
     geo::{Bearing, GeoPoint, Latitude, Longitude},
-    units::{Angle, AngularVelocity, Length, Pressure, Temperature, Unit, Velocity}, magnetic::{MagneticTileManager, MagneticModel},
+    units::{Angle, AngularVelocity, Length, Pressure, Temperature, Unit, Velocity}, magnetic::MagneticModel,
 };
 
 
 
 #[test]
 fn magnetic_to_true_1() {
-    let mag_tile_model = MagneticModel::from_file("D:\\Rust Code\\aviation_calc_util\\src\\tests\\WMM.COF").unwrap();
-    //let mag_tile_manager = MagneticTileManager::new(mag_tile_model);
+    let filename = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src").join("tests").join("magnetic").join("WMM.COF");
 
-    let point = GeoPoint::from_degs_and_ft(54.73308421755422, -5.8749563888230085, 4728f64);
+    println!("{}", filename.display());
+
+    let mag_tile_model = MagneticModel::from_file(&filename.into_os_string().into_string().unwrap()).unwrap();
+
+    let point = GeoPoint::from_degs_and_ft(54_f64, -6_f64, 5000_f64);
     let date = NaiveDate::from_ymd_opt(2024, 01 as u32, 09 as u32).unwrap();
-    let heading = Bearing::from_degrees(33f64);
 
     let field = mag_tile_model.calculate_field(&point, &date);
-    let answer = field.magnetic_to_true(heading);
-    println!("{}", answer);
+
+    println!("{:?}", field.field_elements);
+
+    assert!((field.field_elements.h - 18_347.9_f64).abs() <= 1.0);
 }
 
 #[test]
