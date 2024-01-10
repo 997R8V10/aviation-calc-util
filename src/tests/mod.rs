@@ -26,7 +26,11 @@ fn magnetic_to_true_1() {
 
     println!("{:?}", field.field_elements);
 
-    assert!((field.field_elements.h - 18_347.9_f64).abs() <= 1.0);
+    assert!((field.field_elements.x - 18_334.5_f64).abs() <= 1.0);
+    assert!((field.field_elements.y - -515.0_f64).abs() <= 1.0);
+    assert!((field.field_elements.z - 46_054.7_f64).abs() <= 1.0);
+    assert!((field.field_elements.h - 18_341.4_f64).abs() <= 1.0);
+    assert!((field.field_elements.f - 49_572.6_f64).abs() <= 1.0);
 }
 
 #[test]
