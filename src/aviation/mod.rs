@@ -151,9 +151,19 @@ pub fn get_headwind_component(wind_bearing: Bearing, wind_speed: Velocity, beari
 }
 
 /// Calculates the chord line bearing and distance for a turn.
+/// 
+/// **Parameters:**
+/// - `start_bearing`: Start Bearing
+/// - `turn_amount`: Signed Amount to turn. Left Turn is negative
+/// - `radius_of_turn`: Unsigned radius of turn
+///
+/// **Returns:**
+/// - Chord Bearing
+/// - Chord Length
 pub fn calculate_chord_for_turn(start_bearing: Bearing, turn_amount: Angle, radius_of_turn: Length) -> (Bearing, Length) {
+    let new_radius_of_turn = Length::new(radius_of_turn.value().abs());
     let half_turn: Angle = turn_amount / 2.0;
-    let chord_length = Length::new(2.0 * radius_of_turn.as_meters() * f64::sin(half_turn.as_radians()));
+    let chord_length = Length::new((2.0 * new_radius_of_turn.as_meters() * f64::sin(half_turn.as_radians())).abs());
     let chord_bearing = start_bearing + half_turn;
 
     return (chord_bearing, chord_length);
