@@ -39,9 +39,8 @@ pub fn legendre_polynomial(n: i32) -> Polynomial {
     let mut m = 0;
 
     while (m <= n / 2) {
-        let mut val = -1.0_f64.powi(m) / 2.0_f64.powi(n);
-        val *= factorial_ratio(2 * n - 2 * m, n - m) / (factorial(m) * factorial(n - 2 * m)) as f64;
-        coeffs.insert((n - 2 * m) as usize, val);
+        coeffs[(n-2 * m) as usize] = f64::powi(-1.0, m) / 2.0_f64.powi(n);
+        coeffs[(n-2 * m) as usize] *= factorial_ratio(2 * n - 2 * m, n - m) / (factorial(m) * factorial(n - 2 * m)) as f64;
 
         m += 1;
     }

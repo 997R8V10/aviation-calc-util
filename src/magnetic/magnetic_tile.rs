@@ -82,7 +82,7 @@ impl GeoTile for MagneticTile {
 }
 
 impl MagneticTile {
-    pub const MAG_TILE_RES: Angle = Angle(0.1);
+    pub const MAG_TILE_RES: Angle = Angle(0.00174533);
     
     pub fn new(point: &GeoPoint, date: &NaiveDate, model: Option<&MagneticModel>) -> MagneticTile {
         let bounds = GeoTileBounds::new_from_point(point, Self::MAG_TILE_RES);
