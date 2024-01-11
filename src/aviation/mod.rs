@@ -50,6 +50,12 @@ pub fn calculate_max_bank_angle(ground_speed: Velocity, bank_limit: Angle, turn_
     return if bank_angle > bank_limit { bank_limit } else { bank_angle };
 }
 
+/// Calculates the rate of turn given ground speed and bank angle
+pub fn calculate_rate_of_turn(ground_speed: Velocity, bank_angle: Angle) -> AngularVelocity {
+    // rate of turn = g * tan(bank angle) / v
+    return AngularVelocity::from_radians_per_second(EARTH_GRAVITY.as_meters_per_second_squared() * f64::tan(bank_angle.as_radians()) / ground_speed.as_meters_per_second());
+}
+
 /// Calculates radius of turn at a bank angle and ground speed.
 ///
 /// # Examples

@@ -1,6 +1,6 @@
 [package]
 name = "aviation_calc_util"
-version = "2.11.8"
+version = "2.12.0"
 edition = "2021"
 description = "A library to assist with aviation related calculations."
 homepage = "https://github.com/997R8V10/aviation-calc-util"
