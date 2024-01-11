@@ -1,4 +1,8 @@
-use crate::{aviation, units::{Velocity, Angle, AngularVelocity, Length, Unit}, geo::{GeoPoint, Latitude, Longitude, Bearing}};
+use crate::{
+    aviation,
+    geo::{Bearing, GeoPoint, Latitude, Longitude},
+    units::{Angle, AngularVelocity, Length, Unit, Velocity},
+};
 
 #[test]
 fn calculate_max_bank_angle_1() {
@@ -32,7 +36,7 @@ fn aviation_arc_course_intercept_1() {
 }
 
 #[test]
-fn aviation_calculate_chord_for_turn_1(){
+fn aviation_calculate_chord_for_turn_1() {
     let start_bearing = Bearing::from_degrees(120_f64);
     let turn_amt = Angle::from_degrees(5.0_f64);
     let radius_of_turn = Length::from_meters(9000_f64);
@@ -45,7 +49,7 @@ fn aviation_calculate_chord_for_turn_1(){
 }
 
 #[test]
-fn aviation_calculate_chord_for_turn_2(){
+fn aviation_calculate_chord_for_turn_2() {
     let start_bearing = Bearing::from_degrees(120_f64);
     let turn_amt = Angle::from_degrees(-5.0_f64);
     let radius_of_turn = Length::from_meters(9000_f64);
@@ -55,4 +59,55 @@ fn aviation_calculate_chord_for_turn_2(){
 
     assert!((calculated_bearing - expected_bearing).as_degrees().abs() <= 0.01);
     assert!((calculated_length - expected_length).as_meters().abs() <= 1.0);
+}
+
+#[test]
+fn aviation_calculate_turn_lead_dist_1() {
+    let waypoint = GeoPoint::from_degs_and_ft(1_f64, 0_f64, 0_f64);
+    let aircraft = GeoPoint::from_degs_and_ft(0.5_f64, 0.5_f64, 35_000_f64);
+    let aircraft_course = Bearing::from_degrees(270_f64);
+    let waypoint_course = Bearing::from_degrees(360_f64);
+
+    let calculated = aviation::calculate_turn_lead_distance(
+        &aircraft,
+        &waypoint,
+        aircraft_course,
+        Velocity::from_knots(400_f64),
+        waypoint_course,
+        Bearing::from_degrees(335_f64),
+        Velocity::from_knots(50_f64),
+        Angle::from_degrees(25_f64),
+        AngularVelocity::from_degrees_per_second(3_f64),
+    );
+
+    if (calculated.is_some()){
+        println!("{:?}", calculated);
+    }
+}
+
+#[test]
+fn aviation_calculate_turn_lead_dist_2() {
+    let waypoint = GeoPoint::from_degs_and_ft(54.45237778_f64, -5.3348194400000422_f64, 0_f64);
+    let aircraft = GeoPoint::from_degs_and_ft(54.3527834_f64, -5.07700259999998_f64, 10_000_f64);
+    let aircraft_course = Bearing::from_degrees(32.111653320461478_f64);
+    let waypoint_course = Bearing::from_degrees(313.98221920547149_f64);
+    let true_airspeed = Velocity::from_knots(290.58338915806166);
+    let wind_dir = Bearing::from_degrees(0.0);
+    let wind_spd = Velocity::from_knots(0.0);
+
+    let calculated = aviation::calculate_turn_lead_distance(
+        &aircraft,
+        &waypoint,
+        aircraft_course,
+        true_airspeed,
+        waypoint_course,
+        wind_dir,
+        wind_spd,
+        Angle::from_degrees(25_f64),
+        AngularVelocity::from_degrees_per_second(3_f64),
+    );
+
+    if (calculated.is_some()){
+        println!("{:?}", calculated);
+    }
 }
