@@ -91,10 +91,10 @@ impl GribTile {
             self.offset_date_utc().format("%Y%m%d"),
             self.cycle(),
             self.forecast_hour(),
-            self.left_lon().as_degrees() as i16,
-            self.top_lat().as_degrees() as i16,
-            self.right_lon().as_degrees() as i16,
-            self.bottom_lat().as_degrees() as i16
+            self.left_lon().as_degrees().round() as i16,
+            self.top_lat().as_degrees().round() as i16,
+            self.right_lon().as_degrees().round() as i16,
+            self.bottom_lat().as_degrees().round() as i16
         );
 
         return self.download_path.join(filename);
@@ -114,10 +114,10 @@ impl GribTile {
             &dir=%2Fgfs.{}%2F{:02}%2Fatmos",
             self.cycle(),
             self.forecast_hour(),
-            self.left_lon().as_degrees() as i16,
-            self.right_lon().as_degrees() as i16,
-            self.top_lat().as_degrees() as i16,
-            self.bottom_lat().as_degrees() as i16,
+            self.left_lon().as_degrees().round() as i16,
+            self.right_lon().as_degrees().round() as i16,
+            self.top_lat().as_degrees().round() as i16,
+            self.bottom_lat().as_degrees().round() as i16,
             self.offset_date_utc().format("%Y%m%d"),
             self.cycle()
         );
