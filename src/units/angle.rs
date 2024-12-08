@@ -5,6 +5,10 @@ use std::ops::Neg;
 use std::ops::Rem;
 use std::ops::Sub;
 
+use serde::de::Visitor;
+use serde::Deserialize;
+use serde::Serialize;
+
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
@@ -15,6 +19,36 @@ use super::unit::Unit;
 /// Represents a angle quantity.
 #[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
 pub struct Angle(pub(crate) f64);
+
+impl Serialize for Angle {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer {
+        serializer.serialize_f64(self.as_degrees())
+    }
+}
+
+impl<'de> Deserialize<'de> for Angle {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de> {
+            struct AngleVisitor;
+            impl<'de> Visitor<'de> for AngleVisitor {
+                type Value = Angle;
+            
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("an Angle in degrees as an f64")
+                }
+
+                fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+                    where
+                        E: serde::de::Error, {
+                    Ok(Angle::from_degrees(v))
+                }
+            }
+        deserializer.deserialize_f64(AngleVisitor)
+    }
+}
 
 // Operator implementations
 impl_one_part_op_for_number!(Angle, Neg, neg, -);

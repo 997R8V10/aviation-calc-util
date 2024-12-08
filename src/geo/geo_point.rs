@@ -1,11 +1,13 @@
 use std::{f64::consts::PI, ops::Sub};
 
+use serde::{Deserialize, Serialize};
+
 use crate::units::{Length, Unit};
 
 use super::{bearing::Bearing, latitude::Latitude, longitude::Longitude, EARTH_RADIUS};
 
 /// Represents a 3D Coordinate Point on the globe.
-#[derive(Clone, Copy, Default, PartialEq, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, Debug, Serialize, Deserialize)]
 pub struct GeoPoint {
     pub lat: Latitude,
     pub lon: Longitude,

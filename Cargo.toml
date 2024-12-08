@@ -1,6 +1,6 @@
 [package]
 name = "aviation_calc_util"
-version = "2.12.1"
+version = "2.13.0"
 edition = "2021"
 description = "A library to assist with aviation related calculations."
 homepage = "https://github.com/997R8V10/aviation-calc-util"
@@ -14,5 +14,6 @@ categories = ["aerospace::simulation", "mathematics", "science::geo"]
 [dependencies]
 anyhow = "1.0.75"
 chrono = "0.4.31"
-grib = "0.8.0"
+grib = "0.10.2"
+serde = { version = "1.0.215", features = ["serde_derive", "derive"] }
 ureq = "2.9.1"

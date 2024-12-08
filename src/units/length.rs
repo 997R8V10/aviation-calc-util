@@ -5,6 +5,9 @@ use std::ops::Neg;
 use std::ops::Rem;
 use std::ops::Sub;
 
+use serde::Deserialize;
+use serde::Serialize;
+
 use crate::impl_one_part_op_for_number;
 use crate::impl_two_part_op_for_number;
 
@@ -12,7 +15,8 @@ use super::unit::Unit;
 use super::velocity::Velocity;
 
 /// Represents a length quantity.
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[serde(from = "f64", into = "f64")]
 pub struct Length(pub(crate) f64);
 
 // Operator implementations

@@ -1,12 +1,14 @@
 use std::f64::consts::FRAC_PI_2;
 
+use serde::{Deserialize, Serialize};
+
 use crate::units::{Angle, Unit};
 
 use super::{convert_vrc_to_decimal_deg_single, convert_nats_to_decimal_single, convert_decimal_deg_to_vrc_single, convert_decimal_to_nats_single};
 
 
 /// Represents a latitude on a globe
-#[derive(Clone, Copy, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Default, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct Latitude(Angle);
 
 // Display
