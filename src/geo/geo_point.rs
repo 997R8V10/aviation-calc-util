@@ -11,6 +11,7 @@ use super::{bearing::Bearing, latitude::Latitude, longitude::Longitude, EARTH_RA
 pub struct GeoPoint {
     pub lat: Latitude,
     pub lon: Longitude,
+    #[serde(default)]
     pub alt: Length,
 }
 

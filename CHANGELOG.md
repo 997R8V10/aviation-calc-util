@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.1] - 2024-12-09
+### Fixed
+- `serde` `GeoPoint` deserialization default altitude.
+
 ## [2.13.0] - 2024-12-07
 ### Added
 - `serde` serialization/deserialization
@@ -360,6 +364,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Conversion Functions
   - Legendre Spherical Harmonics Functions (For Magnetic Calculations)
 
+[2.13.1]: https://github.com/997R8V10/aviation-calc-util/compare/v2.13.0...v2.13.1
 [2.13.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.12.1...v2.13.0
 [2.12.1]: https://github.com/997R8V10/aviation-calc-util/compare/v2.12.0...v2.12.1
 [2.12.0]: https://github.com/997R8V10/aviation-calc-util/compare/v2.11.8...v2.12.0
