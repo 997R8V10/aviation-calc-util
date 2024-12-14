@@ -1,4 +1,4 @@
-use crate::{geo::{GeoPoint, Bearing}, units::Length};
+use crate::{geo::{Bearing, GeoPoint}, units::Length};
 
 
 #[test]
